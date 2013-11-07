@@ -26,8 +26,17 @@ class Trillium extends Controller {
      */
     public function mainpage() {
         $boards = $this->app['model']('Boards')->getList();
+        $contentPath = RESOURCES_DIR . 'common' . DS . 'mainpage.markdown';
+        if (is_file($contentPath)) {
+            /**
+             * @var $markdown \Knp\Bundle\MarkdownBundle\Parser\MarkdownParser
+             */
+            $markdown = $this->app['markdown'];
+            $content = $markdown->transformMarkdown(file_get_contents($contentPath));
+        }
         return $this->app->view('trillium/mainpage', [
             'boards' => $boards,
+            'content' => isset($content) ? $content : '',
         ]);
     }
 

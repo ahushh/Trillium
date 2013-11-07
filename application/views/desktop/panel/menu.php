@@ -3,6 +3,7 @@
     <?php if ($this->isGranted('ROLE_ADMIN')): ?>
         <li><a href="<?= $this->url('panel.boards') ?>"><?= $this->__('Boards') ?></a></li>
         <li><a href="<?= $this->url('panel.users') ?>"><?= $this->__('List of the users') ?></a></li>
+        <li><a href="<?= $this->url('panel.mainpage') ?>"><?= $this->__('Homepage') ?></a></li>
     <?php endif; ?>
     <li><a href="<?= $this->url('panel.users.change.password') ?>"><?= $this->__('Change password') ?></a></li>
     <li><a id="logoutOpen" href="javascript://"><?= $this->__('Logout') ?></a></li>

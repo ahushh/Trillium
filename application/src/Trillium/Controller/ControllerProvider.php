@@ -61,6 +61,9 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Control panel */
         $collection->get('panel', 'controllers.panel:menu')
             ->bind('panel');
+        /** Mainpage Editor */
+        $collection->match('panel/mainpage', 'controllers.panel:mainpage')
+            ->bind('panel.mainpage');
         /** Users */
         $collection->get('panel/users', 'controllers.panel.users:usersList')
             ->bind('panel.users');
