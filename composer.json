@@ -1,0 +1,28 @@
+{
+    "name": "kilte/trillium",
+    "require": {
+        "php": ">=5.4.0",
+        "silex/silex": "~1.1",
+        "igorw/config-service-provider": "1.2.*",
+        "symfony/translation": "~2.3",
+        "symfony/config": "~2.3",
+        "symfony/yaml": "~2.3",
+        "symfony/monolog-bridge": "~2.3",
+        "symfony/security": "~2.3",
+        "mobiledetect/mobiledetectlib": "2.*",
+        "mheap/Silex-Assetic": "1.0.*",
+        "Kilte/silex-view": "dev-master"
+    },
+    "repositories":[
+        {
+            "type":"git",
+            "url":"http://github.com/Kilte/silex-view"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Application": "application/src",
+            "Trillium": "application/src"
+        }
+    }
+}

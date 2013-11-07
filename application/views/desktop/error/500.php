@@ -1,0 +1,1 @@
+<p class="error"><?= $this->__('Internal Server Error') ?></p>

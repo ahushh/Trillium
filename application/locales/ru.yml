@@ -1,0 +1,53 @@
+Access Forbidden: Доступ запрещен
+Add role: Добавить роль
+An error was occured: Произошла ошибка
+Bad credentials: Неверные учётные данные
+Board already exists: Такая доска уже существует
+Boards: Доски
+Cancel: Отмена
+Change password: Сменить пароль
+Confirm password: Подтвердить пароль
+Control panel: Панель управления
+Create board: Создать доску
+Create user: Создать пользователя
+Description: Описание
+Do you really want to exit?: Вы действительно хотите выйти?
+Edit: Изменить
+Edit user: Редактировать пользователя
+Enter: Войти
+Homepage: Главная
+Internal Server Error: Внутренная ошибка сервера
+Key: Ключ
+List is empty: Список пуст
+List of the users: Список пользователей
+Login: Вход
+Logout: Выйти
+Name: Имя
+New password: Новый пароль
+Old password: Старый пароль
+Old password is incorrect: Старый пароль указан неверно
+Password: Пароль
+Passwords do not match: Пароли не совпадают
+Summary: Краткое описание
+Remove: Удалить
+Roles: Роли
+Save: Сохранить
+Something went terribly wrong: Что-то пошло не так
+Such role already exists: Такая роль уже существует
+The length of the value must be in the range of %s to %s characters: Длина значения поля должна находиться в диапазоне от %s до %s символов
+The length of the value must not exceed %s characters: Длина значения не должна превышать %s символов
+The length of the value must be at least %s characters: Длина значения должна быть не менее %s символов
+The requested page could not be found: Запрашиваемая страница не может быть найдена
+The username cannot be empty.: Имя пользователя указано неверно
+The value could not be empty: Значение не может быть пустым
+The value is incorrect: Значение некорректно
+User does not exists: Пользователь не существует
+User is root: Корневой пользователь
+Username: Имя пользователя
+Username "%s" already exists: Имя пользователя "%s" уже существует
+Value must contain only latin characters: Значение должно содержать только латинские символы
+Value must contain only latin characters and numbers: Значение должно содержать только латинские символы и цифры
+# Roles
+ROLE_ROOT: Root
+ROLE_ADMIN: Администратор
+ROLE_USER: Пользователь

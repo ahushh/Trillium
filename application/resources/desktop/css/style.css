@@ -1,0 +1,308 @@
+body {
+    background: #2f2f2f;
+    color: #c6c6c6;
+    padding: 0;
+    margin: 0;
+}
+a {
+    color: #84bcde;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    border-bottom: 1px solid #121212;
+    box-shadow: rgba(255, 255, 255, 0.071) 0 1px 0;
+    font-size: 35px;
+    margin: 0 0 15px;
+    padding: 0 0 6px;
+    line-height: 1.2em;
+    font-family: "Museo Sans", "museosans-web", serif;
+    color: #ffffff;
+}
+
+code {
+    display: inline-block;
+    color: #dadbb1;
+    font-family: "menlo", "monaco", "andale mono", "courier new", "fixed", monospace;
+    background: rgba(0, 0, 0, 0.298);
+    box-shadow: rgba(255, 255, 255, 0.102) 0 1px 0, rgba(0, 0, 0, 0.804) 0 1px 7px 0 inset;
+    border-radius: 4px;
+    vertical-align: baseline;
+    padding: 1px 4px;
+    margin: 2px;
+}
+
+form {
+    padding: 0;
+    margin: 0;
+}
+
+form p {
+    padding: 4px;
+    margin: 4px 0;
+}
+
+input[type="text"], input[type="password"], input[type="checkbox"] {
+    background: #222222;
+    border: 1px solid #191919;
+    margin: 2px 0;
+    padding: 2px 4px;
+    color: #666666;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="checkbox"]:hover {
+    color: #999999;
+    box-shadow: 0 0 2px #111111;
+}
+
+input[type="submit"] {
+    background: #222222;
+    border: 1px solid #191919;
+    color: #aaaaaa;
+    text-shadow: 0 0 2px #000000;
+    padding: 4px 10px;
+    margin: 2px 0;
+}
+
+input[type="submit"]:hover {
+    background: #181818;
+    border: 1px solid #101010;
+    color: #bbbbbb;
+}
+
+label {
+    cursor: pointer;
+    color: #999999;
+}
+
+.header {
+    background: url(../images/body.png);
+    max-width: 820px;
+    padding: 0;
+    margin: 10px auto 0;
+    text-align: center;
+    font-size: 0;
+    border: 1px solid #121212;
+    border-bottom: 0;
+    box-shadow: rgba(255, 255, 255, 0.071) 1px 1px 0, inset rgba(255, 255, 255, 0.071) 1px 1px 0;
+}
+
+.header ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.header ul li {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+.header ul li a {
+    color: #ffffff;
+    font-size: 16pt;
+    font-variant: small-caps;
+    margin: 0;
+    padding: 7px 10px 2px;
+    display: block;
+    text-decoration: none;
+    min-width: 50px;
+    text-shadow: 0 0 3px #000000;
+}
+
+.header ul li a:hover {
+    margin: 0 0 -1px;
+    border-bottom: 1px solid #777777;
+}
+
+.header ul li a.homepage {
+    color: #fb292d;
+}
+.header ul li a.homepage:hover {
+    margin: 0 0 -1px;
+    border-bottom: 1px solid #fb292d;
+}
+
+.mainpage {
+    margin: 0 auto;
+    min-height: 480px;
+    color: #c3c3c3;
+}
+
+.mainpage .right {
+    border: 1px solid #121212;
+    box-shadow: rgba(255, 255, 255, 0.071) 1px 1px 0, inset rgba(255, 255, 255, 0.071) 1px 1px 0;
+    padding: 10px;
+    width: 450px;
+    height: 320px;
+    overflow: auto;
+}
+
+.mainpage .left, .mainpage .right {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.mainpage .boards {
+    display: inline-block;
+    vertical-align: top;
+    height: 210px;
+    width: 800px;
+    overflow: auto;
+}
+
+.mainpage .logo {
+    background: url(../images/mainpage.png) no-repeat;
+    height: 338px;
+    width: 300px;
+    padding: 0;
+    margin: 0;
+}
+
+.mainpage .logo a {
+    background: url(../images/panelEntryPoint.png) no-repeat;
+    width: 49px;
+    height: 49px;
+    display: block;
+    position: relative;
+    top: 42%;
+    left: 42%;
+    cursor: none;
+}
+
+.mainpage .boards a {
+    display: inline-block;
+    border-radius: 50%;
+    background: rgba(20, 0, 0 ,0.5);
+    width: 50px;
+    height: 35px;
+    text-align: center;
+    padding: 15px 0 0 0;
+    margin: 10px;
+    font-size: 12pt;
+    box-shadow: 0 0 4px #550000;
+    text-decoration: none;
+    color: #c3c3c3;
+    font-family: monospace;
+}
+
+.mainpage .boards a:hover {
+    box-shadow: 0 0 4px #ff0000;
+}
+
+.mainpage .right strong {
+    color: #fb292d;
+    font-size: 12pt;
+    text-shadow: 0 0 3px #000000;
+}
+
+.content {
+    margin: 0 auto;
+    max-width: 800px;
+    border: 1px solid #121212;
+    box-shadow: rgba(255, 255, 255, 0.071) 1px 1px 0, inset rgba(255, 255, 255, 0.071) 1px 1px 0;
+    padding: 10px;
+}
+
+.footer {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+    background: url(../images/body.png);
+    border: 1px solid #121212;
+    border-top: 0;
+    box-shadow: rgba(255, 255, 255, 0.071) 1px 1px 0, inset rgba(255, 255, 255, 0.071) 1px 1px 0;
+    padding: 5px 0;
+}
+
+span.error {
+    font-size: 10pt;
+    display: block;
+    color: #fb292d;
+}
+
+.title {
+    border-bottom: 1px solid #121212;
+    box-shadow: rgba(255, 255, 255, 0.071) 0 1px 0;
+    padding: 0 0 3px 3px;
+    font-size: 16pt;
+    font-variant: small-caps;
+    text-shadow: 0 2px 3px #000000;
+}
+
+.title a {
+    color: #fb292d;
+}
+
+ul.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #1d1d1d;
+    box-shadow: 0 0 1px #ffffff;
+    background: #202020;
+}
+ul.menu li {
+    padding: 0;
+    margin: 0;
+}
+ul.menu li a {
+    display: block;
+    padding: 6px;
+    text-decoration: none;
+}
+ul.menu li a:hover {
+    background: #191919;
+    color: #aaaaaa;
+}
+
+a.button {
+    background: rgba(0, 0, 0, 0.298);
+    box-shadow: rgba(255, 255, 255, 0.102) 0 1px 0, rgba(0, 0, 0, 0.804) 0 1px 7px 0 inset;
+    border-radius: 4px;
+    vertical-align: baseline;
+    display: inline-block;
+    padding: 2px 7px;
+    margin: 4px 4px 0 0;
+    color: #dadbb1;
+    text-decoration: none;
+}
+
+a.button:hover {
+    color: #daaba1;
+}
+
+.list {
+    padding: 3px 0;
+}
+
+.list .item {
+    margin: 4px 0;
+    padding: 4px 10px;
+    background: #272727;
+    border: 1px solid #1d1d1d;
+    border-radius: 5px;
+}
+
+p.error {
+    color: #fb292d;
+    text-shadow: 0 0 3px #000000;
+    font-variant: small-caps;
+    font-size: 14pt;
+    padding: 0;
+    margin: 0;
+}
+
+div.error {
+    padding: 0;
+    margin: 0;
+}
+
+.listEmpty {
+    padding: 5px 0 0 5px;
+    margin: 5px 0 0 0;
+}
