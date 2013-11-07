@@ -63,6 +63,7 @@ $app->register(new SecurityServiceProvider, [
         'ROLE_ROOT' => $app['user.roles']
     ],
     'security.access_rules' => [
+        ['^/panel/mainpage', 'ROLE_ADMIN'],
         ['^/panel/users', 'ROLE_ADMIN'],
         ['^/panel/boards', 'ROLE_ADMIN'],
     ],
@@ -85,8 +86,10 @@ $app['translator'] = $app->share($app->extend('translator', function(Translator 
     return $translator;
 }));
 
+/** Markdown */
+$app->register(new SilexMarkdown\MarkdownExtension(), ['markdown.features' => ['no_html' => true,],]);
+
 /** Views */
-$app->register(new ViewServiceProvider);
 $viewsVersion = isset($_COOKIE['version']) && in_array($_COOKIE['version'], ['desktop', 'mobile']) ? $_COOKIE['version'] : null;
 if ($viewsVersion === null) {
     $mobileDetect = new \Mobile_Detect();
@@ -94,7 +97,7 @@ if ($viewsVersion === null) {
     setcookie('version', $viewsVersion, time() + 86400 * 365, '/', '.' . $_SERVER['SERVER_NAME']);
     unset($mobileDetect);
 }
-$app['view.path'] = VIEWS_DIR . $viewsVersion . DS;
+$app->register(new ViewServiceProvider, ['view.path' => VIEWS_DIR . $viewsVersion . DS]);
 
 /** Macroses for the views */
 $app->viewMacros('__', function ($id, array $parameters = array(), $domain = null, $locale = null) use ($app) {
