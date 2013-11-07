@@ -45,7 +45,7 @@ form p {
     margin: 4px 0;
 }
 
-input[type="text"], input[type="password"], input[type="checkbox"] {
+input[type="text"], input[type="password"], input[type="checkbox"], textarea {
     background: #222222;
     border: 1px solid #191919;
     margin: 2px 0;
@@ -53,9 +53,15 @@ input[type="text"], input[type="password"], input[type="checkbox"] {
     color: #666666;
 }
 
-input[type="text"]:focus, input[type="password"]:focus, input[type="checkbox"]:hover {
+input[type="text"]:focus, input[type="password"]:focus, input[type="checkbox"]:hover, textarea:focus {
     color: #999999;
     box-shadow: 0 0 2px #111111;
+}
+
+textarea {
+    min-width: 500px;
+    min-height: 200px;
+    max-width: 785px;
 }
 
 input[type="submit"] {
