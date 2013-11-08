@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\Controller\ControllerProvider;
+use Trillium\MobileDetect\MobileDetectServiceProvider;
 use Trillium\Model\ModelServiceProvider;
 use Trillium\Silex\Application;
 use Trillium\User\UserServiceProvider;
@@ -89,15 +90,17 @@ $app['translator'] = $app->share($app->extend('translator', function(Translator 
 /** Markdown */
 $app->register(new SilexMarkdown\MarkdownExtension(), ['markdown.features' => ['no_html' => true,],]);
 
-/** Views */
-$viewsVersion = isset($_COOKIE['version']) && in_array($_COOKIE['version'], ['desktop', 'mobile']) ? $_COOKIE['version'] : null;
-if ($viewsVersion === null) {
-    $mobileDetect = new \Mobile_Detect();
-    $viewsVersion = $mobileDetect->isTablet() || $mobileDetect->isMobile() ? 'mobile' : 'desktop';
-    setcookie('version', $viewsVersion, time() + 86400 * 365, '/', '.' . $_SERVER['SERVER_NAME']);
-    unset($mobileDetect);
+/** MobileDetect */
+if (isset($_COOKIE['version']) && in_array($_COOKIE['version'], ['desktop', 'mobile'])) {
+    $app['trillium.viewsSet'] = $_COOKIE['version'];
+} else {
+    $app->register(new MobileDetectServiceProvider);
+    $app['trillium.viewsSet'] = $app['mobiledetect.version'] === null ? 'desktop' : 'mobile';
+    setcookie('version', $app['trillium.viewsSet'], time() + 86400 * 365, '/', '.' . $_SERVER['SERVER_NAME']);
 }
-$app->register(new ViewServiceProvider, ['view.path' => VIEWS_DIR . $viewsVersion . DS]);
+
+/** Views */
+$app->register(new ViewServiceProvider, ['view.path' => VIEWS_DIR . $app['trillium.viewsSet'] . DS]);
 
 /** Macroses for the views */
 $app->viewMacros('__', function ($id, array $parameters = array(), $domain = null, $locale = null) use ($app) {
@@ -114,8 +117,8 @@ $app->viewMacros('isGranted', function ($role) use ($app) {
     $security = $app['security'];
     return $security->isGranted($role);
 });
-$app->viewMacros('assets', function ($path) use ($app, $viewsVersion) {
-    return 'http://' . $_SERVER['SERVER_NAME'] . '/assets/' . $viewsVersion . '/' . $path;
+$app->viewMacros('assets', function ($path) use ($app) {
+    return 'http://' . $_SERVER['SERVER_NAME'] . '/assets/' . $app['trillium.viewsSet'] . '/' . $path;
 });
 
 /** Assets */
@@ -127,17 +130,17 @@ $app['assetic.options'] = array(
     'auto_dump_assets' => $app['debug'],
 );
 $app['assetic.asset_manager'] = $app->share(
-    $app->extend('assetic.asset_manager', function(AssetManager $am) use ($viewsVersion) {
+    $app->extend('assetic.asset_manager', function(AssetManager $am) use ($app) {
         $am->set('styles', new Assetic\Asset\AssetCache(
-            new Assetic\Asset\GlobAsset(RESOURCES_DIR . $viewsVersion . DS . 'css' . DS . '*.css'),
+            new Assetic\Asset\GlobAsset(RESOURCES_DIR . $app['trillium.viewsSet'] . DS . 'css' . DS . '*.css'),
             new Assetic\Cache\FilesystemCache(CACHE_DIR . 'assetic')
         ));
-        $am->get('styles')->setTargetPath($viewsVersion . '/css/styles.css');
+        $am->get('styles')->setTargetPath($app['trillium.viewsSet'] . '/css/styles.css');
         $am->set('scripts', new Assetic\Asset\AssetCache(
-            new Assetic\Asset\GlobAsset(RESOURCES_DIR . $viewsVersion . DS . 'js' . DS . '*.js'),
+            new Assetic\Asset\GlobAsset(RESOURCES_DIR . $app['trillium.viewsSet'] . DS . 'js' . DS . '*.js'),
             new Assetic\Cache\FilesystemCache(CACHE_DIR . 'assetic')
         ));
-        $am->get('scripts')->setTargetPath($viewsVersion . '/js/scripts.js');
+        $am->get('scripts')->setTargetPath($app['trillium.viewsSet'] . '/js/scripts.js');
         return $am;
     })
 );
