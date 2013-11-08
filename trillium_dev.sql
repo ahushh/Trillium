@@ -33,6 +33,42 @@ INSERT INTO `boards` (`name`, `summary`) VALUES
 /*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
+-- Дамп структуры для таблица trillium_development.posts
+CREATE TABLE IF NOT EXISTS `posts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `thread` int(10) unsigned NOT NULL,
+  `board` varchar(10) NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `text` text NOT NULL,
+  `ip` int(10) NOT NULL,
+  `user_agent` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- Дамп данных таблицы trillium_development.posts: 0 rows
+/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
+INSERT INTO `posts` (`id`, `thread`, `board`, `time`, `text`, `ip`, `user_agent`) VALUES
+	(4, 5, 'b', 1383922766, 'Message', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
+/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
+
+
+-- Дамп структуры для таблица trillium_development.threads
+CREATE TABLE IF NOT EXISTS `threads` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `board` varchar(10) NOT NULL,
+  `theme` varchar(200) NOT NULL,
+  `bump` int(10) unsigned NOT NULL DEFAULT '0',
+  `op` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- Дамп данных таблицы trillium_development.threads: 0 rows
+/*!40000 ALTER TABLE `threads` DISABLE KEYS */;
+INSERT INTO `threads` (`id`, `board`, `theme`, `bump`, `op`) VALUES
+	(5, 'b', 'Theme', 1383922766, 4);
+/*!40000 ALTER TABLE `threads` ENABLE KEYS */;
+
+
 -- Дамп структуры для таблица trillium_development.users
 CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(32) NOT NULL,
