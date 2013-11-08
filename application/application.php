@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\Controller\ControllerProvider;
+use Trillium\ImageBoard\ImageBoardServiceProvider;
 use Trillium\MobileDetect\MobileDetectServiceProvider;
 use Trillium\Model\ModelServiceProvider;
 use Trillium\Silex\Application;
@@ -69,6 +70,9 @@ $app->register(new SecurityServiceProvider, [
         ['^/panel/boards', 'ROLE_ADMIN'],
     ],
 ]);
+
+/** Imageboard */
+$app->register(new ImageBoardServiceProvider);
 
 /** Controllers */
 $app->register(new ServiceControllerServiceProvider);
@@ -164,7 +168,7 @@ $app->after(function (Request $request, Response $response) use ($app) {
     if (strpos($response->headers->get('Content-Type'), 'text/html') !== false) {
         $response->setContent($app->view('layout', [
             'title' => $app['trillium.pageTitle'],
-            'boards' => $app['model']('Boards')->getList(),
+            'boards' => $app->ibBoard()->getList(),
             'content' => $response->getContent()
         ]));
     }

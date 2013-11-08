@@ -25,7 +25,7 @@ class Board extends Controller {
      * @return mixed
      */
     public function view($name) {
-        $board = $this->app['model']('Boards')->get($name);
+        $board = $this->app->ibBoard()->get($name);
         if ($board === null) {
             $this->app->abort(404, 'Board does not exists');
         }
@@ -36,6 +36,7 @@ class Board extends Controller {
         return $this->app->view('imageboard/board/view', [
             'name' => $board['name'],
             'title' => $title,
+            'messageForm' => $this->app->ibCommon()->createThread($board['name'], $_POST)
         ]);
     }
 

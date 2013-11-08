@@ -10,7 +10,6 @@ namespace Application\Controller\Panel;
 
 
 use Trillium\Controller\Controller;
-use Trillium\Silex\Application;
 
 /**
  * Boards Class
@@ -22,28 +21,13 @@ use Trillium\Silex\Application;
 class Boards extends Controller {
 
     /**
-     * @var \Application\Model\Boards Model
-     */
-    private $model;
-
-    /**
-     * Create the Boards instance
-     * @param Application $app Instance of the Application
-     * @return Boards
-     */
-    public function __construct(Application $app) {
-        parent::__construct($app);
-        $this->model = $this->app['model']('Boards');
-    }
-
-    /**
      * List of the boards
      *
      * @return mixed
      */
     public function boardsList() {
         $output = '';
-        $list = $this->model->getList();
+        $list = $this->app->ibBoard()->getList();
         if (!empty($list)) {
             $itemWrapper = $this->app->view('panel/boards/item')->bind('name', $boardName)->bind('summary', $boardSummary);
             foreach ($list as $board) {
@@ -65,7 +49,7 @@ class Boards extends Controller {
     public function manage($name = '') {
         $error = [];
         if ($name !== '') {
-            $data = $this->model->get($name);
+            $data = $this->app->ibBoard()->get($name);
             if ($data === null) {
                 $this->app->abort(404, 'Board does not exists');
             }
@@ -83,7 +67,7 @@ class Boards extends Controller {
                     $error['name'] = $this->app->trans('Value must contain only latin characters and numbers');
                 } elseif (strlen($newData['name']) < 1 || strlen($newData['name']) > 10) {
                     $error['name'] = sprintf($this->app->trans('The length of the value must be in the range of %s to %s characters'), 1, 10);
-                } elseif ($this->model->isExists($newData['name'])) {
+                } elseif ($this->app->ibBoard()->isExists($newData['name'])) {
                     $error['name'] = $this->app->trans('Board already exists');
                 }
             } else {
@@ -94,7 +78,7 @@ class Boards extends Controller {
                 $error['summary'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 200);
             }
             if (empty($error)) {
-                $this->model->save($newData);
+                $this->app->ibBoard()->save($newData);
                 $this->app->redirect($this->app->url('panel.boards'))->send();
             }
         }
@@ -113,7 +97,7 @@ class Boards extends Controller {
      * @return void
      */
     public function remove($name) {
-        $this->model->remove($name);
+        $this->app->ibBoard()->remove($name);
         $this->app->redirect($this->app->url('panel.boards'))->send();
     }
 

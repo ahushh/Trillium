@@ -6,24 +6,18 @@
  * @package Trillium
  */
 
-namespace Application\Model;
-
+namespace Trillium\ImageBoard\Model;
 
 use Trillium\Model\Model;
 
 /**
- * Boards Class
+ * Board Class
  *
  * Boards Model
  *
- * @package Application\Model
+ * @package Trillium\ImageBoard\Model
  */
-class Boards extends Model {
-
-    /**
-     * @var array Stored data
-     */
-    private $stored = [];
+class Board extends Model {
 
     /**
      * Get data of the board
@@ -62,15 +56,13 @@ class Boards extends Model {
      * @return array
      */
     public function getList() {
-        if (!isset($this->stored['getList'])) {
-            $result = $this->db->query("SELECT * FROM `boards` ORDER BY `name` ASC");
-            $this->stored['getList'] = [];
-            while (($item = $result->fetch_assoc())) {
-                $this->stored['getList'][] = $item;
-            }
-            $result->free();
+        $result = $this->db->query("SELECT * FROM `boards` ORDER BY `name` ASC");
+        $list = [];
+        while (($item = $result->fetch_assoc())) {
+            $list[] = $item;
         }
-        return $this->stored['getList'];
+        $result->free();
+        return $list;
     }
 
     /**

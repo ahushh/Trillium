@@ -25,12 +25,10 @@ class Trillium extends Controller {
      * @return string
      */
     public function mainpage() {
-        $boards = $this->app['model']('Boards')->getList();
+        $boards = $this->app->ibBoard()->getList();
         $contentPath = RESOURCES_DIR . 'common' . DS . 'mainpage.markdown';
         if (is_file($contentPath)) {
-            /**
-             * @var $markdown \Knp\Bundle\MarkdownBundle\Parser\MarkdownParser
-             */
+            /** @var $markdown \Knp\Bundle\MarkdownBundle\Parser\MarkdownParser */
             $markdown = $this->app['markdown'];
             $content = $markdown->transformMarkdown(file_get_contents($contentPath));
         }
