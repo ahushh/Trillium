@@ -53,4 +53,17 @@ class Thread {
         $this->model->bump($tid, $pid);
     }
 
+    /**
+     * Get list of the threads
+     *
+     * @param string|null $board  Name of the board
+     * @param int|null    $offset Offset
+     * @param int|null    $limit  Limit
+     *
+     * @return array
+     */
+    public function getList($board = null, $offset = null, $limit = null) {
+        return $this->model->getList($board, $offset, $limit);
+    }
+
 }
