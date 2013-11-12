@@ -65,7 +65,7 @@ class Post extends Model {
             throw new \InvalidArgumentException('Unexpected type of the ID. Integer expected.');
         }
         $list = [];
-        $result = $this->db->query("SELECT * FROM `posts` WHERE `thread` = '" . $id . "'");
+        $result = $this->db->query("SELECT * FROM `posts` WHERE `thread` = '" . $id . "' ORDER BY `id` ASC");
         while (($item = $result->fetch_assoc())) {
             $list[] = $item;
         }

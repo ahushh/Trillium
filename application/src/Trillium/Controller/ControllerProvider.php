@@ -87,7 +87,7 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Imageboard */
         $collection->match('board/{name}', 'controllers.imageboard.board:view')
             ->bind('imageboard.board.view');
-        $collection->get('thread/{id}', 'controllers.imageboard.thread:view')
+        $collection->match('thread/{id}', 'controllers.imageboard.thread:view')
             ->bind('imageboard.thread.view')
             ->assert('id', '[\d]+');
 

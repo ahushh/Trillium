@@ -1,6 +1,7 @@
 Access Forbidden: Доступ запрещен
 Add role: Добавить роль
 An error was occured: Произошла ошибка
+Answer: Ответ
 Bad credentials: Неверные учётные данные
 Board already exists: Такая доска уже существует
 Boards: Доски
@@ -22,6 +23,7 @@ List is empty: Список пуст
 List of the users: Список пользователей
 Login: Вход
 Logout: Выйти
+Message: Сообщение
 Name: Имя
 New password: Новый пароль
 Old password: Старый пароль
@@ -32,6 +34,7 @@ Summary: Краткое описание
 Remove: Удалить
 Roles: Роли
 Save: Сохранить
+Send: Отправить
 Something went terribly wrong: Что-то пошло не так
 Such role already exists: Такая роль уже существует
 The length of the value must be in the range of %s to %s characters: Длина значения поля должна находиться в диапазоне от %s до %s символов

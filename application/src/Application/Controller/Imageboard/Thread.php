@@ -30,7 +30,6 @@ class Thread extends Controller {
         if ($thread === null) {
             $this->app->abort(404, $this->app->trans('Thread does not exists'));
         }
-        $theme = $this->app->escape($thread['theme']);
         $posts = '';
         $postView = $this->app->view('imageboard/post/item')
             ->bind('id', $postID)
@@ -43,9 +42,14 @@ class Thread extends Controller {
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $posts .= $postView->render();
         }
+        $theme = $this->app->escape($thread['theme']);
+        $board = $this->app->escape($thread['board']);
+        $this->app['trillium.pageTitle'] .= ' - /' . $board . '/: ' . $theme;
         return $this->app->view('imageboard/thread/view', [
+            'board' => $board,
             'theme' => $theme,
             'posts' => $posts,
+            'answer' => $this->app->ibCommon()->createPost($thread, $_POST),
         ]);
     }
 

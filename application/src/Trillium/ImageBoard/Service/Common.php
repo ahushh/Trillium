@@ -62,7 +62,8 @@ class Common {
      * @param string $board Name of the board
      * @param array  $data  Data
      *
-     * @return \Kilte\View\View
+     * @return mixed
+     * @todo Refactoring
      */
     public function createThread($board, array $data) {
         $error = [];
@@ -98,6 +99,44 @@ class Common {
             'text' => isset($text) ? $text : '',
             'formAction' => '',
             'title' => $this->app->trans('Create thread'),
+        ]);
+    }
+
+    /**
+     * Answer to the thread
+     *
+     * @param array $thread ID of the thread
+     * @param array $data   Data
+     *
+     * @return mixed
+     * @todo Refactoring
+     */
+    public function createPost(array $thread, array $data) {
+        $error = [];
+        if (!empty($data)) {
+            $text = !empty($data['text']) ? trim($data['text']) : '';
+            if (empty($text)) {
+                $error['text'] = $this->app->trans('The value could not be empty');
+            } elseif (strlen($text) > 8000) {
+                $error['text'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 8000);
+            }
+            if (empty($error)) {
+                /**
+                 * @var Request $request
+                 */
+                $request = $this->app['request'];
+                $ip = ip2long($request->getClientIp());
+                $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
+                $postID = $this->post->create($thread['board'], (int) $thread['id'], $text, $ip, $userAgent);
+                $this->thread->bump((int) $thread['id'], $postID);
+                $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $thread['id']]))->send();
+            }
+        }
+        return $this->app->view('imageboard/common/message', [
+            'error' => $error,
+            'text' => isset($text) ? $text : '',
+            'formAction' => '',
+            'title' => $this->app->trans('Answer'),
         ]);
     }
 
