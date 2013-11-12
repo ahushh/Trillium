@@ -66,4 +66,15 @@ class Thread {
         return $this->model->getList($board, $offset, $limit);
     }
 
+    /**
+     * Get the thread
+     *
+     * @param int $id ID
+     *
+     * @return array|null
+     */
+    public function get($id) {
+        return $this->model->get($id);
+    }
+
 }

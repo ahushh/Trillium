@@ -49,4 +49,15 @@ class Post {
         return $this->model->create($board, $thread, $text, $ip, $userAgent);
     }
 
+    /**
+     * Get list of the posts
+     *
+     * @param int $id ID of the thread
+     *
+     * @return array
+     */
+    public function getList($id) {
+        return $this->model->getList($id);
+    }
+
 }

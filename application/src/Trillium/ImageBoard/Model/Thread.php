@@ -89,4 +89,22 @@ class Thread extends Model {
         return $list;
     }
 
+    /**
+     * Get the thread
+     *
+     * @param int $id ID
+     *
+     * @throws \InvalidArgumentException
+     * @return array|null
+     */
+    public function get($id) {
+        if (!is_int($id)) {
+            throw new \InvalidArgumentException('Unexpected type of ID. Integer expected.');
+        }
+        $result = $this->db->query("SELECT * FROM `threads` WHERE `id` = '" . $id . "'");
+        $data = $result->fetch_assoc();
+        $result->free();
+        return is_array($data) ? $data : null;
+    }
+
 }

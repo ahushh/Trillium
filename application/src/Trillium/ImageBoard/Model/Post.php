@@ -52,4 +52,25 @@ class Post extends Model {
         return (int) $this->db->insert_id;
     }
 
+    /**
+     * Get list of the posts
+     *
+     * @param int $id ID of the thread
+     *
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function getList($id) {
+        if (!is_int($id)) {
+            throw new \InvalidArgumentException('Unexpected type of the ID. Integer expected.');
+        }
+        $list = [];
+        $result = $this->db->query("SELECT * FROM `posts` WHERE `thread` = '" . $id . "'");
+        while (($item = $result->fetch_assoc())) {
+            $list[] = $item;
+        }
+        $result->free();
+        return $list;
+    }
+
 } 

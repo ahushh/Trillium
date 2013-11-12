@@ -39,11 +39,12 @@ class ControllerProvider implements ControllerProviderInterface {
         };
 
         $controllers = [
-            'controllers.trillium'         => 'Trillium',
-            'controllers.panel'            => 'Panel',
-            'controllers.panel.users'      => 'Panel\Users',
-            'controllers.panel.boards'     => 'Panel\Boards',
-            'controllers.imageboard.board' => 'Imageboard\Board'
+            'controllers.trillium'          => 'Trillium',
+            'controllers.panel'             => 'Panel',
+            'controllers.panel.users'       => 'Panel\Users',
+            'controllers.panel.boards'      => 'Panel\Boards',
+            'controllers.imageboard.board'  => 'Imageboard\Board',
+            'controllers.imageboard.thread' => 'Imageboard\Thread',
         ];
         foreach ($controllers as $key => $className) {
             $app[$key] = $app->share(function () use ($controllerFactory, $className) {
@@ -86,6 +87,9 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Imageboard */
         $collection->match('board/{name}', 'controllers.imageboard.board:view')
             ->bind('imageboard.board.view');
+        $collection->get('thread/{id}', 'controllers.imageboard.thread:view')
+            ->bind('imageboard.thread.view')
+            ->assert('id', '[\d]+');
 
         return $collection;
     }

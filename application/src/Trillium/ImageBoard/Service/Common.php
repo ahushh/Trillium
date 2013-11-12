@@ -89,7 +89,7 @@ class Common {
                 $threadID = $this->thread->create($board, $theme);
                 $postID = $this->post->create($board, $threadID, $text, $ip, $userAgent);
                 $this->thread->bump($threadID, $postID);
-                $this->app->redirect($this->app->url('TODO'))->send(); // TODO: define route
+                $this->app->redirect($this->app->url('imaegboard.thread.view', ['id' => $threadID]))->send();
             }
         }
         return $this->app->view('imageboard/common/message', [
