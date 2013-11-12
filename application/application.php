@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\Controller\ControllerProvider;
+use Trillium\Image\ImageServiceProvider;
 use Trillium\ImageBoard\ImageBoardServiceProvider;
 use Trillium\MobileDetect\MobileDetectServiceProvider;
 use Trillium\Model\ModelServiceProvider;
@@ -46,6 +47,7 @@ $app->register(new UrlGeneratorServiceProvider);
 $app->register(new ModelServiceProvider);
 $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
+$app->register(new ImageServiceProvider);
 
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [
