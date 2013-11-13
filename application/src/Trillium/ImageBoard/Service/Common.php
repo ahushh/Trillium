@@ -80,6 +80,7 @@ class Common {
             } elseif (strlen($text) > 8000) {
                 $error['text'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 8000);
             }
+            // TODO: upload images
             if (empty($error)) {
                 /**
                  * @var Request $request
@@ -120,6 +121,46 @@ class Common {
             } elseif (strlen($text) > 8000) {
                 $error['text'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 8000);
             }
+            if (!empty($data['images']) && is_array($data['images'])) {
+                $tmpImages = [];
+                $i = 0;
+                foreach ($data['images'] as $key => $values) {
+                    foreach ($values as $value) {
+                        if (($key == 'error' && $value == 4) || empty($value)) {
+                            continue;
+                        }
+                        $tmpImages[$i][$key] = $value;
+                        $i++;
+                    }
+                    $i = 0;
+                }
+                $images = [];
+                foreach ($tmpImages as $image) {
+                    if ($image['size'] > 500000) { // TODO: setup size
+                        $error['images'] = sprintf($this->app->trans('File size should not exceed %s'), 500000 . ' bytes');
+                    } elseif (!in_array($image['type'], ['image/png', 'image/gif', 'image/jpeg'])) {
+                        $error['images'] = $this->app->trans('Illegal file type');
+                    } else {
+                        $ext = explode('.', $image['name']);
+                        $ext = strtolower(end($ext));
+                        if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg'])) {
+                            $error['images'] = $this->app->trans('Illegal file type');
+                        }
+                    }
+                    if (!isset($error['images'])) {
+                        try {
+                            $images[] = [
+                                'service'  => $this->app->image($image['tmp_name']),
+                                'tmp_name' => $image['tmp_name'],
+                                'size' => $image['size'],
+                            ];
+                        } catch (\RuntimeException $e) {
+                            $error['images'] = $this->app->trans($e->getMessage());
+                            break;
+                        }
+                    }
+                }
+            }
             if (empty($error)) {
                 /**
                  * @var Request $request
@@ -129,6 +170,34 @@ class Common {
                 $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
                 $postID = $this->post->create($thread['board'], (int) $thread['id'], $text, $ip, $userAgent);
                 $this->thread->bump((int) $thread['id'], $postID);
+                // Upload images
+                if (!empty($images)) {
+                    $imagesData = [];
+                    $filePath = $this->app['imageboard.resources_path'] . $thread['board'] . DS;
+                    foreach ($images as $image) {
+                        /** @var \Trillium\Image\ImageService $imageService */
+                        $imageService = $image['service'];
+                        $fileName = md5(microtime(true) . $image['tmp_name'] . rand(1000, 9999));
+                        $thumb = $imageService->resizeWidth(200); // TODO: setup width
+                        if ($imageService->type() === IMAGETYPE_GIF) {
+                            copy($image['tmp_name'], $filePath . $fileName . '.gif');
+                        } else {
+                            $imageService->save($filePath . $fileName);
+                        }
+                        $imageService->save($filePath . $fileName . '_small', $thumb);
+                        $imagesData[] = [
+                            'board'    => $thread['board'],
+                            'thread'   => (int) $thread['id'],
+                            'post'     => $postID,
+                            'name'     => $fileName,
+                            'ext'      => $imageService->extension(),
+                            'width'    => $imageService->width(),
+                            'height'   => $imageService->height(),
+                            'size'     => $image['size'],
+                        ];
+                    }
+                    $this->app->ibImage()->insert($imagesData);
+                }
                 $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $thread['id']]))->send();
             }
         }

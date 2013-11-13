@@ -10,6 +10,8 @@ namespace Trillium\ImageBoard;
 
 use Trillium\ImageBoard\Service\Board;
 use Trillium\ImageBoard\Service\Common;
+use Trillium\ImageBoard\Service\Image;
+use Trillium\ImageBoard\Service\Post;
 use Trillium\ImageBoard\Service\Thread;
 
 /**
@@ -21,6 +23,7 @@ trait ImageBoard {
 
     /**
      * Get ib board object
+     *
      * @return Board
      */
     public function ibBoard() {
@@ -29,6 +32,7 @@ trait ImageBoard {
 
     /**
      * Get ib thread object
+     *
      * @return Thread
      */
     public function ibThread() {
@@ -37,14 +41,25 @@ trait ImageBoard {
 
     /**
      * Get ib post object
-     * @return mixed
+     *
+     * @return Post
      */
     public function ibPost() {
         return $this['imageboard.post'];
     }
 
     /**
+     * Get ib image object
+     *
+     * @return Image
+     */
+    public function ibImage() {
+        return $this['imageboard.image'];
+    }
+
+    /**
      * Get ib common object
+     *
      * @return Common
      */
     public function ibCommon() {

@@ -12,6 +12,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Trillium\ImageBoard\Service\Board;
 use Trillium\ImageBoard\Service\Common;
+use Trillium\ImageBoard\Service\Image;
 use Trillium\ImageBoard\Service\Post;
 use Trillium\ImageBoard\Service\Thread;
 
@@ -31,6 +32,7 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
      * @param Application $app An Application instance
      */
     public function register(Application $app) {
+        $app['imageboard.resources_path'] = null;
         $app['imageboard.board'] = $app->share(function () use ($app) {
             return new Board(new Model\Board($app['model.mysqli']));
         });
@@ -39,6 +41,9 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
         });
         $app['imageboard.post'] = $app->share(function () use ($app) {
             return new Post(new Model\Post($app['model.mysqli']));
+        });
+        $app['imageboard.image'] = $app->share(function () use($app) {
+            return new Image(new Model\Image($app['model.mysqli']));
         });
         $app['imageboard.common'] = $app->share(function () use ($app) {
             return new Common($app, $app['imageboard.board'], $app['imageboard.thread'], $app['imageboard.post']);
@@ -54,4 +59,5 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
      */
     public function boot(Application $app) {
     }
+
 }

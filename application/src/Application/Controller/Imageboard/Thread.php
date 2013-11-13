@@ -49,7 +49,7 @@ class Thread extends Controller {
             'board' => $board,
             'theme' => $theme,
             'posts' => $posts,
-            'answer' => $this->app->ibCommon()->createPost($thread, $_POST),
+            'answer' => $this->app->ibCommon()->createPost($thread, array_merge($_POST, $_FILES)),
         ]);
     }
 
