@@ -38,9 +38,13 @@ class ImageService {
      * @param string $path Path to the image
      *
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return ImageService
      */
     public function __construct($path) {
+        if (!is_string($path)) {
+            throw new \InvalidArgumentException('Expects parameter $path to be string, ' . gettype($path) . ' given');
+        }
         $imageInfo = getimagesize($path);
         $this->type = $imageInfo[2];
         switch ($this->type) {
@@ -57,7 +61,10 @@ class ImageService {
                 $this->resource = imagecreatefrompng($path);
                 break;
             default:
-                throw new \RuntimeException('Unsupported type of the image');
+                $this->resource = false;
+        }
+        if ($this->resource === false) {
+            throw new \RuntimeException('Illegal file type');
         }
     }
 
@@ -68,6 +75,15 @@ class ImageService {
      */
     public function type() {
         return $this->type;
+    }
+
+    /**
+     * Returns extension for filename
+     *
+     * @return string
+     */
+    public function extension() {
+        return $this->extension;
     }
 
     /**

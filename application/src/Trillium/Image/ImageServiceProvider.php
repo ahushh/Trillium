@@ -27,9 +27,9 @@ class ImageServiceProvider implements ServiceProviderInterface {
      * @param Application $app An Application instance
      */
     public function register(Application $app) {
-        $app['image'] = function ($path) {
+        $app['image'] = $app->protect(function ($path) {
             return new ImageService($path);
-        };
+        });
     }
 
     /**
