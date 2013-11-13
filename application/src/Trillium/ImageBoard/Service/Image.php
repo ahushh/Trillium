@@ -42,4 +42,15 @@ class Image {
         $this->model->insert($images);
     }
 
+    /**
+     * Returns list of the images for the thread
+     *
+     * @param int $thread ID of the thread
+     *
+     * @return array
+     */
+    public function getList($thread) {
+        return $this->model->getList($thread);
+    }
+
 } 

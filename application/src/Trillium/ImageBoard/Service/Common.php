@@ -136,8 +136,8 @@ class Common {
                 }
                 $images = [];
                 foreach ($tmpImages as $image) {
-                    if ($image['size'] > 500000) { // TODO: setup size
-                        $error['images'] = sprintf($this->app->trans('File size should not exceed %s'), 500000 . ' bytes');
+                    if ($image['size'] > 5000000) { // TODO: setup size
+                        $error['images'] = sprintf($this->app->trans('File size should not exceed %s'), 5000000 . ' bytes');
                     } elseif (!in_array($image['type'], ['image/png', 'image/gif', 'image/jpeg'])) {
                         $error['images'] = $this->app->trans('Illegal file type');
                     } else {

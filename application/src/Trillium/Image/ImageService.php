@@ -162,8 +162,9 @@ class ImageService {
      * @return void
      * @throws \RuntimeException
      */
-    public function save($path, $resource = null, $type = IMAGETYPE_JPEG, $compression = 100, $permissions = null) {
+    public function save($path, $resource = null, $type = null, $compression = 100, $permissions = null) {
         $resource = $resource === null ? $this->resource : $resource;
+        $type = $type === null ? $this->type : $type;
         switch ($type) {
             case IMAGETYPE_GIF:
                 $path = $path . '.gif';

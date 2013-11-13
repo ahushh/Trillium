@@ -42,4 +42,25 @@ class Image extends Model {
         $this->db->query($statement);
     }
 
+    /**
+     * Returns list of the images for the thread
+     *
+     * @param int $thread ID of the thread
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public function getList($thread) {
+        if (!is_int($thread)) {
+            throw new \InvalidArgumentException('Unexpected type of the $thread. Integer expected');
+        }
+        $list = [];
+        $result = $this->db->query("SELECT * FROM `images` WHERE `thread` = '" . $thread . "'");
+        while (($image = $result->fetch_assoc())) {
+            $list[(int) $image['post']] = $image;
+        }
+        $result->free();
+        return $list;
+    }
+
 }

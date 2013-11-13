@@ -34,12 +34,30 @@ class Thread extends Controller {
         $postView = $this->app->view('imageboard/post/item')
             ->bind('id', $postID)
             ->bind('text', $postText)
-            ->bind('time', $postTime);
+            ->bind('time', $postTime)
+            ->bind('image', $postImage);
+        $imageView = $this->app->view('imageboard/image/item')
+            ->bind('original', $imageOriginal)
+            ->bind('thumbnail', $imageThumbnail)
+            ->bind('resolution', $imageResolution)
+            ->bind('size', $imageSize)
+            ->bind('type', $imageType);
         $postsList = $this->app->ibPost()->getList($id);
+        $imagesList = $this->app->ibImage()->getList($id);
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
             $postText = nl2br($this->app->escape($post['text']));
             $postTime = date('d.m.Y / H:i:s', $post['time']);
+            if (array_key_exists($postID, $imagesList)) {
+                $image = $imagesList[$postID];
+                $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
+                $imageOriginal = $imageBaseURL . '.' . $image['ext'];
+                $imageThumbnail = $imageBaseURL . '_small.jpg';
+                $imageResolution = $image['width'] . 'x' . $image['height'] . ' px';
+                $imageSize = round($image['size'] / 1024) . ' KiB';
+                $imageType = strtoupper($image['ext']);
+                $postImage = $imageView->render();
+            }
             $posts .= $postView->render();
         }
         $theme = $this->app->escape($thread['theme']);
