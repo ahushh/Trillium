@@ -74,7 +74,7 @@ $app->register(new SecurityServiceProvider, [
 ]);
 
 /** Imageboard */
-$app->register(new ImageBoardServiceProvider);
+$app->register(new ImageBoardServiceProvider, ['imageboard.resources_path' => ASSETS_WEB_DIR . 'boards' . DS]);
 
 /** Controllers */
 $app->register(new ServiceControllerServiceProvider);

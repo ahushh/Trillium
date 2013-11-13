@@ -79,6 +79,9 @@ class Boards extends Controller {
             }
             if (empty($error)) {
                 $this->app->ibBoard()->save($newData);
+                if ($name === '') {
+                    mkdir($this->app['imageboard.resources_path'] . $newData['name']);
+                }
                 $this->app->redirect($this->app->url('panel.boards'))->send();
             }
         }
@@ -98,6 +101,7 @@ class Boards extends Controller {
      */
     public function remove($name) {
         $this->app->ibBoard()->remove($name);
+        rmdir($this->app['imageboard.resources_path'] . $name);
         $this->app->redirect($this->app->url('panel.boards'))->send();
     }
 
