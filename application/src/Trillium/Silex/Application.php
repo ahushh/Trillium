@@ -14,6 +14,7 @@ use Silex\Application\MonologTrait;
 use Silex\Application\SecurityTrait;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
+use Trillium\Image\ImageTrait;
 use Trillium\ImageBoard\ImageBoard;
 use Trillium\User\UserTrait;
 
@@ -26,6 +27,7 @@ class Application extends \Silex\Application {
 
     use FormTrait;
     use ImageBoard;
+    use ImageTrait;
     use MonologTrait;
     use SecurityTrait;
     use TranslationTrait;

@@ -16,7 +16,9 @@ Do you really want to exit?: Вы действительно хотите вый
 Edit: Изменить
 Edit user: Редактировать пользователя
 Enter: Войти
+File size should not exceed %s: Размер файла не должен превышать %s
 Homepage: Главная
+Illegal file type: Недопустимый тип файла
 Internal Server Error: Внутренная ошибка сервера
 Key: Ключ
 List is empty: Список пуст
