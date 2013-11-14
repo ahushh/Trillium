@@ -19,13 +19,16 @@ USE `trillium_development`;
 CREATE TABLE IF NOT EXISTS `boards` (
   `name` varchar(10) NOT NULL,
   `summary` varchar(200) NOT NULL,
+  `max_file_size` int(10) unsigned NOT NULL,
+  `images_per_post` int(2) unsigned NOT NULL,
+  `thumb_width` int(3) unsigned NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы trillium_development.boards: 1 rows
 /*!40000 ALTER TABLE `boards` DISABLE KEYS */;
-INSERT INTO `boards` (`name`, `summary`) VALUES
-	('b', 'Random');
+INSERT INTO `boards` (`name`, `summary`, `max_file_size`, `images_per_post`, `thumb_width`) VALUES
+	('b', 'Random', 10485760, 1, 320);
 /*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
@@ -41,12 +44,14 @@ CREATE TABLE IF NOT EXISTS `images` (
   `height` int(5) NOT NULL,
   `size` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы trillium_development.images: 1 rows
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
 INSERT INTO `images` (`id`, `board`, `thread`, `post`, `name`, `ext`, `width`, `height`, `size`) VALUES
-	(1, 'b', 6, 14, '02f616e0fc385ca48bd2d9f893c4d69b', 'png', 1440, 870, 127670);
+	(2, 'b', 6, 15, '46adfdbc900c3b62fe9ba3861e8adda4', 'jpg', 1312, 2000, 1220080),
+	(3, 'b', 6, 16, 'a865e4e8ba604a4cc98effba9dd2ae21', 'jpg', 2560, 1600, 1168794),
+	(4, 'b', 8, 21, '5febb56ec5ddaf64dd7eee29dd3ff250', 'jpg', 900, 600, 260757);
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 
 
@@ -60,9 +65,9 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `ip` int(10) NOT NULL,
   `user_agent` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.posts: 11 rows
+-- Дамп данных таблицы trillium_development.posts: 12 rows
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
 INSERT INTO `posts` (`id`, `thread`, `board`, `time`, `text`, `ip`, `user_agent`) VALUES
 	(6, 6, 'b', 1384267233, 'sfdsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
@@ -75,7 +80,14 @@ INSERT INTO `posts` (`id`, `thread`, `board`, `time`, `text`, `ip`, `user_agent`
 	(11, 6, 'b', 1384353597, 'sdfsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
 	(12, 6, 'b', 1384353622, 'sdfsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
 	(13, 6, 'b', 1384353713, 'sdfsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
-	(14, 6, 'b', 1384353772, 'sdfsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
+	(14, 6, 'b', 1384353772, 'sdfsdfsdf', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(15, 6, 'b', 1384357359, 'Ololo', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(16, 6, 'b', 1384438783, 'ololo', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(17, 6, 'b', 1384445182, 'ololo', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(18, 6, 'b', 1384445208, 'ololo', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(19, 7, 'b', 1384445283, 'new thread', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(20, 6, 'b', 1384445292, 'new message', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14'),
+	(21, 8, 'b', 1384445417, 'Ololo', 2130706433, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 
 
@@ -88,13 +100,15 @@ CREATE TABLE IF NOT EXISTS `threads` (
   `bump` int(10) unsigned NOT NULL DEFAULT '0',
   `op` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы trillium_development.threads: 2 rows
 /*!40000 ALTER TABLE `threads` DISABLE KEYS */;
 INSERT INTO `threads` (`id`, `board`, `theme`, `created`, `bump`, `op`) VALUES
 	(5, 'b', 'Theme', 1383922766, 1383922766, 4),
-	(6, 'b', 'Test thread', 1384258518, 1384353772, 14);
+	(6, 'b', 'Test thread', 1384258518, 1384445292, 18),
+	(7, 'b', 'Theme of the new thread', 1384445283, 1384445283, 19),
+	(8, 'b', 'Test create thread with picture', 1384445417, 1384445417, 21);
 /*!40000 ALTER TABLE `threads` ENABLE KEYS */;
 
 
