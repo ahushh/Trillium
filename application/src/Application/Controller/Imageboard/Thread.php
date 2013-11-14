@@ -61,13 +61,13 @@ class Thread extends Controller {
             $posts .= $postView->render();
         }
         $theme = $this->app->escape($thread['theme']);
-        $board = $this->app->escape($thread['board']);
-        $this->app['trillium.pageTitle'] .= ' - /' . $board . '/: ' . $theme;
+        $boardName = $this->app->escape($thread['board']);
+        $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
         return $this->app->view('imageboard/thread/view', [
-            'board' => $board,
+            'board' => $boardName,
             'theme' => $theme,
             'posts' => $posts,
-            'answer' => $this->app->ibCommon()->createPost($thread, array_merge($_POST, $_FILES)),
+            'answer' => $this->app->ibCommon()->createPost($this->app->ibBoard()->get($thread['board']), $thread, array_merge($_POST, $_FILES)),
         ]);
     }
 

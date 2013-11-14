@@ -106,13 +106,14 @@ class Common {
     /**
      * Answer to the thread
      *
-     * @param array $thread ID of the thread
-     * @param array $data   Data
+     * @param array $board  Data of the board
+     * @param array $thread Data of the thread
+     * @param array $data   Data of the new post
      *
      * @return mixed
      * @todo Refactoring
      */
-    public function createPost(array $thread, array $data) {
+    public function createPost(array $board, array $thread, array $data) {
         $error = [];
         if (!empty($data)) {
             $text = !empty($data['text']) ? trim($data['text']) : '';
@@ -134,29 +135,33 @@ class Common {
                     }
                     $i = 0;
                 }
-                $images = [];
-                foreach ($tmpImages as $image) {
-                    if ($image['size'] > 5000000) { // TODO: setup size
-                        $error['images'] = sprintf($this->app->trans('File size should not exceed %s'), 5000000 . ' bytes');
-                    } elseif (!in_array($image['type'], ['image/png', 'image/gif', 'image/jpeg'])) {
-                        $error['images'] = $this->app->trans('Illegal file type');
-                    } else {
-                        $ext = explode('.', $image['name']);
-                        $ext = strtolower(end($ext));
-                        if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg'])) {
+                if (sizeof($tmpImages) > $board['images_per_post']) {
+                    $error['images'] = sprintf($this->app->trans('The number of images should be no more than %s'), $board['images_per_post']);
+                } else {
+                    $images = [];
+                    foreach ($tmpImages as $image) {
+                        if ($image['size'] > $board['max_file_size']) {
+                            $error['images'] = sprintf($this->app->trans('File size should not exceed %s'), $board['max_file_size'] / 1024 . ' Kb');
+                        } elseif (!in_array($image['type'], ['image/png', 'image/gif', 'image/jpeg'])) {
                             $error['images'] = $this->app->trans('Illegal file type');
+                        } else {
+                            $ext = explode('.', $image['name']);
+                            $ext = strtolower(end($ext));
+                            if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg'])) {
+                                $error['images'] = $this->app->trans('Illegal file type');
+                            }
                         }
-                    }
-                    if (!isset($error['images'])) {
-                        try {
-                            $images[] = [
-                                'service'  => $this->app->image($image['tmp_name']),
-                                'tmp_name' => $image['tmp_name'],
-                                'size' => $image['size'],
-                            ];
-                        } catch (\RuntimeException $e) {
-                            $error['images'] = $this->app->trans($e->getMessage());
-                            break;
+                        if (!isset($error['images'])) {
+                            try {
+                                $images[] = [
+                                    'service'  => $this->app->image($image['tmp_name']),
+                                    'tmp_name' => $image['tmp_name'],
+                                    'size' => $image['size'],
+                                ];
+                            } catch (\RuntimeException $e) {
+                                $error['images'] = $this->app->trans($e->getMessage());
+                                break;
+                            }
                         }
                     }
                 }
@@ -178,7 +183,11 @@ class Common {
                         /** @var \Trillium\Image\ImageService $imageService */
                         $imageService = $image['service'];
                         $fileName = md5(microtime(true) . $image['tmp_name'] . rand(1000, 9999));
-                        $thumb = $imageService->resizeWidth(200); // TODO: setup width
+                        if ($imageService->width() > $board['thumb_width']) {
+                            $thumb = $imageService->resizeWidth($board['thumb_width']);
+                        } else {
+                            $thumb = $imageService->resource();
+                        }
                         if ($imageService->type() === IMAGETYPE_GIF) {
                             copy($image['tmp_name'], $filePath . $fileName . '.gif');
                         } else {
@@ -206,6 +215,7 @@ class Common {
             'text' => isset($text) ? $text : '',
             'formAction' => '',
             'title' => $this->app->trans('Answer'),
+            'imagesNumber' => $board['images_per_post']
         ]);
     }
 

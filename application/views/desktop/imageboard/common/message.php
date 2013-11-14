@@ -17,11 +17,11 @@
     </p>
     <p>
         <label><?= $this->__('Images') ?>:</label><br />
-        <!-- TODO: Use javascript -->
-        <input type="file" name="images[]" value="" /><br />
-        <input type="file" name="images[]" value="" /><br />
-        <input type="file" name="images[]" value="" /><br />
-        <input type="file" name="images[]" value="" />
+        <?php
+        for ($i = 0; $i < $this->imagesNumber; $i++) {
+            echo '<input type="file" name="images[]" value="" /><br />';
+        }
+        ?>
         <?= !empty($this->error['images']) ? '<span class="error">' . $this->error['images'] . '</span>' : '' ?>
     </p>
     <p>

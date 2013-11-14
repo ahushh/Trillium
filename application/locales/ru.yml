@@ -19,6 +19,7 @@ Enter: Войти
 File size should not exceed %s: Размер файла не должен превышать %s
 Homepage: Главная
 Illegal file type: Недопустимый тип файла
+Images: Изображения
 Images per post: Изображений на пост
 Internal Server Error: Внутренная ошибка сервера
 Key: Ключ
@@ -44,6 +45,7 @@ Such role already exists: Такая роль уже существует
 The length of the value must be in the range of %s to %s characters: Длина значения поля должна находиться в диапазоне от %s до %s символов
 The length of the value must not exceed %s characters: Длина значения не должна превышать %s символов
 The length of the value must be at least %s characters: Длина значения должна быть не менее %s символов
+The number of images should be no more than %s: Количество изображений должно быть не больше чем %s
 The requested page could not be found: Запрашиваемая страница не может быть найдена
 The username cannot be empty.: Имя пользователя указано неверно
 The value could not be empty: Значение не может быть пустым
