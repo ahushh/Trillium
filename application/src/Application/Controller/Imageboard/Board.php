@@ -55,7 +55,7 @@ class Board extends Controller {
         return $this->app->view('imageboard/board/view', [
             'name' => $board['name'],
             'title' => $title,
-            'messageForm' => $this->app->ibCommon()->createThread($board['name'], $_POST),
+            'messageForm' => $this->app->ibCommon()->sendMessage($board, array_merge($_POST, $_FILES)),
             'threads' => $threads,
         ]);
     }

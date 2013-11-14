@@ -57,6 +57,8 @@ class Thread extends Controller {
                 $imageSize = round($image['size'] / 1024) . ' KiB';
                 $imageType = strtoupper($image['ext']);
                 $postImage = $imageView->render();
+            } else {
+                $postImage = '';
             }
             $posts .= $postView->render();
         }
@@ -67,7 +69,7 @@ class Thread extends Controller {
             'board' => $boardName,
             'theme' => $theme,
             'posts' => $posts,
-            'answer' => $this->app->ibCommon()->createPost($this->app->ibBoard()->get($thread['board']), $thread, array_merge($_POST, $_FILES)),
+            'answer' => $this->app->ibCommon()->sendMessage($this->app->ibBoard()->get($thread['board']), array_merge($_POST, $_FILES), $thread),
         ]);
     }
 

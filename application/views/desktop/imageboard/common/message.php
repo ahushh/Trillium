@@ -1,7 +1,7 @@
-<h3><?= $this->title ?></h3>
-<form method="post" action="<?= $this->formAction ?>" enctype="multipart/form-data">
+<h3><?= $this->__($this->newThread ? 'Create thread' : 'Answer') ?></h3>
+<form method="post" action="" enctype="multipart/form-data">
     <?php
-    if (isset($this->theme)) {
+    if ($this->newThread) {
         echo '<p><label>'
             . $this->__('Theme') . ':<br />'
             . '<input type="text" name="theme" value="' . $this->escape($this->theme) . '">'
