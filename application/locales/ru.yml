@@ -19,12 +19,14 @@ Enter: Войти
 File size should not exceed %s: Размер файла не должен превышать %s
 Homepage: Главная
 Illegal file type: Недопустимый тип файла
+Images per post: Изображений на пост
 Internal Server Error: Внутренная ошибка сервера
 Key: Ключ
 List is empty: Список пуст
 List of the users: Список пользователей
 Login: Вход
 Logout: Выйти
+Max file size (Kb): Макс. размер файла (Kb)
 Message: Сообщение
 Name: Имя
 New password: Новый пароль
@@ -46,6 +48,8 @@ The requested page could not be found: Запрашиваемая страниц
 The username cannot be empty.: Имя пользователя указано неверно
 The value could not be empty: Значение не может быть пустым
 The value is incorrect: Значение некорректно
+The value must be between %s and %s: Значение должно находиться в интервале между %s и %s
+Thumbnail width: Ширина превью
 User does not exists: Пользователь не существует
 User is root: Корневой пользователь
 Username: Имя пользователя

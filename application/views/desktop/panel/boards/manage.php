@@ -24,6 +24,26 @@
         <?= !empty($this->error['summary']) ? '<span class="error">' . $this->error['summary'] . '</span>' : '' ?>
     </p>
     <p>
+        <label><?= $this->__('Max file size (Kb)') ?>:<br />
+            <input type="text" name="max_file_size" value="<?= (int) $this->data['max_file_size'] ?>">
+        </label>
+        <?= !empty($this->error['max_file_size']) ? '<span class="error">' . $this->error['max_file_size'] . '</span>' : '' ?>
+    </p>
+    <p>
+        <label>
+            <input type="text" name="images_per_post" maxlength="2" size="2" value="<?= (int) $this->data['images_per_post'] ?>">
+            <?= $this->__('Images per post') ?>
+        </label>
+        <?= !empty($this->error['images_per_post']) ? '<span class="error">' . $this->error['images_per_post'] . '</span>' : '' ?>
+    </p>
+    <p>
+        <label>
+            <input type="text" name="thumb_width" maxlength="3" size="3" value="<?= (int) $this->data['thumb_width'] ?>">
+            <?= $this->__('Thumbnail width') ?> (px)
+        </label>
+        <?= !empty($this->error['thumb_width']) ? '<span class="error">' . $this->error['thumb_width'] . '</span>' : '' ?>
+    </p>
+    <p>
         <input type="submit" name="save" value="<?= $this->__('Save') ?>">
     </p>
 </form>

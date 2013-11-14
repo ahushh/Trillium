@@ -55,8 +55,11 @@ class Boards extends Controller {
             }
         } else {
             $data = [
-                'name' => '',
-                'summary' => '',
+                'name'            => '',
+                'summary'         => '',
+                'max_file_size'   => 0,
+                'images_per_post' => 0,
+                'thumb_width'     => 0,
             ];
         }
         if (!empty($_POST)) {
@@ -77,7 +80,20 @@ class Boards extends Controller {
             if (strlen($newData['summary']) > 200) {
                 $error['summary'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 200);
             }
+            $newData['max_file_size'] = isset($_POST['max_file_size']) ? (int) $_POST['max_file_size'] : 0;
+            if ($newData['max_file_size'] > 10240 || $newData['max_file_size'] < 1024) {
+                $error['max_file_size'] = sprintf($this->app->trans('The value must be between %s and %s'), 1024, 10240);
+            }
+            $newData['images_per_post'] = isset($_POST['images_per_post']) ? (int) $_POST['images_per_post'] : 0;
+            if ($newData['images_per_post'] > 10 || $newData['images_per_post'] < 1) {
+                $error['images_per_post'] = sprintf($this->app->trans('The value must be between %s and %s'), 1, 10);
+            }
+            $newData['thumb_width'] = isset($_POST['thumb_width']) ? (int) $_POST['thumb_width'] : 0;
+            if ($newData['thumb_width'] < 64 || $newData['thumb_width'] > 999) {
+                $error['thumb_width'] = sprintf($this->app->trans('The value must be between %s and %s'), 64, 999);
+            }
             if (empty($error)) {
+                $newData['max_file_size'] = $newData['max_file_size'] * 1024;
                 $this->app->ibBoard()->save($newData);
                 if ($name === '') {
                     mkdir($this->app['imageboard.resources_path'] . $newData['name']);
@@ -85,6 +101,7 @@ class Boards extends Controller {
                 $this->app->redirect($this->app->url('panel.boards'))->send();
             }
         }
+        $data['max_file_size'] = $data['max_file_size'] / 1024;
         return $this->app->view('panel/boards/manage', [
             'error' => $error,
             'data' => $data,
