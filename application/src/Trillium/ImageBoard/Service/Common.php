@@ -39,6 +39,11 @@ class Common {
     private $post;
 
     /**
+     * @var Image Image service
+     */
+    private $image;
+
+    /**
      * Create Common instance
      *
      * @param \Silex\Application $app    Application instance
@@ -46,14 +51,16 @@ class Common {
      * @param Board              $board  Board service
      * @param Thread             $thread Thread service
      * @param Post               $post   Post service
+     * @param Image              $image  Image service
      *
      * @return Common
      */
-    public function __construct(Application $app, Board $board, Thread $thread, Post $post) {
+    public function __construct(Application $app, Board $board, Thread $thread, Post $post, Image $image) {
         $this->app = $app;
         $this->board = $board;
         $this->thread = $thread;
         $this->post = $post;
+        $this->image = $image;
     }
 
     /**
@@ -107,6 +114,33 @@ class Common {
                 $this->thread->bump($threadID, $thread === null ? $postID : null, $bump);
                 if (!empty($images)) {
                     $this->uploadImages($images, $board['name'], $threadID, $postID, (int) $board['thumb_width']);
+                }
+                // Remove redudant threads
+                if ($thread === null) {
+                    $totalThreads = $this->thread->total($board['name']);
+                    $redundantThreads = $totalThreads - $board['pages'] * $board['threads_per_page'];
+                    if ($redundantThreads > 0) {
+                        $redundantThreads = $this->thread->getRedundant($board['name'], $redundantThreads);
+                        if (!empty($redundantThreads)) {
+                            $this->post->remove($redundantThreads, 'thread');
+                            $images = $this->image->getList($redundantThreads);
+                            if (!empty($images)) {
+                                $filePath = $this->app['imageboard.resources_path'] . $board['name'] . DS;
+                                foreach ($images as $image) {
+                                    $imageOrig = $filePath . $image['name'] . '.' . $image['ext'];
+                                    $imageThumb = $filePath . $image['name'] . '_small.' . $image['ext'];
+                                    if (is_file($imageOrig)) {
+                                        unlink($imageOrig);
+                                    }
+                                    if (is_file($imageThumb)) {
+                                        unlink($imageThumb);
+                                    }
+                                }
+                            }
+                            $this->image->remove($redundantThreads, 'thread');
+                            $this->thread->remove($redundantThreads, 'id');
+                        }
+                    }
                 }
                 $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $threadID]))->send();
             }

@@ -76,4 +76,29 @@ class Post extends Model {
         return $list;
     }
 
-} 
+    /**
+     * Remove post(s)
+     *
+     * @param array|string|int $id ID(s)
+     * @param string           $by Remove by
+     *
+     * @return void
+     * @throws \UnexpectedValueException
+     */
+    public function remove($id, $by) {
+        $by = in_array($by, ['id', 'board', 'thread']) ? $by : null;
+        if ($by === null) {
+            throw new \UnexpectedValueException('Unexpected value of the $by: id, board or thread expected');
+        }
+        if (is_array($id)) {
+            $id = array_map(function ($id) {
+                return is_string($id) ? $this->db->real_escape_string($id) : $id;
+            }, $id);
+            $id = "IN ('" . implode("', '", $id) . "')";
+        } else {
+            $id = "= '" .  (is_string($id) ? $this->db->real_escape_string($id) : $id) . "'";
+        }
+        $this->db->query("DELETE FROM `posts` WHERE `" . $by . "` " . $id);
+    }
+
+}

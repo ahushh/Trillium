@@ -45,12 +45,24 @@ class Image {
     /**
      * Returns list of the images for the thread
      *
-     * @param int $thread ID of the thread
+     * @param array|int $thread ID of the thread
      *
      * @return array
      */
     public function getList($thread) {
         return $this->model->getList($thread);
+    }
+
+    /**
+     * Remove image(s)
+     *
+     * @param array|string|int $id ID(s)
+     * @param string           $by Remove by
+     *
+     * @return void
+     */
+    public function remove($id, $by) {
+        $this->model->remove($id, $by);
     }
 
 } 

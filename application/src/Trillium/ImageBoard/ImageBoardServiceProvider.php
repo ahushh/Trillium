@@ -46,7 +46,7 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
             return new Image(new Model\Image($app['model.mysqli']));
         });
         $app['imageboard.common'] = $app->share(function () use ($app) {
-            return new Common($app, $app['imageboard.board'], $app['imageboard.thread'], $app['imageboard.post']);
+            return new Common($app, $app['imageboard.board'], $app['imageboard.thread'], $app['imageboard.post'], $app['imageboard.image']);
         });
     }
 

@@ -78,4 +78,39 @@ class Thread {
         return $this->model->get($id);
     }
 
+    /**
+     * Get number of threads in the board
+     *
+     * @param string $board Name of the board
+     *
+     * @return int
+     */
+    public function total($board) {
+        return $this->model->total($board);
+    }
+
+    /**
+     * Get IDs of redundant threads
+     *
+     * @param string $board    Name of the board
+     * @param int    $redundant Redudant
+     *
+     * @return array
+     */
+    public function getRedundant($board, $redundant) {
+        return $this->model->getRedundant($board, $redundant);
+    }
+
+    /**
+     * Remove thread(s)
+     *
+     * @param string|int|array $id ID(s)
+     * @param string           $by Remove by
+     *
+     * @return void
+     */
+    public function remove($id, $by) {
+        $this->model->remove($id, $by);
+    }
+
 }

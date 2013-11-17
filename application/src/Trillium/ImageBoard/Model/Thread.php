@@ -116,4 +116,64 @@ class Thread extends Model {
         return is_array($data) ? $data : null;
     }
 
+    /**
+     * Get number of threads in the board
+     *
+     * @param string $board Name of the board
+     *
+     * @return int
+     */
+    public function total($board) {
+        $board = $this->db->real_escape_string($board);
+        $result = $this->db->query("SELECT COUNT(*) FROM `threads` WHERE `board` = '" . $board . "'");
+        $total = (int) $result->fetch_row()[0];
+        $result->free();
+        return $total;
+    }
+
+    /**
+     * Get IDs of redundant threads
+     *
+     * @param string $board    Name of the board
+     * @param int    $redundant Redudant
+     *
+     * @return array
+     */
+    public function getRedundant($board, $redundant) {
+        $board = $this->db->real_escape_string($board);
+        $redundant = (int) $redundant;
+        $result = $this->db->query("SELECT * FROM `threads` WHERE `board` = '" . $board . "' ORDER BY `bump` ASC LIMIT 0, " . $redundant);
+        $list = [];
+        while (($item = $result->fetch_assoc())) {
+            $list[] = (int) $item['id'];
+        }
+        $result->free();
+        return $list;
+    }
+
+    /**
+     * Remove thread(s)
+     *
+     * @param string|int|array $id ID(s)
+     * @param string           $by Remove by
+     *
+     * @return void
+     * @throws \UnexpectedValueException
+     */
+    public function remove($id, $by) {
+        $by = in_array($by, ['id', 'board']) ? $by : null;
+        if ($by === null) {
+            throw new \UnexpectedValueException('Unexpected value of the $by: id or board expected');
+        }
+        if (is_array($id)) {
+            $id = array_map(function ($id) {
+                return is_string($id) ? $this->db->real_escape_string($id) : $id;
+            }, $id);
+            $id = "IN ('" . implode("', '", $id) . "')";
+        } else {
+            $id = "= '" .  (is_string($id) ? $this->db->real_escape_string($id) : $id) . "'";
+        }
+        $this->db->query("DELETE FROM `threads` WHERE `" . $by . "` " . $id);
+    }
+
 }

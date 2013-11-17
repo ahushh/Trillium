@@ -61,4 +61,16 @@ class Post {
         return $this->model->getList($id);
     }
 
+    /**
+     * Remove post(s)
+     *
+     * @param array|string|int $id ID(s)
+     * @param string           $by Remove by
+     *
+     * @return void
+     */
+    public function remove($id, $by) {
+        $this->model->remove($id, $by);
+    }
+
 }
