@@ -63,7 +63,7 @@ class Image extends Model {
         $list = [];
         $result = $this->db->query("SELECT * FROM `images` WHERE `thread` " . $thread);
         while (($image = $result->fetch_assoc())) {
-            $list[(int) $image['post']] = $image;
+            $list[(int) $image['post']][] = $image;
         }
         $result->free();
         return $list;

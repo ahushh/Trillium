@@ -50,17 +50,17 @@ class Thread extends Controller {
             $postText = nl2br($this->app->escape($post['text']));
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
+            $postImage = '';
             if (array_key_exists($postID, $imagesList)) {
-                $image = $imagesList[$postID];
-                $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
-                $imageOriginal = $imageBaseURL . '.' . $image['ext'];
-                $imageThumbnail = $imageBaseURL . '_small.jpg';
-                $imageResolution = $image['width'] . 'x' . $image['height'] . ' px';
-                $imageSize = round($image['size'] / 1024) . ' KiB';
-                $imageType = strtoupper($image['ext']);
-                $postImage = $imageView->render();
-            } else {
-                $postImage = '';
+                foreach ($imagesList[$postID] as $image) {
+                    $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
+                    $imageOriginal = $imageBaseURL . '.' . $image['ext'];
+                    $imageThumbnail = $imageBaseURL . '_small.jpg';
+                    $imageResolution = $image['width'] . 'x' . $image['height'] . ' px';
+                    $imageSize = round($image['size'] / 1024) . ' KiB';
+                    $imageType = strtoupper($image['ext']);
+                    $postImage .= $imageView->render();
+                }
             }
             $posts .= $postView->render();
         }

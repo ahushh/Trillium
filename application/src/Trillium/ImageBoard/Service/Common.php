@@ -126,14 +126,16 @@ class Common {
                             $images = $this->image->getList($redundantThreads);
                             if (!empty($images)) {
                                 $filePath = $this->app['imageboard.resources_path'] . $board['name'] . DS;
-                                foreach ($images as $image) {
-                                    $imageOrig = $filePath . $image['name'] . '.' . $image['ext'];
-                                    $imageThumb = $filePath . $image['name'] . '_small.' . $image['ext'];
-                                    if (is_file($imageOrig)) {
-                                        unlink($imageOrig);
-                                    }
-                                    if (is_file($imageThumb)) {
-                                        unlink($imageThumb);
+                                foreach ($images as $postImages) {
+                                    foreach ($postImages as $image) {
+                                        $imageOrig = $filePath . $image['name'] . '.' . $image['ext'];
+                                        $imageThumb = $filePath . $image['name'] . '_small.' . $image['ext'];
+                                        if (is_file($imageOrig)) {
+                                            unlink($imageOrig);
+                                        }
+                                        if (is_file($imageThumb)) {
+                                            unlink($imageThumb);
+                                        }
                                     }
                                 }
                             }
