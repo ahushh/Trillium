@@ -77,6 +77,8 @@ class Common {
                 } elseif (strlen($theme) > 200) {
                     $error['theme'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 200);
                 }
+            } else {
+                $sage = isset($data['sage']);
             }
             // Message
             $text = !empty($data['text']) ? trim($data['text']) : '';
@@ -100,8 +102,9 @@ class Common {
                 $request = $this->app['request'];
                 $ip = ip2long($request->getClientIp());
                 $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
-                $postID = $this->post->create($board['name'], $threadID, $text, $ip, $userAgent);
-                $this->thread->bump($threadID, $thread === null ? $postID : null);
+                $bump = isset($sage) && $sage === true ? false : true;
+                $postID = $this->post->create($board['name'], $threadID, $text, !$bump, $ip, $userAgent);
+                $this->thread->bump($threadID, $thread === null ? $postID : null, $bump);
                 if (!empty($images)) {
                     $this->uploadImages($images, $board['name'], $threadID, $postID, (int) $board['thumb_width']);
                 }

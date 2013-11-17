@@ -312,3 +312,8 @@ div.error {
     padding: 5px 0 0 5px;
     margin: 5px 0 0 0;
 }
+
+span.sage {
+    color: #ff0000;
+    text-shadow: 0 0 3px #000000;
+}

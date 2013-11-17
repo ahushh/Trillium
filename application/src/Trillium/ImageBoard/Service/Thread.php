@@ -44,13 +44,14 @@ class Thread {
     /**
      * Bump thread
      *
-     * @param int      $tid ID of the thread
-     * @param int|null $pid ID of the first post
+     * @param int      $tid  ID of the thread
+     * @param int|null $pid  ID of the first post
+     * @param boolean  $bump Update time?
      *
      * @return void
      */
-    public function bump($tid, $pid = null) {
-        $this->model->bump($tid, $pid);
+    public function bump($tid, $pid = null, $bump = true) {
+        $this->model->bump($tid, $pid, $bump);
     }
 
     /**

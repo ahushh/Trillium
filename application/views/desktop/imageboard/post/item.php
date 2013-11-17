@@ -1,5 +1,6 @@
 <div class="item">
     ID: <?= $this->id ?> (<?= $this->time ?>)
+    <?= $this->sage ? '<span class="sage">Sage</span>' : '' ?>
     <p>
         <?= $this->image ?>
         <?= $this->text ?>

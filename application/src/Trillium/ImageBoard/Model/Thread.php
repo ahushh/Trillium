@@ -35,22 +35,31 @@ class Thread extends Model {
     /**
      * Bump thread
      *
-     * @param int      $tid ID of the thread
-     * @param int|null $pid ID of the first post
+     * @param int      $tid  ID of the thread
+     * @param int|null $pid  ID of the first post
+     * @param boolean  $bump Update time?
      *
-     * @return void
      * @throws \InvalidArgumentException
+     * @return void
      */
-    public function bump($tid, $pid = null) {
+    public function bump($tid, $pid = null, $bump = true) {
         if (!is_int($tid)) {
             throw new \InvalidArgumentException('Unexpected type of tid. Integer expected.');
         }
-        $this->db->query(
-            "UPDATE `threads` SET "
-            . "`bump` = '" . time() . "' "
-            . ($pid !== null ? ",`op` = '" . (int) $pid . "' " : "")
-            . "WHERE `id` = '" . $tid . "'"
-        );
+        $statement = [];
+        if ($bump) {
+            $statement[] = "`bump` = '" . time() . "'";
+        }
+        if ($pid !== null) {
+            $statement[] = "`op` = '" . (int) $pid . "'";
+        }
+        if (!empty($statement)) {
+            $this->db->query(
+                "UPDATE `threads` SET "
+                . implode(",", $statement)
+                . "WHERE `id` = '" . $tid . "'"
+            );
+        }
     }
 
     /**

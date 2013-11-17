@@ -15,6 +15,11 @@
         <textarea id="text" name="text"><?= $this->escape($this->text) ?></textarea>
         <?= !empty($this->error['text']) ? '<span class="error">' . $this->error['text'] . '</span>' : '' ?>
     </p>
+    <?php
+    if (!$this->newThread) {
+        echo '<p><input type="checkbox" name="sage" value="1" id="sage"> <label for="sage">' . $this->__('Sage') . '</label></p>';
+    }
+    ?>
     <p>
         <label><?= $this->__('Images') ?>:</label><br />
         <?php

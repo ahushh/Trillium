@@ -35,7 +35,8 @@ class Thread extends Controller {
             ->bind('id', $postID)
             ->bind('text', $postText)
             ->bind('time', $postTime)
-            ->bind('image', $postImage);
+            ->bind('image', $postImage)
+            ->bind('sage', $postSage);
         $imageView = $this->app->view('imageboard/image/item')
             ->bind('original', $imageOriginal)
             ->bind('thumbnail', $imageThumbnail)
@@ -48,6 +49,7 @@ class Thread extends Controller {
             $postID = (int) $post['id'];
             $postText = nl2br($this->app->escape($post['text']));
             $postTime = date('d.m.Y / H:i:s', $post['time']);
+            $postSage = (int) $post['sage'];
             if (array_key_exists($postID, $imagesList)) {
                 $image = $imagesList[$postID];
                 $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
