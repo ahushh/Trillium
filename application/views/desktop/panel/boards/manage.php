@@ -44,6 +44,20 @@
         <?= !empty($this->error['thumb_width']) ? '<span class="error">' . $this->error['thumb_width'] . '</span>' : '' ?>
     </p>
     <p>
+        <label>
+            <input type="text" name="pages" maxlength="2" size="2" value="<?= (int) $this->data['pages'] ?>">
+            <?= $this->__('Number of the pages') ?>
+        </label>
+        <?= !empty($this->error['pages']) ? '<span class="error">' . $this->error['pages'] . '</span>' : '' ?>
+    </p>
+    <p>
+        <label>
+            <input type="text" name="threads_per_page" maxlength="2" size="2" value="<?= (int) $this->data['threads_per_page'] ?>">
+            <?= $this->__('Threads per page') ?>
+        </label>
+        <?= !empty($this->error['threads_per_page']) ? '<span class="error">' . $this->error['threads_per_page'] . '</span>' : '' ?>
+    </p>
+    <p>
         <input type="submit" name="save" value="<?= $this->__('Save') ?>">
     </p>
 </form>

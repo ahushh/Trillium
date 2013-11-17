@@ -55,11 +55,13 @@ class Boards extends Controller {
             }
         } else {
             $data = [
-                'name'            => '',
-                'summary'         => '',
-                'max_file_size'   => 0,
-                'images_per_post' => 0,
-                'thumb_width'     => 0,
+                'name'             => '',
+                'summary'          => '',
+                'max_file_size'    => 0,
+                'images_per_post'  => 0,
+                'thumb_width'      => 0,
+                'pages'            => 0,
+                'trheads_per_page' => 0,
             ];
         }
         if (!empty($_POST)) {
@@ -91,6 +93,14 @@ class Boards extends Controller {
             $newData['thumb_width'] = isset($_POST['thumb_width']) ? (int) $_POST['thumb_width'] : 0;
             if ($newData['thumb_width'] < 64 || $newData['thumb_width'] > 999) {
                 $error['thumb_width'] = sprintf($this->app->trans('The value must be between %s and %s'), 64, 999);
+            }
+            $newData['pages'] = isset($_POST['pages']) ? (int) $_POST['pages'] : 0;
+            if ($newData['pages'] < 1 || $newData['pages'] > 99) {
+                $error['pages'] = sprintf($this->app->trans('The value must be between %s and %s'), 1, 99);
+            }
+            $newData['threads_per_page'] = isset($_POST['threads_per_page']) ? (int) $_POST['threads_per_page'] : 0;
+            if ($newData['threads_per_page'] < 1 || $newData['threads_per_page'] > 99) {
+                $error['threads_per_page'] = sprintf($this->app->trans('The value must be between %s and %s'), 1, 99);
             }
             if (empty($error)) {
                 $newData['max_file_size'] = $newData['max_file_size'] * 1024;
