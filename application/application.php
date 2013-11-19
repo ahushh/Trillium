@@ -170,7 +170,7 @@ $app->after(function (Request $request, Response $response) use ($app) {
     if (strpos($response->headers->get('Content-Type'), 'text/html') !== false) {
         $response->setContent($app->view('layout', [
             'title' => $app['trillium.pageTitle'],
-            'boards' => $app->ibBoard()->getList(),
+            'boards' => $app->ibBoard()->getList(false),
             'content' => $response->getContent()
         ]));
     }

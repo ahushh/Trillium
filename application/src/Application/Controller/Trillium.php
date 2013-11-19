@@ -25,7 +25,7 @@ class Trillium extends Controller {
      * @return string
      */
     public function mainpage() {
-        $boards = $this->app->ibBoard()->getList();
+        $boards = $this->app->ibBoard()->getList(false);
         $contentPath = RESOURCES_DIR . 'common' . DS . 'mainpage.markdown';
         if (is_file($contentPath)) {
             /** @var $markdown \Knp\Bundle\MarkdownBundle\Parser\MarkdownParser */

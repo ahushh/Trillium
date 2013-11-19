@@ -59,6 +59,12 @@
         <?= !empty($this->error['threads_per_page']) ? '<span class="error">' . $this->error['threads_per_page'] . '</span>' : '' ?>
     </p>
     <p>
+        <label>
+            <input type="checkbox" name="hidden" value="1"<?= $this->data['hidden'] ? ' checked="checked"' : '' ?>>
+            <?= $this->__('Hidden') ?>
+        </label>
+    </p>
+    <p>
         <input type="submit" name="save" value="<?= $this->__('Save') ?>">
     </p>
 </form>

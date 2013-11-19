@@ -62,6 +62,7 @@ class Boards extends Controller {
                 'thumb_width'      => 0,
                 'pages'            => 0,
                 'threads_per_page' => 0,
+                'hidden'           => false,
             ];
         }
         if (!empty($_POST)) {
@@ -102,6 +103,7 @@ class Boards extends Controller {
             if ($newData['threads_per_page'] < 1 || $newData['threads_per_page'] > 99) {
                 $error['threads_per_page'] = sprintf($this->app->trans('The value must be between %s and %s'), 1, 99);
             }
+            $newData['hidden'] = (int) isset($_POST['hidden']);
             if (empty($error)) {
                 $newData['max_file_size'] = $newData['max_file_size'] * 1024;
                 $this->app->ibBoard()->save($newData);

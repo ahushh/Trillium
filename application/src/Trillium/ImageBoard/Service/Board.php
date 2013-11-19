@@ -50,13 +50,24 @@ class Board {
     /**
      * Get list of the boards
      *
+     * @param boolean $includeHidden Include hidden boards
+     *
      * @return array
      */
-    public function getList() {
+    public function getList($includeHidden = true) {
         if (!array_key_exists('list', $this->stored)) {
-            $this->stored['list'] = $this->model->getList();
+            $this->stored['list']['all'] = $this->model->getList();
         }
-        return $this->stored['list'];
+        if ($includeHidden === false && !isset($this->stored['list']['non_hidden'])) {
+            $this->stored['list']['non_hidden'] = [];
+            foreach ($this->stored['list']['all'] as $board) {
+                if ($board['hidden']) {
+                    continue;
+                }
+                $this->stored['list']['non_hidden'][] = $board;
+            }
+        }
+        return $includeHidden ? $this->stored['list']['all'] : $this->stored['list']['non_hidden'];
     }
 
     /**
