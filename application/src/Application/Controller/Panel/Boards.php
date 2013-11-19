@@ -61,7 +61,7 @@ class Boards extends Controller {
                 'images_per_post'  => 0,
                 'thumb_width'      => 0,
                 'pages'            => 0,
-                'trheads_per_page' => 0,
+                'threads_per_page' => 0,
             ];
         }
         if (!empty($_POST)) {
