@@ -85,8 +85,9 @@ class ControllerProvider implements ControllerProviderInterface {
             ->bind('panel.boards.remove');
 
         /** Imageboard */
-        $collection->match('board/{name}', 'controllers.imageboard.board:view')
-            ->bind('imageboard.board.view');
+        $collection->match('board/{name}/{page}', 'controllers.imageboard.board:view')
+            ->bind('imageboard.board.view')
+            ->value('page', 1);
         $collection->match('thread/{id}', 'controllers.imageboard.thread:view')
             ->bind('imageboard.thread.view')
             ->assert('id', '[\d]+');

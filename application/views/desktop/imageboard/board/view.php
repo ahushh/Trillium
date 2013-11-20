@@ -6,3 +6,4 @@
     : '<div class="listEmpty">' . $this->__('List is empty') . '</div>'
 )?>
 </div>
+<?= $this->pagination ?>
