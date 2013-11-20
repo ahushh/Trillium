@@ -11,13 +11,18 @@
         "symfony/security": "~2.3",
         "mobiledetect/mobiledetectlib": "2.*",
         "mheap/Silex-Assetic": "1.0.*",
-        "Kilte/silex-view": "dev-master",
-        "mheap/silex-markdown": "dev-master"
+        "kilte/silex-view": "dev-master",
+        "mheap/silex-markdown": "dev-master",
+        "kilte/silex-pagination": "dev-master"
     },
     "repositories":[
         {
             "type":"git",
             "url":"http://github.com/Kilte/silex-view"
+        },
+        {
+            "type": "git",
+            "url": "http://github.com/Kilte/SilexPagination"
         }
     ],
     "autoload": {

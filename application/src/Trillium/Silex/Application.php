@@ -8,6 +8,7 @@
 
 namespace Trillium\Silex;
 
+use Kilte\SilexPagination\PaginationTrait;
 use Kilte\View\ViewTrait;
 use Silex\Application\FormTrait;
 use Silex\Application\MonologTrait;
@@ -29,6 +30,7 @@ class Application extends \Silex\Application {
     use ImageBoard;
     use ImageTrait;
     use MonologTrait;
+    use PaginationTrait;
     use SecurityTrait;
     use TranslationTrait;
     use UrlGeneratorTrait;

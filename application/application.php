@@ -8,6 +8,7 @@
 
 use Assetic\AssetManager;
 use Igorw\Silex\ConfigServiceProvider;
+use Kilte\SilexPagination\PaginationServiceProvider;
 use Kilte\View\ViewServiceProvider;
 use Monolog\Logger;
 use Silex\Provider\MonologServiceProvider;
@@ -48,6 +49,7 @@ $app->register(new ModelServiceProvider);
 $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
 $app->register(new ImageServiceProvider);
+$app->register(new PaginationServiceProvider);
 
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [
