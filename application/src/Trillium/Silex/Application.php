@@ -17,6 +17,7 @@ use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Trillium\Image\ImageTrait;
 use Trillium\ImageBoard\ImageBoard;
+use Trillium\Markup\MarkupTrait;
 use Trillium\User\UserTrait;
 
 /**
@@ -29,6 +30,7 @@ class Application extends \Silex\Application {
     use FormTrait;
     use ImageBoard;
     use ImageTrait;
+    use MarkupTrait;
     use MonologTrait;
     use PaginationTrait;
     use SecurityTrait;

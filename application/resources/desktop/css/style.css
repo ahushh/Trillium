@@ -317,3 +317,19 @@ span.sage {
     color: #ff0000;
     text-shadow: 0 0 3px #000000;
 }
+span.spoiler {
+    background: #222222;
+    color: #222222;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.100), 0 0 2px #000000 inset;
+    display: inline-block;
+    padding: 0 4px 2px;
+}
+
+span.spoiler:hover {
+    color: #888888;
+}
+
+blockquote {
+    color: green;
+    font-style: italic;
+}

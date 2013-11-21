@@ -47,7 +47,7 @@ class Thread extends Controller {
         $imagesList = $this->app->ibImage()->getList($id);
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
-            $postText = nl2br($this->app->escape($post['text']));
+            $postText = $this->app->markup()->handle($post['text']);
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
             $postImage = '';

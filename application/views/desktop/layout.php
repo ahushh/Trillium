@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="<?= $this->assets('css/styles.css') ?>">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="<?= $this->assets('css/styles.css') ?>" />
         <script type="text/javascript" src="<?= $this->assets('js/scripts.js') ?>"></script>
         <title><?= $this->title ?></title>
         <script type="text/javascript">
