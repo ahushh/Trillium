@@ -9,5 +9,5 @@
         <textarea id="text" name="text"><?= $this->escape($this->text) ?></textarea>
         <?= !empty($this->error) ? '<span class="error">' . $this->error . '</span>' : '' ?>
     </p>
-    <p><input type="submit" name="save" value="<?= $this->__('Save') ?>"></p>
+    <p><input type="submit" name="save" value="<?= $this->__('Save') ?>" /></p>
 </form>
