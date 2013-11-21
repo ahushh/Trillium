@@ -19,6 +19,7 @@ USE `trillium_development`;
 CREATE TABLE IF NOT EXISTS `boards` (
   `name` varchar(10) NOT NULL,
   `summary` varchar(200) NOT NULL,
+  `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `max_file_size` int(10) unsigned NOT NULL,
   `images_per_post` int(2) unsigned NOT NULL,
   `thumb_width` int(3) unsigned NOT NULL,
@@ -27,9 +28,7 @@ CREATE TABLE IF NOT EXISTS `boards` (
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.boards: 0 rows
-/*!40000 ALTER TABLE `boards` DISABLE KEYS */;
-/*!40000 ALTER TABLE `boards` ENABLE KEYS */;
+-- Экспортируемые данные не выделены.
 
 
 -- Дамп структуры для таблица trillium_development.images
@@ -46,9 +45,7 @@ CREATE TABLE IF NOT EXISTS `images` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.images: 0 rows
-/*!40000 ALTER TABLE `images` DISABLE KEYS */;
-/*!40000 ALTER TABLE `images` ENABLE KEYS */;
+-- Экспортируемые данные не выделены.
 
 
 -- Дамп структуры для таблица trillium_development.posts
@@ -64,9 +61,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.posts: 0 rows
-/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
+-- Экспортируемые данные не выделены.
 
 
 -- Дамп структуры для таблица trillium_development.threads
@@ -80,9 +75,7 @@ CREATE TABLE IF NOT EXISTS `threads` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.threads: 0 rows
-/*!40000 ALTER TABLE `threads` DISABLE KEYS */;
-/*!40000 ALTER TABLE `threads` ENABLE KEYS */;
+-- Экспортируемые данные не выделены.
 
 
 -- Дамп структуры для таблица trillium_development.users
@@ -93,12 +86,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.users: 2 rows
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`username`, `roles`, `password`) VALUES
-	('admin', 'ROLE_ROOT', 'zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA=='),
-	('User', 'ROLE_USER', 'FxCHSNkTGKeznEVR5Vp0O7lxobtkZkMg3aw1wEeZHUcNYNLYRxAs2QPP3L4vxfXOxc7sssqL4asHwObeQM0cYA==');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+-- Экспортируемые данные не выделены.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
