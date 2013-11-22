@@ -13,7 +13,8 @@
         "mheap/Silex-Assetic": "1.0.*",
         "kilte/silex-view": "dev-master",
         "mheap/silex-markdown": "dev-master",
-        "kilte/silex-pagination": "dev-master"
+        "kilte/silex-pagination": "dev-master",
+        "kukulich/fshl": "2.*"
     },
     "repositories":[
         {

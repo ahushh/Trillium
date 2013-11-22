@@ -9,6 +9,8 @@
 namespace Trillium\Markup;
 
 
+use FSHL\Highlighter;
+use FSHL\Output\HtmlManual;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -29,7 +31,7 @@ class MarkupServiceProvider implements ServiceProviderInterface {
      */
     public function register(Application $app) {
         $app['markup'] = $app->share(function () use ($app) {
-            return new Markup;
+            return new Markup(new Highlighter(new HtmlManual()));
         });
     }
 

@@ -8,6 +8,8 @@
 
 namespace Trillium\Markup;
 
+use FSHL\Highlighter;
+
 /**
  * Markup Class
  *
@@ -28,6 +30,22 @@ class Markup {
     ];
 
     /**
+     * @var \FSHL\Highlighter Code highlighter
+     */
+    private $highlighter;
+
+    /**
+     * Create instance
+     *
+     * @param Highlighter $highlighter Code Highlighter
+     *
+     * @return Markup
+     */
+    public function __construct(Highlighter $highlighter) {
+        $this->highlighter = $highlighter;
+    }
+
+    /**
      * Handle string
      *
      * @param string $string String
@@ -38,17 +56,20 @@ class Markup {
         // Prepare
         $string = htmlspecialchars($string);
         $string = preg_replace('~\r\n?~', "\n", $string);
-        $string .= "\n\n";
         $string = preg_replace('~\t~', str_repeat(' ', 4), $string);
         $string = preg_replace('~^[\s]+$~m', '', $string);
 
         // Blocks
         $string = preg_replace_callback(
-            '~^\`([a-z]{0,})\n(.+?)\n\`$~um',
+            '~^\`([a-z]{0,})\n(.+?)\n\`$~ums',
             function ($matches) {
-                // TODO: highlight code
+                $lexer = '\FSHL\Lexer\\' . ucwords($matches[1]);
+                if (class_exists($lexer)) {
+                    $matches[2] = htmlspecialchars_decode($matches[2]);
+                    $matches[2] = $this->highlighter->highlight($matches[2], new $lexer);
+                }
                 $matches[2] = $this->transformReserved($matches[2]);
-                return $matches[1] . 'code:<pre>' . $matches[2] . '</pre>';
+                return '<pre>' . $matches[2] . '</pre>';
             },
             $string
         );
