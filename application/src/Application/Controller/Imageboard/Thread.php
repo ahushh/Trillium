@@ -45,6 +45,14 @@ class Thread extends Controller {
             ->bind('type', $imageType);
         $postsList = $this->app->ibPost()->getList($id);
         $imagesList = $this->app->ibImage()->getList($id);
+
+        $this->app->markup()->setPosts(array_map(
+            function ($post) {
+                return $post['id'];
+            },
+            $postsList
+        ));
+
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
             $postText = $this->app->markup()->handle($post['text']);

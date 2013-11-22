@@ -1,3 +1,8 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        answers.build();
+    });
+</script>
 <div class="title">
     <a href="<?= $this->url('imageboard.board.view', ['name' => $this->board]) ?>">/<?= strtoupper($this->board) ?>/</a>
     &raquo;

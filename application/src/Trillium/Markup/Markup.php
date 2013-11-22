@@ -35,6 +35,11 @@ class Markup {
     private $highlighter;
 
     /**
+     * @var array List of the posts IDs
+     */
+    private $posts = [];
+
+    /**
      * Create instance
      *
      * @param Highlighter $highlighter Code Highlighter
@@ -43,6 +48,17 @@ class Markup {
      */
     public function __construct(Highlighter $highlighter) {
         $this->highlighter = $highlighter;
+    }
+
+    /**
+     * Set list of posts identifiers
+     *
+     * @param array $posts Posts IDs
+     *
+     * @return void
+     */
+    public function setPosts(array $posts) {
+        $this->posts = array_map('intval', $posts);
     }
 
     /**
@@ -58,6 +74,21 @@ class Markup {
         $string = preg_replace('~\r\n?~', "\n", $string);
         $string = preg_replace('~\t~', str_repeat(' ', 4), $string);
         $string = preg_replace('~^[\s]+$~m', '', $string);
+
+        // Answers
+        $string = preg_replace_callback(
+            '~&gt;&gt;([\d]+)~u',
+            function ($matches) {
+                if (in_array($matches[1], $this->posts)) {
+                    return '<a href="#' . $matches[1] . '" class="answer" onclick="previewPost.show(event, \'' . $matches[1] . '\')">'
+                        . $matches[0]
+                        . '</a>';
+                } else {
+                    return $matches[0];
+                }
+            },
+            $string
+        );
 
         // Blocks
         $string = preg_replace_callback(
@@ -97,7 +128,7 @@ class Markup {
             );
         }
 
-        $string = preg_replace('~\[(.+?)\]\((https?\:\/\/.+?)\)~us', '<a href="$2" target="_blank">$1</a>', $string);
+        $string = preg_replace('~\[(.+?)\]\((https?\:\/\/.+?)\)~us', '<a rel="noreferrer" href="$2" target="_blank">$1</a>', $string);
 
         return nl2br($string);
     }
