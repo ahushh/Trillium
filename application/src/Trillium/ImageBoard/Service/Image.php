@@ -43,14 +43,16 @@ class Image {
     }
 
     /**
-     * Returns list of the images for the thread
+     * Returns list of the images
      *
-     * @param array|int $thread ID of the thread
+     * @param array|int $id ID
+     *
+     * @param string    $by Key
      *
      * @return array
      */
-    public function getList($thread) {
-        return $this->model->getList($thread);
+    public function getList($id, $by = 'thread') {
+        return $this->model->getList($id, $by);
     }
 
     /**

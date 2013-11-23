@@ -43,25 +43,30 @@ class Image extends Model {
     }
 
     /**
-     * Returns list of the images for the thread
+     * Returns list of the images
      *
-     * @param array|int $thread ID of the thread
+     * @param array|int $id ID
+     * @param string    $by Key
      *
-     * @return array
+     * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
+     * @return array
      */
-    public function getList($thread) {
-        if (!is_int($thread) && !is_array($thread)) {
+    public function getList($id, $by = 'thread') {
+        if (!is_int($id) && !is_array($id)) {
             throw new \InvalidArgumentException('Unexpected type of the $thread. Integer or array expected');
         }
-        if (is_array($thread)) {
-            $thread = array_map('intval', $thread);
-            $thread = "IN('" . implode("', '", $thread) . "')";
+        if (!in_array($by, ['board', 'thread', 'post'])) {
+            throw new \UnexpectedValueException('Unexpected value of the argument $by. board, thread or post expected');
+        }
+        if (is_array($id)) {
+            $id = array_map('intval', $id);
+            $id = "IN('" . implode("', '", $id) . "')";
         } else {
-            $thread = " = '" . $thread . "'";
+            $id = " = '" . $id . "'";
         }
         $list = [];
-        $result = $this->db->query("SELECT * FROM `images` WHERE `thread` " . $thread);
+        $result = $this->db->query("SELECT * FROM `images` WHERE `" . $by . "` " . $id);
         while (($image = $result->fetch_assoc())) {
             $list[(int) $image['post']][] = $image;
         }

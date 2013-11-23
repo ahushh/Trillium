@@ -73,4 +73,15 @@ class Post {
         $this->model->remove($id, $by);
     }
 
+    /**
+     * Find post by ID
+     *
+     * @param int $id ID of the post
+     *
+     * @return array|null
+     */
+    public function get($id) {
+        return $this->model->get($id);
+    }
+
 }

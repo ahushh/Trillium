@@ -101,4 +101,22 @@ class Post extends Model {
         $this->db->query("DELETE FROM `posts` WHERE `" . $by . "` " . $id);
     }
 
+    /**
+     * Find post by ID
+     * Returns null if post is not exists
+     *
+     * @param int $id ID
+     * @return array|null
+     * @throws \InvalidArgumentException
+     */
+    public function get($id) {
+        if (!is_int($id)) {
+            throw new \InvalidArgumentException('Unexpected type of the $id, integer expected');
+        }
+        $result = $this->db->query("SELECT * FROM `posts` WHERE `id` = '" . $id . "'");
+        $data = $result->fetch_assoc();
+        $result->free();
+        return is_array($data) ? $data : null;
+    }
+
 }
