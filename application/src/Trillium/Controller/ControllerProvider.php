@@ -45,6 +45,7 @@ class ControllerProvider implements ControllerProviderInterface {
             'controllers.panel.boards'      => 'Panel\Boards',
             'controllers.imageboard.board'  => 'Imageboard\Board',
             'controllers.imageboard.thread' => 'Imageboard\Thread',
+            'controllers.imageboard.ajax'   => 'Imageboard\Ajax',
         ];
         foreach ($controllers as $key => $className) {
             $app[$key] = $app->share(function () use ($controllerFactory, $className) {
@@ -90,6 +91,9 @@ class ControllerProvider implements ControllerProviderInterface {
             ->value('page', 1);
         $collection->match('thread/{id}', 'controllers.imageboard.thread:view')
             ->bind('imageboard.thread.view')
+            ->assert('id', '[\d]+');
+        $collection->get('ajax/post/{id}', 'controllers.imageboard.ajax:post')
+            ->bind('imageboard.ajax.post')
             ->assert('id', '[\d]+');
 
         return $collection;

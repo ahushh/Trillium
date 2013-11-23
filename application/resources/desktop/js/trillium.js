@@ -34,8 +34,7 @@ var answers = {
     store: function () {
         $('.answer').each(function () {
             var self = $(this);
-            var currentID = self.parent().parent().attr('id');
-            currentID = currentID.replace(/post_/, '');
+            var currentID = self.attr('rel');
             var refID = self.attr('href').replace('#', 'post_');
             if (!answers.stored[refID]) {
                 answers.stored[refID] = [];
@@ -57,5 +56,53 @@ var answers = {
             });
             answersContainer.appendTo(post);
         });
+    }
+};
+
+// Preview OP Post
+var previewThread = {
+    stored: [],
+    hideThreads: function () {
+        $.each(previewThread.stored, function (index, item) {if (item) {item.hide();}});
+    },
+    run: function (id) {
+        var wait = $('#wait');
+        var previewContainer = $('#previewContainer');
+        previewContainer.hide(400, function () {
+            $('#messageForm').hide();
+            wait.toggle();
+        });
+        if (!previewThread.stored[id]) {
+            $.ajax('http://' + document.location.hostname + '/ajax/post/' + id, {async: false, dataType: "json"})
+                .done(function (data) {
+                    previewThread.stored[id] = previewThread.createPost(data.post, data.images).appendTo(previewContainer);
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR, textStatus, errorThrown);
+                });
+        }
+        previewThread.hideThreads();
+        wait.toggle(400, function () {
+            previewThread.stored[id].show();
+            previewContainer.show();
+        });
+    },
+    createPost: function (post, images) {
+        var postContainer = $('<div></div>').attr('class', 'item')
+            .html('ID: ' + post.id + ' (' + post.time + ')');
+        if (images.length) {
+            var postImages = $('<div></div>');
+            $.each(images, function (index, image) {
+                var imageContainer = $('<div></div>');
+                var imageLink = $('<a></a>').attr({href: image.original});
+                $('<img />').attr({src: image.thumbnail}).appendTo(imageLink);
+                imageLink.appendTo(imageContainer);
+                $('<div></div>')
+                    .text(image.resolution + ' / ' + image.size + ' / ' + image.type)
+                    .appendTo(imageContainer);
+                imageContainer.appendTo(postImages);
+            });
+            postImages.appendTo(postContainer);
+        }
+        return postContainer.html(postContainer.html() + '<p>' + post.text + '</p>');
     }
 };

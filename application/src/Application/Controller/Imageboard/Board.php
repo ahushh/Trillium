@@ -32,37 +32,40 @@ class Board extends Controller {
         }
 
         // List of the threads
-        $threads = '';
+        $threads      = '';
         $totalThreads = $this->app->ibThread()->total($name);
         if ($totalThreads > 0) {
-            $pagination = $this->app->pagination($totalThreads, $page, $this->app->url('imageboard.board.view', ['name' => $name]) . '/', 5);
+            $pagination  = $this->app->pagination($totalThreads, $page, $this->app->url('imageboard.board.view', ['name' => $name]) . '/', 5);
             $threadsList = $this->app->ibThread()->getList($name, $pagination->offset(), $pagination->limit());
-            $threadView = $this->app->view('imageboard/thread/item')
+            $threadView  = $this->app->view('imageboard/thread/item')
                 ->bind('id', $threadID)
                 ->bind('theme', $threadTheme)
                 ->bind('created', $threadCreated)
                 ->bind('text', $threadText)
                 ->bind('postID', $threadOP);
             foreach ($threadsList as $thread) {
-                $threadID = (int) $thread['id'];
-                $threadTheme = $this->app->escape($thread['theme']);
+                $threadID      = (int) $thread['id'];
+                $threadTheme   = $this->app->escape($thread['theme']);
                 $threadCreated = date('d.m.Y / H:i:s', $thread['created']);
-                $threadText = nl2br($this->app->escape($thread['text']));
-                $threadOP = (int) $thread['op'];
-                $threads .= $threadView->render();
+                $threadOP      = (int) $thread['op'];
+                $threadText    = $this->app->markup()->handle(mb_substr($thread['text'], 0, 100))
+                               . (mb_strlen($thread['text']) > 100 ? '&hellip;' : '');
+                $threads       .= $threadView->render();
             }
         }
 
-        $board['name'] = $this->app->escape($board['name']);
+        $board['name']    = $this->app->escape($board['name']);
         $board['summary'] = $this->app->escape($board['summary']);
-        $title = '/' . $board['name'] . '/' . (!empty($board['summary']) ? ' - ' . $board['summary'] : '');
+        $title            = '/' . $board['name'] . '/' . (!empty($board['summary']) ? ' - ' . $board['summary'] : '');
         $this->app['trillium.pageTitle'] .= ': ' . $title;
         return $this->app->view('imageboard/board/view', [
-            'name' => $board['name'],
-            'title' => $title,
+            'name'        => $board['name'],
+            'title'       => $title,
             'messageForm' => $this->app->ibCommon()->sendMessage($board, array_merge($_POST, $_FILES)),
-            'threads' => $threads,
-            'pagination' => isset($pagination) ? $pagination->view() : '',
+            'threads'     => $threads,
+            'pagination'  => isset($pagination) ? $pagination->view() : '',
+            'waitImage'   => 'http://' . $_SERVER['SERVER_NAME'] . '/assets/desktop/images/wait.gif',
+            'writeImage'  => 'http://' . $_SERVER['SERVER_NAME'] . '/assets/desktop/images/write.png',
         ]);
     }
 

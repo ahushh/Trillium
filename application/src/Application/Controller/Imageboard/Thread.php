@@ -55,7 +55,7 @@ class Thread extends Controller {
 
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
-            $postText = $this->app->markup()->handle($post['text']);
+            $postText = $this->app->markup()->handle($post['text'], $postID);
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
             $postImage = '';
