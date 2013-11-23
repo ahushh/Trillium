@@ -64,11 +64,12 @@ class Markup {
     /**
      * Handle string
      *
-     * @param string $string String
+     * @param string   $string String
+     * @param int|null $pid    ID of the current post
      *
      * @return string
      */
-    public function handle($string) {
+    public function handle($string, $pid = null) {
         // Prepare
         $string = htmlspecialchars($string);
         $string = preg_replace('~\r\n?~', "\n", $string);
@@ -78,9 +79,14 @@ class Markup {
         // Answers
         $string = preg_replace_callback(
             '~&gt;&gt;([\d]+)~u',
-            function ($matches) {
+            function ($matches) use($pid) {
                 if (in_array($matches[1], $this->posts)) {
-                    return '<a href="#' . $matches[1] . '" class="answer" onclick="previewPost.show(event, \'' . $matches[1] . '\')">'
+                    return '<a '
+                            . ($pid === null ? : 'rel="' . $pid . '"')
+                            . ' href="#' . $matches[1] . '"'
+                            . ' class="answer"'
+                            . ' onclick="previewPost.show(event, \'' . $matches[1] . '\')"'
+                        . '>'
                         . $matches[0]
                         . '</a>';
                 } else {
