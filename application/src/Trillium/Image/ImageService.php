@@ -145,6 +145,12 @@ class ImageService {
      */
     public function resize($width, $height) {
         $resized = imagecreatetruecolor($width, $height);
+        if ($this->type === IMAGETYPE_GIF) {
+            imagecolortransparent($resized, imagecolorallocate($resized, 0, 0, 0));
+        } elseif ($this->type === IMAGETYPE_PNG) {
+            imagealphablending($resized, false);
+            imagesavealpha($resized, true);
+        }
         imagecopyresampled($resized, $this->resource, 0, 0, 0, 0, $width, $height, $this->width(), $this->height());
         return $resized;
     }
@@ -176,7 +182,7 @@ class ImageService {
                 break;
             case IMAGETYPE_PNG:
                 $path = $path . '.png';
-                imagepng($resource, $path, $compression);
+                imagepng($resource, $path);
                 break;
             default:
                 throw new \RuntimeException('Unsupported type of the image');
