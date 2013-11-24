@@ -70,7 +70,7 @@ class Thread extends Controller {
                 foreach ($imagesList[$postID] as $image) {
                     $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
                     $imageOriginal = $imageBaseURL . '.' . $image['ext'];
-                    $imageThumbnail = $imageBaseURL . '_small.jpg';
+                    $imageThumbnail = $imageBaseURL . '_small.' .$image['ext'];
                     $imageResolution = $image['width'] . 'x' . $image['height'] . ' px';
                     $imageSize = round($image['size'] / 1024) . ' KiB';
                     $imageType = strtoupper($image['ext']);
