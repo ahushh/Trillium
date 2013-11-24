@@ -41,7 +41,7 @@ class Ajax extends Controller {
             foreach ($imagesList[$id] as $image) {
                 $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $image['board'] . '/' . $image['name'];
                 $images[$i]['original'] = $imageBaseURL . '.' . $image['ext'];
-                $images[$i]['thumbnail'] = $imageBaseURL . '_small.jpg';
+                $images[$i]['thumbnail'] = $imageBaseURL . '_small.' . $image['ext'];
                 $images[$i]['resolution'] = $image['width'] . 'x' . $image['height'] . ' px';
                 $images[$i]['size'] = round($image['size'] / 1024) . ' KiB';
                 $images[$i]['type'] = strtoupper($image['ext']);
