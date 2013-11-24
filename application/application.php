@@ -56,24 +56,23 @@ $app->register(new MarkupServiceProvider);
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [
         'panel' => [
-            'pattern' => '^/panel',
+            'pattern' => '^/',
             'form'    => [
                 'login_path' => '/login',
                 'check_path' => '/panel/login_check',
             ],
-            'logout' => ['logout_path' => '/panel/logout'],
+            'logout'  => ['logout_path' => '/panel/logout'],
             'users'   => $app->share(function ($app) {
                 return $app['user.manager'];
             }),
+            'anonymous' => true,
         ],
     ],
     'security.role_hierarchy' => [
         'ROLE_ROOT' => $app['user.roles']
     ],
     'security.access_rules' => [
-        ['^/panel/mainpage', 'ROLE_ADMIN'],
-        ['^/panel/users', 'ROLE_ADMIN'],
-        ['^/panel/boards', 'ROLE_ADMIN'],
+        ['^/panel', 'ROLE_ADMIN'],
     ],
 ]);
 
