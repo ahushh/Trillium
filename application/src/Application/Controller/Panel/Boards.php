@@ -57,11 +57,11 @@ class Boards extends Controller {
             $data = [
                 'name'             => '',
                 'summary'          => '',
-                'max_file_size'    => 0,
-                'images_per_post'  => 0,
-                'thumb_width'      => 0,
-                'pages'            => 0,
-                'threads_per_page' => 0,
+                'max_file_size'    => 1024,
+                'images_per_post'  => 1,
+                'thumb_width'      => 64,
+                'pages'            => 1,
+                'threads_per_page' => 1,
                 'hidden'           => false,
             ];
         }
@@ -129,8 +129,22 @@ class Boards extends Controller {
      * @return void
      */
     public function remove($name) {
+        // Remove board
         $this->app->ibBoard()->remove($name);
-        rmdir($this->app['imageboard.resources_path'] . $name);
+        // Remove threads
+        $this->app->ibThread()->remove($name, 'board');
+        // Remove posts
+        $this->app->ibPost()->remove($name, 'board');
+        // Remove images
+        $this->app->ibImage()->remove($name, 'board');
+        // Remove files
+        $directory = $this->app['imageboard.resources_path'] . $name;
+        $entries = array_diff(scandir($directory), ['.', '..']);
+        array_map(function ($entry) use ($directory) {
+            unlink($directory . DS . $entry);
+        }, $entries);
+        rmdir($directory);
+        // Redirect to the list of the boards
         $this->app->redirect($this->app->url('panel.boards'))->send();
     }
 
