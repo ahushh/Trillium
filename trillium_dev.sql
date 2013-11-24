@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS `boards` (
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы trillium_development.boards: 0 rows
+/*!40000 ALTER TABLE `boards` DISABLE KEYS */;
+/*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
 -- Дамп структуры для таблица trillium_development.images
@@ -45,7 +47,9 @@ CREATE TABLE IF NOT EXISTS `images` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы trillium_development.images: 0 rows
+/*!40000 ALTER TABLE `images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `images` ENABLE KEYS */;
 
 
 -- Дамп структуры для таблица trillium_development.posts
@@ -55,13 +59,16 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `board` varchar(10) NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `text` text NOT NULL,
+  `video` varchar(255) NOT NULL DEFAULT '',
   `sage` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ip` int(10) NOT NULL,
   `user_agent` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы trillium_development.posts: 0 rows
+/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 
 
 -- Дамп структуры для таблица trillium_development.threads
@@ -75,7 +82,9 @@ CREATE TABLE IF NOT EXISTS `threads` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы trillium_development.threads: 0 rows
+/*!40000 ALTER TABLE `threads` DISABLE KEYS */;
+/*!40000 ALTER TABLE `threads` ENABLE KEYS */;
 
 
 -- Дамп структуры для таблица trillium_development.users
@@ -86,7 +95,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы trillium_development.users: 2 rows
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` (`username`, `roles`, `password`) VALUES
+	('admin', 'ROLE_ROOT', 'zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA=='),
+	('User', 'ROLE_USER', 'FxCHSNkTGKeznEVR5Vp0O7lxobtkZkMg3aw1wEeZHUcNYNLYRxAs2QPP3L4vxfXOxc7sssqL4asHwObeQM0cYA==');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
