@@ -24,6 +24,7 @@ class Post extends Model {
      * @param string  $board     Name of the board
      * @param int     $thread    ID of the thread
      * @param string  $text      Text of the post
+     * @param string  $video     Video URL
      * @param boolean $sage      Sage
      * @param int     $ip        IP Address of the author
      * @param string  $userAgent User-Agent of the author
@@ -31,7 +32,7 @@ class Post extends Model {
      * @throws \InvalidArgumentException
      * @return int
      */
-    public function create($board, $thread, $text, $sage, $ip, $userAgent) {
+    public function create($board, $thread, $text, $video, $sage, $ip, $userAgent) {
         if (!is_int($thread)) {
             throw new \InvalidArgumentException('Unexpected type of the thread. Integer expected');
         }
@@ -40,6 +41,7 @@ class Post extends Model {
         }
         $board = $this->db->real_escape_string($board);
         $text = $this->db->real_escape_string($text);
+        $video = $this->db->real_escape_string($video);
         $userAgent = $this->db->real_escape_string($userAgent);
         $sage = $sage ? 1 : 0;
         $this->db->query(
@@ -47,6 +49,7 @@ class Post extends Model {
             . "`board` = '" . $board . "',"
             . "`thread` = '" . $thread . "',"
             . "`text` = '" . $text . "',"
+            . "`video` = '" . $video . "',"
             . "`sage` = '" . $sage . "',"
             . "`ip` = '" . $ip . "',"
             . "`user_agent` = '" . $userAgent . "',"

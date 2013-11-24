@@ -50,3 +50,28 @@
     margin: 0 10px 0 0;
     cursor: pointer;
 }
+
+.playVideo {
+    background: #111111;
+    box-shadow: 0 0 2px #000000;
+    display: table;
+    padding: 0;
+    margin: 2px 0;
+}
+
+.playVideo img {
+    margin: 0;
+    padding: 0;
+}
+
+.videoTitle {
+    color: #dadbb1;
+    text-align: center;
+    font-variant: small-caps;
+    text-shadow: 0 0 3px #000000;
+}
+
+.playVideo iframe {
+    min-height: 300px;
+    min-width: 400px;
+}

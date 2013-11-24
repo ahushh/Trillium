@@ -30,6 +30,12 @@
         <?= !empty($this->error['images']) ? '<span class="error">' . $this->error['images'] . '</span>' : '' ?>
     </p>
     <p>
+        <label><?= $this->__('Video') ?> (Youtube):<br />
+            <input type="text" name="video" value="<?= $this->escape($this->video) ?>" />
+            <?= !empty($this->error['video']) ? '<span class="error">' . $this->error['video'] . '</span>' : '' ?>
+        </label>
+    </p>
+    <p>
         <input type="submit" name="send" value="<?= $this->__('Send') ?>" />
     </p>
 </form>

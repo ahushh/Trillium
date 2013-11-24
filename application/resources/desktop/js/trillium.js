@@ -103,6 +103,41 @@ var previewThread = {
             });
             postImages.appendTo(postContainer);
         }
+        if (post.video) {
+            var videoContainer = $('<div></div>').attr({'class': 'playVideo', 'onclick': 'showVideo('+ post.id + ')'});
+            $('<div></div>')
+                .attr({'class': 'videoTitle', id: 'videoTitle' + post.id})
+                .text('Youtube')
+                .appendTo(videoContainer);
+            $('<input />')
+                .attr({id: 'videoSRC' + post.id, type: 'hidden', value: 'http://' + post.video})
+                .appendTo(videoContainer);
+            $('<img />')
+                .attr({
+                    src: 'http://' + post.video.replace(/youtube\.com\/embed/, 'img.youtube.com/vi') + '/1.jpg',
+                    id: 'videoIMG' + post.id
+                })
+                .appendTo(videoContainer);
+            videoContainer.appendTo(postContainer);
+        }
         return postContainer.html(postContainer.html() + '<p>' + post.text + '</p>');
     }
 };
+
+function showVideo(id) {
+    var image = $('#videoIMG' + id);
+    var src = $('#videoSRC' + id);
+    if (image.length && src.length) {
+        $('<iframe></iframe>')
+            .attr({
+                src: src.attr('value'),
+                frameborder: 0,
+                allowfullscreen: "allowfullscreen",
+                "class": "postVideo"
+            })
+            .appendTo(image.parent());
+        image.parent().attr('onclick', '');
+        image.hide();
+        $('#videoTitle' + id).hide();
+    }
+}

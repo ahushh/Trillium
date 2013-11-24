@@ -40,14 +40,15 @@ class Post {
      * @param string  $board     Name of the board
      * @param int     $thread    ID of the thread
      * @param string  $text      Text of the post
+     * @param string  $video     Video URL
      * @param boolean $sage      Sage
      * @param int     $ip        IP Address of the author
      * @param string  $userAgent User-Agent of the author
      *
      * @return int
      */
-    public function create($board, $thread, $text, $sage, $ip, $userAgent) {
-        return $this->model->create($board, $thread, $text, $sage, $ip, $userAgent);
+    public function create($board, $thread, $text, $video, $sage, $ip, $userAgent) {
+        return $this->model->create($board, $thread, $text, $video, $sage, $ip, $userAgent);
     }
 
     /**

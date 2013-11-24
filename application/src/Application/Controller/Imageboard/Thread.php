@@ -36,7 +36,8 @@ class Thread extends Controller {
             ->bind('text', $postText)
             ->bind('time', $postTime)
             ->bind('image', $postImage)
-            ->bind('sage', $postSage);
+            ->bind('sage', $postSage)
+            ->bind('video', $postVideo);
         $imageView = $this->app->view('imageboard/image/item')
             ->bind('original', $imageOriginal)
             ->bind('thumbnail', $imageThumbnail)
@@ -58,6 +59,12 @@ class Thread extends Controller {
             $postText = $this->app->markup()->handle($post['text'], $postID);
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
+            $postVideo = !empty($post['video'])
+                ? [
+                    'source' => 'http://' . $post['video'],
+                    'image' => 'http://' . str_replace('youtube.com/embed/', 'img.youtube.com/vi/', $post['video']) . '/1.jpg',
+                ]
+                : null;
             $postImage = '';
             if (array_key_exists($postID, $imagesList)) {
                 foreach ($imagesList[$postID] as $image) {

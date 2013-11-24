@@ -94,6 +94,21 @@ class Common {
             } elseif (strlen($text) > 8000) {
                 $error['text'] = sprintf($this->app->trans('The length of the value must not exceed %s characters'), 8000);
             }
+            // Video
+            $video = !empty($data['video']) ? trim($data['video']) : '';
+            if (!empty($video)) {
+                $videoSubject = strtr($video, [
+                    'http://www.youtube.com' => 'youtube-com',
+                    'http://m.youtube.com'   => 'youtube-com',
+                    'http://youtu.be/'       => 'youtube-com/watch?v=',
+                ]);
+                preg_match('!youtube\-com\/watch\?v=([a-z\d\-_]+)([^\s|\[]+)?!si', $videoSubject, $videoMatches);
+                if (isset($videoMatches[1])) {
+                    $videoSave = 'youtube.com/embed/' . $videoMatches[1];
+                } else {
+                    $error['video'] = $this->app->trans('Wrong video URL given');
+                }
+            }
             // Check images
             if (!empty($data['images']) && is_array($data['images'])) {
                 $check = $this->checkImages($data['images'], $board['images_per_post'], $board['max_file_size']);
@@ -110,7 +125,7 @@ class Common {
                 $ip = ip2long($request->getClientIp());
                 $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
                 $bump = isset($sage) && $sage === true ? false : true;
-                $postID = $this->post->create($board['name'], $threadID, $text, !$bump, $ip, $userAgent);
+                $postID = $this->post->create($board['name'], $threadID, $text, isset($videoSave) ? $videoSave : '', !$bump, $ip, $userAgent);
                 $this->thread->bump($threadID, $thread === null ? $postID : null, $bump);
                 if (!empty($images)) {
                     $this->uploadImages($images, $board['name'], $threadID, $postID, (int) $board['thumb_width']);
