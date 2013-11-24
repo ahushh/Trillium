@@ -43,6 +43,7 @@ class ControllerProvider implements ControllerProviderInterface {
             'controllers.panel'             => 'Panel',
             'controllers.panel.users'       => 'Panel\Users',
             'controllers.panel.boards'      => 'Panel\Boards',
+            'controllers.panel.threads'     => 'Panel\Threads',
             'controllers.imageboard.board'  => 'Imageboard\Board',
             'controllers.imageboard.thread' => 'Imageboard\Thread',
             'controllers.imageboard.ajax'   => 'Imageboard\Ajax',
@@ -84,6 +85,9 @@ class ControllerProvider implements ControllerProviderInterface {
             ->value('name', '');
         $collection->get('panel/boards/remove/{name}', 'controllers.panel.boards:remove')
             ->bind('panel.boards.remove');
+        /** Threads */
+        $collection->get('panel/threads/remove/{id}', 'controllers.panel.threads:remove')
+            ->bind('panel.threads.remove');
 
         /** Imageboard */
         $collection->match('board/{name}/{page}', 'controllers.imageboard.board:view')

@@ -83,9 +83,10 @@ class Thread extends Controller {
         $boardName = $this->app->escape($thread['board']);
         $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
         return $this->app->view('imageboard/thread/view', [
-            'board' => $boardName,
-            'theme' => $theme,
-            'posts' => $posts,
+            'board'  => $boardName,
+            'id'     => (int) $thread['id'],
+            'theme'  => $theme,
+            'posts'  => $posts,
             'answer' => $this->app->ibCommon()->sendMessage($this->app->ibBoard()->get($thread['board']), array_merge($_POST, $_FILES), $thread),
         ]);
     }
