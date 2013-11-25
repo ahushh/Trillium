@@ -44,6 +44,8 @@ class ControllerProvider implements ControllerProviderInterface {
             'controllers.panel.users'       => 'Panel\Users',
             'controllers.panel.boards'      => 'Panel\Boards',
             'controllers.panel.threads'     => 'Panel\Threads',
+            'controllers.panel.posts'       => 'Panel\Posts',
+            'controllers.panel.images'      => 'Panel\Images',
             'controllers.imageboard.board'  => 'Imageboard\Board',
             'controllers.imageboard.thread' => 'Imageboard\Thread',
             'controllers.imageboard.ajax'   => 'Imageboard\Ajax',
@@ -88,6 +90,12 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Threads */
         $collection->get('panel/threads/remove/{id}', 'controllers.panel.threads:remove')
             ->bind('panel.threads.remove');
+        /** Posts */
+        $collection->get('panel/posts/{id}', 'controllers.panel.posts:remove')
+            ->bind('panel.posts.remove');
+        /** Images */
+        $collection->get('panel/images/{id}', 'controllers.panel.images:remove')
+            ->bind('panel.images.remove');
 
         /** Imageboard */
         $collection->match('board/{name}/{page}', 'controllers.imageboard.board:view')

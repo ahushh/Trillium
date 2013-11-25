@@ -67,4 +67,15 @@ class Image {
         $this->model->remove($id, $by);
     }
 
+    /**
+     * Get data of the image
+     *
+     * @param int $id ID of the image
+     *
+     * @return array|null
+     */
+    public function get($id) {
+        return $this->model->get($id);
+    }
+
 } 

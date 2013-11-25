@@ -1,6 +1,10 @@
 <div class="item" id="post_<?= $this->id ?>">
     ID: <?= $this->id ?> (<?= $this->time ?>)
     <?= $this->sage ? '<span class="sage">Sage</span>' : '' ?>
+    <?=($this->isGranted('ROLE_ADMIN')
+        ? '<a href="' . $this->url('panel.posts.remove', ['id' => $this->id]) . '">' . $this->__('Remove') . '</a>'
+        : ''
+    )?>
     <p>
         <?= $this->image ?>
         <?=(is_array($this->video)

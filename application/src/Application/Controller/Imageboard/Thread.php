@@ -43,7 +43,8 @@ class Thread extends Controller {
             ->bind('thumbnail', $imageThumbnail)
             ->bind('resolution', $imageResolution)
             ->bind('size', $imageSize)
-            ->bind('type', $imageType);
+            ->bind('type', $imageType)
+            ->bind('id', $imageID);
         $postsList = $this->app->ibPost()->getList($id);
         $imagesList = $this->app->ibImage()->getList($id);
 
@@ -68,6 +69,7 @@ class Thread extends Controller {
             $postImage = '';
             if (array_key_exists($postID, $imagesList)) {
                 foreach ($imagesList[$postID] as $image) {
+                    $imageID = (int) $image['id'];
                     $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
                     $imageOriginal = $imageBaseURL . '.' . $image['ext'];
                     $imageThumbnail = $imageBaseURL . '_small.' .$image['ext'];

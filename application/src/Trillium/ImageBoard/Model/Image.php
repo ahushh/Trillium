@@ -99,4 +99,23 @@ class Image extends Model {
         $this->db->query("DELETE FROM `images` WHERE `" . $by . "` " . $id);
     }
 
+    /**
+     * Get data of the image
+     * Returns null, if image is not exists
+     *
+     * @param int $id ID of the image
+     *
+     * @throws \InvalidArgumentException
+     * @return array|null
+     */
+    public function get($id) {
+        if (!is_int($id)) {
+            throw new \InvalidArgumentException('Unexpected type of the $id argument. Integer expected.');
+        }
+        $result = $this->db->query("SELECT * FROM `images` WHERE `id` = '" . $id . "'");
+        $data = $result->fetch_assoc();
+        $result->free();
+        return is_array($data) ? $data : null;
+    }
+
 }
