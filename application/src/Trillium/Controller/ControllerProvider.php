@@ -93,6 +93,8 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Posts */
         $collection->get('panel/posts/{id}', 'controllers.panel.posts:remove')
             ->bind('panel.posts.remove');
+        $collection->post('panel/posts/remove/{id}', 'controllers.panel.posts:massRemove')
+            ->bind('panel.posts.mass_remove');
         /** Images */
         $collection->get('panel/images/{id}', 'controllers.panel.images:remove')
             ->bind('panel.images.remove');
