@@ -10,9 +10,9 @@
     <div class="pagination"><?= $this->pagination ?></div>
 </div>
 <div class="boardViewRight" id="previewContainer">
-    <div class="write" id="write"><img src="<?= $this->writeImage ?>" alt="write" /></div>
+    <div class="write" id="write"><img src="<?= $this->assets('images/write.png') ?>" alt="write" /></div>
     <div id="messageForm"><?= $this->messageForm ?></div>
-    <img src="<?= $this->waitImage ?>" alt="wait" id="wait" style="display: none;" />
+    <img src="<?= $this->assets('images/wait.gif') ?>" alt="wait" id="wait" style="display: none;" />
 </div>
 <script type="text/javascript">
     $(document).ready(function () {

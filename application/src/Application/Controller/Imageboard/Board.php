@@ -64,8 +64,6 @@ class Board extends Controller {
             'messageForm' => $this->app->ibCommon()->sendMessage($board, array_merge($_POST, $_FILES)),
             'threads'     => $threads,
             'pagination'  => isset($pagination) ? $pagination->view() : '',
-            'waitImage'   => 'http://' . $_SERVER['SERVER_NAME'] . '/assets/desktop/images/wait.gif',
-            'writeImage'  => 'http://' . $_SERVER['SERVER_NAME'] . '/assets/desktop/images/write.png',
         ]);
     }
 
