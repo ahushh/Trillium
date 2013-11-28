@@ -1,9 +1,12 @@
 <div class="title"><?= $this->title ?></div>
 <div class="boardViewLeft">
-    <?=( !empty($this->threads)
-        ? '<div class="list">' . $this->threads . '</div>'
-        : '<div class="listEmpty">' . $this->__('List is empty') . '</div>'
-    )?>
+    <?php if (!empty($this->threads)): ?>
+        <?= $this->isGranted('ROLE_ADMIN') ? '<form method="post" action="' . $this->url('panel.threads.mass_remove') . '">' : '' ?>
+        <div class="list"><?= $this->threads ?></div>
+        <?= $this->isGranted('ROLE_ADMIN') ? '<input type="submit" name="remove" value="' . $this->__('Remove') . '" /> </form>' : '' ?>
+    <?php else: ?>
+        <div class="listEmpty"><?= $this->__('List is empty') ?></div>
+    <?php endif; ?>
     <div class="pagination"><?= $this->pagination ?></div>
 </div>
 <div class="boardViewRight" id="previewContainer">

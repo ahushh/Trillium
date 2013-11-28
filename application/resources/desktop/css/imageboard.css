@@ -27,6 +27,10 @@
 .threadItem * {
     width: 370px;
 }
+.threadItem input[type="checkbox"] {
+    width: 10px;
+    height: 10px;
+}
 .threadItem div {
     cursor: pointer;
 }
