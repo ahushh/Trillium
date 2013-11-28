@@ -16,8 +16,7 @@ use Silex\Application\SecurityTrait;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Trillium\Image\ImageTrait;
-use Trillium\ImageBoard\ImageBoard;
-use Trillium\Markup\MarkupTrait;
+use Trillium\ImageBoard\ImageBoardTrait;
 use Trillium\User\UserTrait;
 
 /**
@@ -28,9 +27,8 @@ use Trillium\User\UserTrait;
 class Application extends \Silex\Application {
 
     use FormTrait;
-    use ImageBoard;
+    use ImageBoardTrait;
     use ImageTrait;
-    use MarkupTrait;
     use MonologTrait;
     use PaginationTrait;
     use SecurityTrait;

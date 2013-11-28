@@ -26,7 +26,6 @@ use Symfony\Component\Translation\Translator;
 use Trillium\Controller\ControllerProvider;
 use Trillium\Image\ImageServiceProvider;
 use Trillium\ImageBoard\ImageBoardServiceProvider;
-use Trillium\Markup\MarkupServiceProvider;
 use Trillium\MobileDetect\MobileDetectServiceProvider;
 use Trillium\Model\ModelServiceProvider;
 use Trillium\Silex\Application;
@@ -51,7 +50,6 @@ $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
 $app->register(new ImageServiceProvider);
 $app->register(new PaginationServiceProvider);
-$app->register(new MarkupServiceProvider);
 
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [

@@ -6,14 +6,14 @@
  * @package Trillium
  */
 
-namespace Trillium\Markup;
+namespace Trillium\ImageBoard\Service;
 
 use FSHL\Highlighter;
 
 /**
  * Markup Class
  *
- * @package Trillium\Markup
+ * @package Trillium\ImageBoard\Service
  */
 class Markup {
 

@@ -48,7 +48,7 @@ class Thread extends Controller {
         $postsList = $this->app->ibPost()->getList($id);
         $imagesList = $this->app->ibImage()->getList($id);
 
-        $this->app->markup()->setPosts(array_map(
+        $this->app->ibMarkup()->setPosts(array_map(
             function ($post) {
                 return $post['id'];
             },
@@ -57,7 +57,7 @@ class Thread extends Controller {
 
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
-            $postText = $this->app->markup()->handle($post['text'], $postID);
+            $postText = $this->app->ibMarkup()->handle($post['text'], $postID);
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
             $postVideo = !empty($post['video'])

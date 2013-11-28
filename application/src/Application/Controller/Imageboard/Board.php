@@ -48,7 +48,7 @@ class Board extends Controller {
                 $threadTheme   = $this->app->escape($thread['theme']);
                 $threadCreated = date('d.m.Y / H:i:s', $thread['created']);
                 $threadOP      = (int) $thread['op'];
-                $threadText    = $this->app->markup()->handle(mb_substr($thread['text'], 0, 100))
+                $threadText    = $this->app->ibMarkup()->handle(mb_substr($thread['text'], 0, 100))
                                . (mb_strlen($thread['text']) > 100 ? '&hellip;' : '');
                 $threads       .= $threadView->render();
             }

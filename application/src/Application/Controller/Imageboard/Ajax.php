@@ -29,7 +29,7 @@ class Ajax extends Controller {
         if ($post === null) {
             $this->app->abort(404, $this->app->trans('The post is not exists'));
         }
-        $post['text'] = $this->app->markup()->handle($post['text']);
+        $post['text'] = $this->app->ibMarkup()->handle($post['text']);
         $post['time'] = date('d.m.Y / H:i:s', $post['time']);
         $post['sage'] = (int) $post['sage'];
         unset($post['ip'], $post['user_agent']);

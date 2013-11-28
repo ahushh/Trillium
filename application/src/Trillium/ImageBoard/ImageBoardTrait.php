@@ -11,15 +11,16 @@ namespace Trillium\ImageBoard;
 use Trillium\ImageBoard\Service\Board;
 use Trillium\ImageBoard\Service\Common;
 use Trillium\ImageBoard\Service\Image;
+use Trillium\ImageBoard\Service\Markup;
 use Trillium\ImageBoard\Service\Post;
 use Trillium\ImageBoard\Service\Thread;
 
 /**
- * ImageBoard Class
+ * ImageBoardTrait Trait
  *
  * @package Trillium\ImageBoard
  */
-trait ImageBoard {
+trait ImageBoardTrait {
 
     /**
      * Get ib board object
@@ -64,6 +65,15 @@ trait ImageBoard {
      */
     public function ibCommon() {
         return $this['imageboard.common'];
+    }
+
+    /**
+     * Get ib markup object
+     *
+     * @return Markup
+     */
+    public function ibMarkup() {
+        return $this['imageboard.markup'];
     }
 
 } 
