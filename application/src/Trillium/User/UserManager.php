@@ -109,13 +109,13 @@ class UserManager implements UserProviderInterface {
      * @param string     $key   Find by
      * @param string|int $value The value
      *
+     * @throws InvalidArgumentException
      * @return User|null
-     * @throws \UnexpectedValueException
      */
     public function findBy($key, $value) {
         $value = is_numeric($value) ? (int) $value : (is_string($value) ? $this->db->real_escape_string($value) : null);
         if ($value === null) {
-            throw new \UnexpectedValueException('Expected a string or a int value');
+            throw new InvalidArgumentException('value', 'string, integer', gettype($value));
         }
         $where = "WHERE `$key` = '$value'";
         $result = $this->db->query("SELECT * FROM `users` $where LIMIT 0, 1");

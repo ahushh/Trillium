@@ -8,6 +8,8 @@
 
 namespace Trillium\ImageBoard\Service\Thread;
 
+use Trillium\Exception\UnexpectedValueException;
+
 /**
  * Thread Class
  *
@@ -126,12 +128,12 @@ class Thread {
      * @param string|int|array $id ID(s)
      * @param string           $by Remove by
      *
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return void
      */
     public function remove($id, $by) {
         if ($by !== self::ID && $by !== self::BOARD) {
-            throw new \UnexpectedValueException('Unexpected value of the argument $by.');
+            throw new UnexpectedValueException('by', self::ID . ',' . self::BOARD);
         }
         $this->model->remove($by, $id);
     }

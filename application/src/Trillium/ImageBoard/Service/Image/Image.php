@@ -8,6 +8,7 @@
 
 namespace Trillium\ImageBoard\Service\Image;
 
+use Trillium\Exception\UnexpectedValueException;
 use Trillium\Image\ImageService;
 
 /**
@@ -77,12 +78,13 @@ class Image {
      * @param array|int $id ID
      * @param string    $by Key
      *
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return array
      */
     public function getList($id, $by = self::THREAD) {
-        if (!in_array($by, [self::BOARD, self::THREAD, self::POST])) {
-            throw new \UnexpectedValueException('$by');
+        $expected = [self::BOARD, self::THREAD, self::POST];
+        if (!in_array($by, $expected)) {
+            throw new UnexpectedValueException('by', implode(', ', $expected));
         }
         $list = $this->model->getImages($id, $by);
         $return = [];
@@ -98,12 +100,13 @@ class Image {
      * @param array|string|int $id ID(s)
      * @param string           $by Remove by
      *
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return void
      */
     public function remove($id, $by) {
-        if (!in_array($by, [self::ID, self::BOARD, self::THREAD, self::POST])) {
-            throw new \UnexpectedValueException('$by');
+        $expected = [self::ID, self::BOARD, self::THREAD, self::POST];
+        if (!in_array($by, $expected)) {
+            throw new UnexpectedValueException('by', implode(', ',$expected));
         }
         $this->model->remove($by, $id);
     }

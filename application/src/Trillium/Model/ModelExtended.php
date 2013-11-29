@@ -124,7 +124,7 @@ class ModelExtended extends Model {
      * @param array|int|string $value Value
      *
      * @return int
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function remove($key, $value) {
         if (is_array($value)) {
@@ -138,7 +138,7 @@ class ModelExtended extends Model {
         } elseif (is_string($value) || is_int($value)) {
             $value = "= '" .  (is_string($value) ? $this->db->real_escape_string($value) : (int) $value) . "'";
         } else {
-            throw new \InvalidArgumentException('Unexpected type of the value. Array, string or integer expected.');
+            throw new InvalidArgumentException('value', 'array, integer, string', gettype($value));
         }
         $this->db->query("DELETE FROM `" . $this->tableName . "` WHERE `" . $key . "` " . $value);
         return $this->db->affected_rows;

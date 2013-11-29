@@ -8,6 +8,8 @@
 
 namespace Trillium\ImageBoard\Service\Post;
 
+use Trillium\Exception\UnexpectedValueException;
+
 /**
  * Post Class
  *
@@ -76,12 +78,13 @@ class Post {
      * @param array|string|int $id ID(s)
      * @param string           $by Remove by
      *
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return void
      */
     public function remove($id, $by) {
-        if (!in_array($by, self::ID, self::BOARD, self::THREAD)) {
-            throw new \UnexpectedValueException('Unexpected value of argument $by');
+        $expected = [self::ID, self::BOARD, self::THREAD];
+        if (!in_array($by, $expected)) {
+            throw new UnexpectedValueException('by', implode(', ', $expected));
         }
         $this->model->remove($by, $id);
     }
