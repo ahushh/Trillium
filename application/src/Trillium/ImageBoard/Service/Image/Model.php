@@ -8,6 +8,7 @@
 
 namespace Trillium\ImageBoard\Service\Image;
 
+use Trillium\Exception\InvalidArgumentException;
 use Trillium\Model\ModelExtended;
 
 /**
@@ -47,12 +48,12 @@ class Model extends ModelExtended {
      * @param array|int $id ID
      * @param string    $by Key
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array
      */
     public function getImages($id, $by = 'thread') {
         if (!is_int($id) && !is_array($id)) {
-            throw new \InvalidArgumentException('Unexpected type of the $thread. Integer or array expected');
+            throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
         if (is_array($id)) {
             $id = array_map('intval', $id);

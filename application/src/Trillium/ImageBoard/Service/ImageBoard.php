@@ -8,6 +8,7 @@
 
 namespace Trillium\ImageBoard\Service;
 
+use Trillium\Exception\InvalidArgumentException;
 use Trillium\ImageBoard\Service\Board\Board;
 use Trillium\ImageBoard\Service\Image\Image;
 use Trillium\ImageBoard\Service\Post\Post;
@@ -142,11 +143,11 @@ class ImageBoard {
      * @param int|array $id ID
      *
      * @return void
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function removeThread($id) {
         if (!is_int($id) && !is_array($id)) {
-            throw new \InvalidArgumentException('Unexpected type of the argument $id. Integer or array expected.');
+            throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
         if (is_array($id)) {
             $id = array_map('intval', $id);
@@ -163,12 +164,12 @@ class ImageBoard {
      *
      * @param array|int $id ID
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public function removePost($id) {
         if (!is_int($id) && !is_array($id)) {
-            throw new \InvalidArgumentException('Unexpected type of the argument $id. Integer or array expected.');
+            throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
         if (is_array($id)) {
             $id = array_map('intval', $id);

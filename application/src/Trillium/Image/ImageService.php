@@ -8,6 +8,8 @@
 
 namespace Trillium\Image;
 
+use Trillium\Exception\InvalidArgumentException;
+
 /**
  * ImageService Class
  *
@@ -38,12 +40,12 @@ class ImageService {
      * @param string $path Path to the image
      *
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return ImageService
      */
     public function __construct($path) {
         if (!is_string($path)) {
-            throw new \InvalidArgumentException('Expects parameter $path to be string, ' . gettype($path) . ' given');
+            throw new InvalidArgumentException('path', 'string',  gettype($path));
         }
         $imageInfo = getimagesize($path);
         $this->type = $imageInfo[2];

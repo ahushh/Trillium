@@ -8,6 +8,7 @@
 
 namespace Trillium\ImageBoard\Service\Post;
 
+use Trillium\Exception\InvalidArgumentException;
 use Trillium\Model\ModelExtended;
 
 /**
@@ -33,12 +34,12 @@ class Model extends ModelExtended {
      *
      * @param int $id ID of the thread
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array
      */
     public function getPosts($id) {
         if (!is_int($id)) {
-            throw new \InvalidArgumentException('Unexpected type of the ID. Integer expected.');
+            throw new InvalidArgumentException('id', 'integer', gettype($id));
         }
         return $this->getList(['by' => 'id', 'direction' => 'ASC'], "`thread` = '" . $id . "'");
     }

@@ -8,6 +8,7 @@
 
 namespace Trillium\ImageBoard\Service\Thread;
 
+use Trillium\Exception\InvalidArgumentException;
 use Trillium\Model\ModelExtended;
 use Trillium\Model\MySQLi;
 
@@ -60,12 +61,12 @@ class Model extends ModelExtended {
      * @param int|null $pid  ID of the first post
      * @param boolean  $bump Update time?
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public function bump($tid, $pid = null, $bump = true) {
         if (!is_int($tid)) {
-            throw new \InvalidArgumentException('Unexpected type of tid. Integer expected.');
+            throw new InvalidArgumentException('tid', 'integer', gettype($tid));
         }
         $statement = [];
         if ($bump) {

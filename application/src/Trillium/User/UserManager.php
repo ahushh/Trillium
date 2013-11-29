@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Trillium\Exception\InvalidArgumentException;
 use Trillium\Model\MySQLi;
 
 /**
@@ -165,12 +166,12 @@ class UserManager implements UserProviderInterface {
      * @param string     $key      Key
      * @param string|int $value    Value
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public function updateValue($username, $key, $value) {
         if (!is_string($value) && !is_int($value)) {
-            throw new \InvalidArgumentException('Unexpected type of the value. String or integer expected.');
+            throw new InvalidArgumentException('value', 'string, integer', gettype($value));
         }
         $username = $this->db->real_escape_string($username);
         $value = is_numeric($value) ? (int) $value : (is_string($value) ? $this->db->real_escape_string($value) : $value);

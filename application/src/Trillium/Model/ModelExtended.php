@@ -8,6 +8,8 @@
 
 namespace Trillium\Model;
 
+use Trillium\Exception\InvalidArgumentException;
+
 /**
  * ModelExtended Class
  *
@@ -42,13 +44,13 @@ class ModelExtended extends Model {
      * @param string $key   Name of the field
      * @param string $value Value
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array|null
      */
     protected function findItem($key, $value) {
         $value = is_string($value) ? $this->db->real_escape_string($value) : (is_int($value) ? $value : null);
         if ($value === null) {
-            throw new \InvalidArgumentException('Unexpected type of the value. Int or string expected');
+            throw new InvalidArgumentException('value', 'integer, string', gettype($value));
         }
         $result = $this->db->query("SELECT * FROM `" . $this->tableName . "` WHERE `" . $key . "` = '" . $value . "'");
         $data = $result->fetch_assoc();
