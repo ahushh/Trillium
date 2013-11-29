@@ -27,14 +27,14 @@ class ImageBoard extends Controller {
         $output = '';
         $list = $this->app->aib()->board()->getList();
         if (!empty($list)) {
-            $itemWrapper = $this->app->view('panel/boards/item')->bind('name', $boardName)->bind('summary', $boardSummary);
+            $itemWrapper = $this->app->view('panel/imageboard/boardListItem')->bind('name', $boardName)->bind('summary', $boardSummary);
             foreach ($list as $board) {
                 $boardName = $this->app->escape($board['name']);
                 $boardSummary = $this->app->escape($board['summary']);
                 $output.= $itemWrapper->render();
             }
         }
-        return $this->app->view('panel/boards/list', ['list' => $output]);
+        return $this->app->view('panel/imageboard/boardList', ['list' => $output]);
     }
 
     /**
@@ -75,7 +75,7 @@ class ImageBoard extends Controller {
                 );
             }
         }
-        return $this->app->view('panel/boards/manage', [
+        return $this->app->view('panel/imageboard/boardManage', [
             'error' => isset($error) ? $error : [],
             'data'  => isset($data) ? $data : [],
             'edit'  => $name !== '',
