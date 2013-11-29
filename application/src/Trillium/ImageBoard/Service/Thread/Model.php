@@ -140,18 +140,17 @@ class Model extends ModelExtended {
      * @return array
      */
     public function getRedundant($board, $redundant) {
-        // TODO: use parent::getList()
-        $result = $this->db->query(
-            "SELECT * FROM `" . $this->tableName . "` "
-            . "WHERE `board` = '" . $this->db->real_escape_string($board) . "' "
-            . "ORDER BY `bump` ASC LIMIT 0, " . (int) $redundant
+        return parent::getList(
+            [
+                'by'        => 'bump',
+                'direction' => 'ASC'
+            ],
+            "`board` = '" . $this->db->real_escape_string($board) . "'",
+            [
+                'offset' => 0,
+                'limit'  => (int) $redundant
+            ]
         );
-        $list = [];
-        while (($item = $result->fetch_assoc())) {
-            $list[] = (int) $item['id'];
-        }
-        $result->free();
-        return $list;
     }
 
     /**

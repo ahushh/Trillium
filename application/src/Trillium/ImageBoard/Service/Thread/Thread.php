@@ -102,7 +102,12 @@ class Thread {
      * @return array
      */
     public function getRedundant($board, $redundant) {
-        return $this->model->getRedundant($board, $redundant);
+        return array_map(
+            function ($item) {
+                return (int) $item['id'];
+            },
+            $this->model->getRedundant($board, $redundant)
+        );
     }
 
     /**

@@ -61,16 +61,20 @@ class ModelExtended extends Model {
      *
      * @param array  $order Order [by => string, direction => string]
      * @param string $where Where
+     * @param array  $limit Limit [offset => int, limit => int]
      *
      * @return array
      */
-    protected function getList(array $order = [], $where = '') {
+    protected function getList(array $order = [], $where = '', $limit = []) {
         $statement = "SELECT * FROM `" . $this->tableName . "`";
         if (!empty($where)) {
             $statement .= "WHERE " . $where;
         }
         if (isset($order['by']) && isset($order['direction'])) {
             $statement .= " ORDER BY `" . $order['by'] . "` " . $order['direction'];
+        }
+        if (isset($limit['offset']) && isset($limit['limit'])) {
+            $statement .= " LIMIT " . (int) $limit['offset'] . ", " . (int) $limit['limit'];
         }
         $list = [];
         $result = $this->db->query($statement);
