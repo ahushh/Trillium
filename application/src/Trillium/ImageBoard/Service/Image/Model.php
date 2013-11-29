@@ -47,16 +47,12 @@ class Model extends ModelExtended {
      * @param array|int $id ID
      * @param string    $by Key
      *
-     * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @return array
      */
     public function getImages($id, $by = 'thread') {
         if (!is_int($id) && !is_array($id)) {
             throw new \InvalidArgumentException('Unexpected type of the $thread. Integer or array expected');
-        }
-        if (!in_array($by, ['board', 'thread', 'post'])) {
-            throw new \UnexpectedValueException('Unexpected value of the argument $by. board, thread or post expected');
         }
         if (is_array($id)) {
             $id = array_map('intval', $id);
@@ -73,13 +69,9 @@ class Model extends ModelExtended {
      * @param string           $key   Remove by
      * @param array|int|string $value ID(s)
      *
-     * @throws \UnexpectedValueException
      * @return void
      */
     public function remove($key, $value) {
-        if (!in_array($key, ['id', 'board', 'thread', 'post'])) {
-            throw new \UnexpectedValueException('Unexpected value of the $by: id, board, thread or post expected');
-        }
         parent::remove($key, $value);
     }
 

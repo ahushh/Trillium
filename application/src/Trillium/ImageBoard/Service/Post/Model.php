@@ -49,13 +49,9 @@ class Model extends ModelExtended {
      * @param string           $key   Remove by
      * @param array|int|string $value ID(s)
      *
-     * @throws \UnexpectedValueException
      * @return void
      */
     public function remove($key, $value) {
-        if (!in_array($key, ['id', 'board', 'thread'])) {
-            throw new \UnexpectedValueException('Unexpected value of the $by: id, board or thread expected');
-        }
         parent::remove($key, $value);
     }
 

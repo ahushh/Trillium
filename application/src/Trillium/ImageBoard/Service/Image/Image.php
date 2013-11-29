@@ -18,6 +18,26 @@ use Trillium\Image\ImageService;
 class Image {
 
     /**
+     * Name of the ID key
+     */
+    const ID = 'id';
+
+    /**
+     * Name of the board key
+     */
+    const BOARD = 'board';
+
+    /**
+     * Name of the thread key
+     */
+    const THREAD = 'thread';
+
+    /**
+     * Name of the post key
+     */
+    const POST = 'post';
+
+    /**
      * @var Model Model
      */
     private $model;
@@ -58,10 +78,12 @@ class Image {
      * @param string    $by Key
      *
      * @throws \UnexpectedValueException
-     * @throws \InvalidArgumentException
      * @return array
      */
-    public function getList($id, $by = 'thread') {
+    public function getList($id, $by = self::THREAD) {
+        if (!in_array($by, [self::BOARD, self::THREAD, self::POST])) {
+            throw new \UnexpectedValueException('$by');
+        }
         $list = $this->model->getImages($id, $by);
         $return = [];
         foreach ($list as $image) {
@@ -80,6 +102,9 @@ class Image {
      * @return void
      */
     public function remove($id, $by) {
+        if (!in_array($by, [self::ID, self::BOARD, self::THREAD, self::POST])) {
+            throw new \UnexpectedValueException('$by');
+        }
         $this->model->remove($by, $id);
     }
 

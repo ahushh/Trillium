@@ -10,6 +10,7 @@ namespace Application\Controller\Panel;
 
 use Symfony\Component\HttpFoundation\Request;
 use Trillium\Controller\Controller;
+use Trillium\ImageBoard\Service\Image\Image;
 
 /**
  * ImageBoard Class
@@ -108,7 +109,7 @@ class ImageBoard extends Controller {
             $this->app->abort(404, $this->app->trans('Image is not exists'));
         }
         $this->app->aib()->image()->removeFiles([[$image]]);
-        $this->app->aib()->image()->remove($id, 'id');
+        $this->app->aib()->image()->remove($id, Image::ID);
         $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $image['thread']]))->send();
     }
 

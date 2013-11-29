@@ -9,6 +9,7 @@
 namespace Application\Controller\Imageboard;
 
 use Trillium\Controller\Controller;
+use Trillium\ImageBoard\Service\Image\Image;
 
 /**
  * Ajax Class
@@ -35,7 +36,7 @@ class Ajax extends Controller {
         unset($post['ip'], $post['user_agent']);
 
         $images = [];
-        $imagesList = $this->app->aib()->image()->getList((int) $post['id'], 'post');
+        $imagesList = $this->app->aib()->image()->getList((int) $post['id'], Image::POST);
         if (isset($imagesList[$id])) {
             $i = 0;
             foreach ($imagesList[$id] as $image) {

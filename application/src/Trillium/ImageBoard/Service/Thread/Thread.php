@@ -16,6 +16,16 @@ namespace Trillium\ImageBoard\Service\Thread;
 class Thread {
 
     /**
+     * Name of the ID key
+     */
+    const ID = 'id';
+
+    /**
+     * Name of the board key
+     */
+    const BOARD = 'board';
+
+    /**
      * @var Model Model
      */
     private $model;
@@ -120,6 +130,9 @@ class Thread {
      * @return void
      */
     public function remove($id, $by) {
+        if ($by !== self::ID && $by !== self::BOARD) {
+            throw new \UnexpectedValueException('Unexpected value of the argument $by.');
+        }
         $this->model->remove($by, $id);
     }
 

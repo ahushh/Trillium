@@ -16,6 +16,21 @@ namespace Trillium\ImageBoard\Service\Post;
 class Post {
 
     /**
+     * Name of the ID key
+     */
+    const ID = 'id';
+
+    /**
+     * Name of the board key
+     */
+    const BOARD = 'board';
+
+    /**
+     * Name of the thread key
+     */
+    const THREAD = 'thread';
+
+    /**
      * @var Model Model
      */
     private $model;
@@ -65,6 +80,9 @@ class Post {
      * @return void
      */
     public function remove($id, $by) {
+        if (!in_array($by, self::ID, self::BOARD, self::THREAD)) {
+            throw new \UnexpectedValueException('Unexpected value of argument $by');
+        }
         $this->model->remove($by, $id);
     }
 

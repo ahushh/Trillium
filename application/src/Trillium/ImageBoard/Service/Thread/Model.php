@@ -159,13 +159,9 @@ class Model extends ModelExtended {
      * @param string           $key   Remove by
      * @param string|int|array $value Value
      *
-     * @throws \UnexpectedValueException
      * @return void
      */
     public function remove($key, $value) {
-        if ($key !== 'id' && $key !== 'board') {
-            throw new \UnexpectedValueException('Unexpected value of the $by: id or board expected');
-        }
         parent::remove($key, $value);
     }
 

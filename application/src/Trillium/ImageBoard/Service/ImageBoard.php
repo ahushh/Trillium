@@ -130,9 +130,9 @@ class ImageBoard {
      */
     public function removeBoard($name) {
         $this->board()->remove($name);
-        $this->thread()->remove($name, 'board');
-        $this->post()->remove($name, 'board');
-        $this->image()->remove($name, 'board');
+        $this->thread()->remove($name, Thread::BOARD);
+        $this->post()->remove($name, Post::BOARD);
+        $this->image()->remove($name, Image::BOARD);
     }
 
     /**
@@ -151,10 +151,10 @@ class ImageBoard {
         if (is_array($id)) {
             $id = array_map('intval', $id);
         }
-        $this->thread()->remove($id, 'id');
-        $this->post()->remove($id, 'thread');
-        $this->image()->removeFiles($this->image()->getList($id, 'thread'));
-        $this->image()->remove($id, 'thread');
+        $this->thread()->remove($id, Thread::ID);
+        $this->post()->remove($id, Post::THREAD);
+        $this->image()->removeFiles($this->image()->getList($id, Image::THREAD));
+        $this->image()->remove($id, Image::THREAD);
     }
 
     /**
@@ -163,12 +163,19 @@ class ImageBoard {
      *
      * @param array|int $id ID
      *
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function removePost($id) {
-        $this->post()->remove($id, 'id');
-        $this->image()->removeFiles($this->image()->getList($id, 'post'));
-        $this->image()->remove($id, 'post');
+        if (!is_int($id) && !is_array($id)) {
+            throw new \InvalidArgumentException('Unexpected type of the argument $id. Integer or array expected.');
+        }
+        if (is_array($id)) {
+            $id = array_map('intval', $id);
+        }
+        $this->post()->remove($id, Post::ID);
+        $this->image()->removeFiles($this->image()->getList($id, Image::POST));
+        $this->image()->remove($id, Image::POST);
     }
 
     /**
@@ -185,10 +192,10 @@ class ImageBoard {
         if ($redundantThreads > 0) {
             $redundantThreads = $this->thread->getRedundant($board, $redundantThreads);
             if (!empty($redundantThreads)) {
-                $this->post()->remove($redundantThreads, 'thread');
-                $this->image()->removeFiles($this->image()->getList($redundantThreads, 'thread'));
-                $this->image()->remove($redundantThreads, 'thread');
-                $this->thread()->remove($redundantThreads, 'id');
+                $this->post()->remove($redundantThreads, Post::THREAD);
+                $this->image()->removeFiles($this->image()->getList($redundantThreads, Image::THREAD));
+                $this->image()->remove($redundantThreads, Image::THREAD);
+                $this->thread()->remove($redundantThreads, Thread::ID);
             }
         }
     }
