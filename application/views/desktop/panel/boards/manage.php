@@ -1,7 +1,7 @@
 <div class="title">
     <a href="<?= $this->url('panel') ?>"><?= $this->__('Control panel') ?></a>
     &raquo;
-    <a href="<?= $this->url('panel.boards') ?>"><?= $this->__('Boards') ?></a>
+    <a href="<?= $this->url('panel.imageboard.board.list') ?>"><?= $this->__('Boards') ?></a>
     &raquo;
     <?= $this->edit ? $this->__('Edit board') : $this->__('Create board') ?>
 </div>

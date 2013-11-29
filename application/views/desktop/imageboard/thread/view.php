@@ -10,8 +10,8 @@
 </div>
 <div class="list"><?= $this->answer ?></div>
 <?php if ($this->isGranted('ROLE_ADMIN')): ?>
-    <a href="<?= $this->url('panel.threads.remove', ['id' => $this->id]) ?>"><?= $this->__('Remove') ?></a>
-    <form method="post" action="<?= $this->url('panel.posts.remove', ['id' => $this->id]) ?>">
+    <a href="<?= $this->url('panel.imageboard.thread.remove', ['id' => $this->id]) ?>"><?= $this->__('Remove') ?></a>
+    <form method="post" action="<?= $this->url('panel.imageboard.post.remove', ['id' => $this->id]) ?>">
 <?php endif; ?>
 <div class="list"><?= $this->posts ?></div>
 <?php if ($this->isGranted('ROLE_ADMIN')): ?>

@@ -1,7 +1,7 @@
 <div class="title"><?= $this->__('Control panel') ?></div>
 <ul class="menu">
     <?php if ($this->isGranted('ROLE_ADMIN')): ?>
-        <li><a href="<?= $this->url('panel.boards') ?>"><?= $this->__('Boards') ?></a></li>
+        <li><a href="<?= $this->url('panel.imageboard.board.list') ?>"><?= $this->__('Boards') ?></a></li>
         <li><a href="<?= $this->url('panel.users') ?>"><?= $this->__('List of the users') ?></a></li>
         <li><a href="<?= $this->url('panel.mainpage') ?>"><?= $this->__('Homepage') ?></a></li>
     <?php endif; ?>

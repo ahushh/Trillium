@@ -1,7 +1,7 @@
 <div class="title"><?= $this->title ?></div>
 <div class="boardViewLeft">
     <?php if (!empty($this->threads)): ?>
-        <?= $this->isGranted('ROLE_ADMIN') ? '<form method="post" action="' . $this->url('panel.threads.mass_remove') . '">' : '' ?>
+        <?= $this->isGranted('ROLE_ADMIN') ? '<form method="post" action="' . $this->url('panel.imageboard.thread.mass_remove') . '">' : '' ?>
         <div class="list"><?= $this->threads ?></div>
         <?= $this->isGranted('ROLE_ADMIN') ? '<input type="submit" name="remove" value="' . $this->__('Remove') . '" /> </form>' : '' ?>
     <?php else: ?>

@@ -42,10 +42,7 @@ class ControllerProvider implements ControllerProviderInterface {
             'controllers.trillium'          => 'Trillium',
             'controllers.panel'             => 'Panel',
             'controllers.panel.users'       => 'Panel\Users',
-            'controllers.panel.boards'      => 'Panel\Boards',
-            'controllers.panel.threads'     => 'Panel\Threads',
-            'controllers.panel.posts'       => 'Panel\Posts',
-            'controllers.panel.images'      => 'Panel\Images',
+            'controllers.panel.imageboard'  => 'Panel\ImageBoard',
             'controllers.imageboard.board'  => 'Imageboard\Board',
             'controllers.imageboard.thread' => 'Imageboard\Thread',
             'controllers.imageboard.ajax'   => 'Imageboard\Ajax',
@@ -79,25 +76,24 @@ class ControllerProvider implements ControllerProviderInterface {
             ->bind('panel.users.remove');
         $collection->match('panel/change.password', 'controllers.panel.users:changePassword')
             ->bind('panel.users.change.password');
-        /** Boards */
-        $collection->get('panel/boards', 'controllers.panel.boards:boardsList')
-            ->bind('panel.boards');
-        $collection->match('panel/boards/manage/{name}', 'controllers.panel.boards:manage')
-            ->bind('panel.boards.manage')
+        /** Imageboard */
+        $collection->get('panel/imageboard/board/list', 'controllers.panel.imageboard:boardList')
+            ->bind('panel.imageboard.board.list');
+        $collection->match('panel/imageboard/board/manage/{name}', 'controllers.panel.imageboard:boardManage')
+            ->bind('panel.imageboard.board.manage')
             ->value('name', '');
-        $collection->get('panel/boards/remove/{name}', 'controllers.panel.boards:remove')
-            ->bind('panel.boards.remove');
-        /** Threads */
-        $collection->get('panel/threads/remove/{id}', 'controllers.panel.threads:remove')
-            ->bind('panel.threads.remove');
-        $collection->post('panel/threads/remove', 'controllers.panel.threads:remove')
-            ->bind('panel.threads.mass_remove');
+        $collection->get('panel/imageboard/board/remove/{name}', 'controllers.panel.imageboard:boardRemove')
+            ->bind('panel.imageboard.board.remove');
+        $collection->get('panel/imageboard/thread/remove/{id}', 'controllers.panel.imageboard:threadRemove')
+            ->bind('panel.imageboard.thread.remove');
+        $collection->post('panel/imageboard/thread/remove', 'controllers.panel.imageboard:threadRemove')
+            ->bind('panel.imageboard.thread.mass_remove');
         /** Posts */
-        $collection->match('panel/posts/remove/{id}', 'controllers.panel.posts:remove')
-            ->bind('panel.posts.remove');
+        $collection->match('panel/imageboard/post/remove/{id}', 'controllers.panel.imageboard:postRemove')
+            ->bind('panel.imageboard.post.remove');
         /** Images */
-        $collection->get('panel/images/{id}', 'controllers.panel.images:remove')
-            ->bind('panel.images.remove');
+        $collection->get('panel/imageboard/image/remove/{id}', 'controllers.panel.imageboard:imageRemove')
+            ->bind('panel.imageboard.image.remove');
 
         /** Imageboard */
         $collection->match('board/{name}/{page}', 'controllers.imageboard.board:view')
