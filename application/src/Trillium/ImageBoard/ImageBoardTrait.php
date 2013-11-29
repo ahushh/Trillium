@@ -8,12 +8,8 @@
 
 namespace Trillium\ImageBoard;
 
-use Trillium\ImageBoard\Service\Board;
 use Trillium\ImageBoard\Service\Common;
-use Trillium\ImageBoard\Service\Image;
-use Trillium\ImageBoard\Service\Markup;
-use Trillium\ImageBoard\Service\Post;
-use Trillium\ImageBoard\Service\Thread;
+use Trillium\ImageBoard\Service\ImageBoard;
 
 /**
  * ImageBoardTrait Trait
@@ -23,39 +19,12 @@ use Trillium\ImageBoard\Service\Thread;
 trait ImageBoardTrait {
 
     /**
-     * Get ib board object
+     * Returns ImageBoard service
      *
-     * @return Board
+     * @return ImageBoard
      */
-    public function ibBoard() {
-        return $this['imageboard.board'];
-    }
-
-    /**
-     * Get ib thread object
-     *
-     * @return Thread
-     */
-    public function ibThread() {
-        return $this['imageboard.thread'];
-    }
-
-    /**
-     * Get ib post object
-     *
-     * @return Post
-     */
-    public function ibPost() {
-        return $this['imageboard.post'];
-    }
-
-    /**
-     * Get ib image object
-     *
-     * @return Image
-     */
-    public function ibImage() {
-        return $this['imageboard.image'];
+    public function aib() {
+        return $this['imageboard'];
     }
 
     /**
@@ -65,15 +34,6 @@ trait ImageBoardTrait {
      */
     public function ibCommon() {
         return $this['imageboard.common'];
-    }
-
-    /**
-     * Get ib markup object
-     *
-     * @return Markup
-     */
-    public function ibMarkup() {
-        return $this['imageboard.markup'];
     }
 
 } 

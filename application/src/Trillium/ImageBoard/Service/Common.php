@@ -10,6 +10,10 @@ namespace Trillium\ImageBoard\Service;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\ImageBoard\Service\Board\Board;
+use Trillium\ImageBoard\Service\Image\Image;
+use Trillium\ImageBoard\Service\Post\Post;
+use Trillium\ImageBoard\Service\Thread\Thread;
 
 /**
  * Common Class
@@ -47,7 +51,6 @@ class Common {
      * Create Common instance
      *
      * @param \Silex\Application $app    Application instance
-     *
      * @param Board              $board  Board service
      * @param Thread             $thread Thread service
      * @param Post               $post   Post service
@@ -125,7 +128,16 @@ class Common {
                 $ip = ip2long($request->getClientIp());
                 $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
                 $bump = isset($sage) && $sage === true ? false : true;
-                $postID = $this->post->create($board['name'], $threadID, $text, isset($videoSave) ? $videoSave : '', !$bump, $ip, $userAgent);
+                $postID = $this->post->create([
+                        'board'      => $board['name'],
+                        'thread'     => $threadID,
+                        'text'       => $text,
+                        'video'      => isset($videoSave) ? $videoSave : '',
+                        'sage'       => !$bump ? 1 : 0,
+                        'ip'         => $ip,
+                        'user_agent' => $userAgent,
+                        'time'       => time(),
+                ]);
                 $this->thread->bump($threadID, $thread === null ? $postID : null, $bump);
                 if (!empty($images)) {
                     $this->uploadImages($images, $board['name'], $threadID, $postID, (int) $board['thumb_width']);
@@ -267,7 +279,7 @@ class Common {
                 'size'     => $image['size'],
             ];
         }
-        $this->app->ibImage()->insert($imagesData);
+        $this->app->aib()->image()->insert($imagesData);
     }
 
 }

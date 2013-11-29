@@ -29,20 +29,12 @@ class Images extends Controller {
      */
     public function remove($id) {
         $id = (int) $id;
-        $image = $this->app->ibImage()->get($id);
+        $image = $this->app->aib()->image()->get($id);
         if ($image === null) {
             $this->app->abort(404, $this->app->trans('Image is not exists'));
         }
-        $path = $this->app['imageboard.resources_path'] . $image['board'] . DS . $image['name'] . '%s.' . $image['ext'];
-        $full = sprintf($path, '');
-        $small = sprintf($path, '_small');
-        if (is_file($full)) {
-            unlink($full);
-        }
-        if (is_file($small)) {
-            unlink($small);
-        }
-        $this->app->ibImage()->remove($id, 'id');
+        $this->app->aib()->image()->removeFiles([[$image]]);
+        $this->app->aib()->image()->remove($id, 'id');
         $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $image['thread']]))->send();
     }
 

@@ -26,7 +26,7 @@ class Thread extends Controller {
      */
     public function view($id) {
         $id = (int) $id;
-        $thread = $this->app->ibThread()->get($id);
+        $thread = $this->app->aib()->thread()->get($id);
         if ($thread === null) {
             $this->app->abort(404, $this->app->trans('Thread does not exists'));
         }
@@ -45,10 +45,10 @@ class Thread extends Controller {
             ->bind('size', $imageSize)
             ->bind('type', $imageType)
             ->bind('id', $imageID);
-        $postsList = $this->app->ibPost()->getList($id);
-        $imagesList = $this->app->ibImage()->getList($id);
+        $postsList = $this->app->aib()->post()->getList($id);
+        $imagesList = $this->app->aib()->image()->getList($id);
 
-        $this->app->ibMarkup()->setPosts(array_map(
+        $this->app->aib()->markup()->setPosts(array_map(
             function ($post) {
                 return $post['id'];
             },
@@ -57,7 +57,7 @@ class Thread extends Controller {
 
         foreach ($postsList as $post) {
             $postID = (int) $post['id'];
-            $postText = $this->app->ibMarkup()->handle($post['text'], $postID);
+            $postText = $this->app->aib()->markup()->handle($post['text'], $postID);
             $postTime = date('d.m.Y / H:i:s', $post['time']);
             $postSage = (int) $post['sage'];
             $postVideo = !empty($post['video'])
@@ -89,7 +89,7 @@ class Thread extends Controller {
             'id'     => (int) $thread['id'],
             'theme'  => $theme,
             'posts'  => $posts,
-            'answer' => $this->app->ibCommon()->sendMessage($this->app->ibBoard()->get($thread['board']), array_merge($_POST, $_FILES), $thread),
+            'answer' => $this->app->ibCommon()->sendMessage($this->app->aib()->board()->get($thread['board']), array_merge($_POST, $_FILES), $thread),
         ]);
     }
 

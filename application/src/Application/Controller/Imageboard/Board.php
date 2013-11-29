@@ -26,17 +26,17 @@ class Board extends Controller {
      * @return mixed
      */
     public function view($name, $page = 1) {
-        $board = $this->app->ibBoard()->get($name);
+        $board = $this->app->aib()->board()->get($name);
         if ($board === null) {
             $this->app->abort(404, 'Board does not exists');
         }
 
         // List of the threads
         $threads      = '';
-        $totalThreads = $this->app->ibThread()->total($name);
+        $totalThreads = $this->app->aib()->thread()->total($name);
         if ($totalThreads > 0) {
             $pagination  = $this->app->pagination($totalThreads, $page, $this->app->url('imageboard.board.view', ['name' => $name]) . '/', 5);
-            $threadsList = $this->app->ibThread()->getList($name, $pagination->offset(), $pagination->limit());
+            $threadsList = $this->app->aib()->thread()->getList($name, $pagination->offset(), $pagination->limit());
             $threadView  = $this->app->view('imageboard/thread/item')
                 ->bind('id', $threadID)
                 ->bind('theme', $threadTheme)
@@ -48,7 +48,7 @@ class Board extends Controller {
                 $threadTheme   = $this->app->escape($thread['theme']);
                 $threadCreated = date('d.m.Y / H:i:s', $thread['created']);
                 $threadOP      = (int) $thread['op'];
-                $threadText    = $this->app->ibMarkup()->handle(mb_substr($thread['text'], 0, 100))
+                $threadText    = $this->app->aib()->markup()->handle(mb_substr($thread['text'], 0, 100))
                                . (mb_strlen($thread['text']) > 100 ? '&hellip;' : '');
                 $threads       .= $threadView->render();
             }

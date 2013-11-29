@@ -25,17 +25,17 @@ class Ajax extends Controller {
      * @return string
      */
     public function post($id) {
-        $post = $this->app->ibPost()->get((int) $id);
+        $post = $this->app->aib()->post()->get((int) $id);
         if ($post === null) {
             $this->app->abort(404, $this->app->trans('The post is not exists'));
         }
-        $post['text'] = $this->app->ibMarkup()->handle($post['text']);
+        $post['text'] = $this->app->aib()->markup()->handle($post['text']);
         $post['time'] = date('d.m.Y / H:i:s', $post['time']);
         $post['sage'] = (int) $post['sage'];
         unset($post['ip'], $post['user_agent']);
 
         $images = [];
-        $imagesList = $this->app->ibImage()->getList((int) $post['id'], 'post');
+        $imagesList = $this->app->aib()->image()->getList((int) $post['id'], 'post');
         if (isset($imagesList[$id])) {
             $i = 0;
             foreach ($imagesList[$id] as $image) {

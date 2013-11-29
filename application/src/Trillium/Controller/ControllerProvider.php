@@ -90,13 +90,11 @@ class ControllerProvider implements ControllerProviderInterface {
         /** Threads */
         $collection->get('panel/threads/remove/{id}', 'controllers.panel.threads:remove')
             ->bind('panel.threads.remove');
-        $collection->post('panel/threads/remove', 'controllers.panel.threads:massRemove')
+        $collection->post('panel/threads/remove', 'controllers.panel.threads:remove')
             ->bind('panel.threads.mass_remove');
         /** Posts */
-        $collection->get('panel/posts/{id}', 'controllers.panel.posts:remove')
+        $collection->match('panel/posts/remove/{id}', 'controllers.panel.posts:remove')
             ->bind('panel.posts.remove');
-        $collection->post('panel/posts/remove/{id}', 'controllers.panel.posts:massRemove')
-            ->bind('panel.posts.mass_remove');
         /** Images */
         $collection->get('panel/images/{id}', 'controllers.panel.images:remove')
             ->bind('panel.images.remove');
