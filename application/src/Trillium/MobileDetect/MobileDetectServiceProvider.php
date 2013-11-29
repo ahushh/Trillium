@@ -33,11 +33,11 @@ class MobileDetectServiceProvider implements ServiceProviderInterface {
         $app['mobiledetect'] = $app->share(function () use ($app) {
             return new MobileDetect($app['mobiledetect.headers'], $app['mobiledetect.user_agent']);
         });
-        $app['mobiledetect.version'] = $app->protect(function () use ($app) {
+        $app['mobiledetect.version'] = function () use ($app) {
             /** @var $detector MobileDetect */
             $detector = $app['mobiledetect'];
             return $detector->isMobile() ? 'mobile' : ($detector->isTablet() ? 'tablet' : null);
-        });
+        };
     }
 
     /**
