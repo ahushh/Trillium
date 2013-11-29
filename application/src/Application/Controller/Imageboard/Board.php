@@ -31,6 +31,30 @@ class Board extends Controller {
             $this->app->abort(404, 'Board does not exists');
         }
 
+        // Send message
+        if (!empty($_POST)) {
+            /** @var $request \Symfony\Component\HttpFoundation\Request */
+            $request = $this->app['request'];
+            $ip = ip2long($request->getClientIp());
+            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip);
+            if (is_int($result)) {
+                $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
+            } else {
+                $error = array_map(
+                    function ($item) {
+                        if (is_array($item)) {
+                            $item[0] = $this->app->trans($item[0]);
+                            $item = call_user_func_array('sprintf', $item);
+                        } else {
+                            $item = $this->app->trans($item);
+                        }
+                        return $item;
+                    },
+                    $result['error']
+                );
+            }
+        }
+
         // List of the threads
         $threads      = '';
         $totalThreads = $this->app->aib()->thread()->total($name);
@@ -61,7 +85,13 @@ class Board extends Controller {
         return $this->app->view('imageboard/board/view', [
             'name'        => $board['name'],
             'title'       => $title,
-            'messageForm' => $this->app->ibCommon()->sendMessage($board, array_merge($_POST, $_FILES)),
+            'messageForm' => $this->app->view('imageboard/common/message', [
+                'error'        => isset($error) ? $error : [],
+                'theme'        => isset($_POST['theme']) ? $_POST['theme'] : '',
+                'text'         => isset($_POST['text']) ? $_POST['text'] : '',
+                'imagesNumber' => $board['images_per_post'],
+                'newThread'    => true,
+            ]),
             'threads'     => $threads,
             'pagination'  => isset($pagination) ? $pagination->view() : '',
         ]);

@@ -14,11 +14,11 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Trillium\ImageBoard\Service\Board\Board;
 use Trillium\ImageBoard\Service\Board\Model as BoardModel;
-use Trillium\ImageBoard\Service\Common;
 use Trillium\ImageBoard\Service\Image\Image;
 use Trillium\ImageBoard\Service\Image\Model as ImageModel;
 use Trillium\ImageBoard\Service\ImageBoard;
 use Trillium\ImageBoard\Service\Markup;
+use Trillium\ImageBoard\Service\Message;
 use Trillium\ImageBoard\Service\Post\Model as PostModel;
 use Trillium\ImageBoard\Service\Post\Post;
 use Trillium\ImageBoard\Service\Thread\Model as ThreadModel;
@@ -51,8 +51,8 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
                 $app['imageboard.resources_path']
             );
         });
-        $app['imageboard.common'] = $app->share(function () use ($app) {
-            return new Common($app, $app['imageboard']->board(), $app['imageboard']->thread(), $app['imageboard']->post(), $app['imageboard']->image());
+        $app['imageboard.message'] = $app->share(function () use ($app) {
+            return new Message($app['imageboard']);
         });
     }
 

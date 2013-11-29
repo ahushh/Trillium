@@ -8,11 +8,13 @@
 
 namespace Trillium\ImageBoard;
 
-use Trillium\ImageBoard\Service\Common;
 use Trillium\ImageBoard\Service\ImageBoard;
+use Trillium\ImageBoard\Service\Message;
 
 /**
  * ImageBoardTrait Trait
+ *
+ * Allows autocomplete
  *
  * @package Trillium\ImageBoard
  */
@@ -28,12 +30,12 @@ trait ImageBoardTrait {
     }
 
     /**
-     * Get ib common object
+     * Returns message service
      *
-     * @return Common
+     * @return Message
      */
-    public function ibCommon() {
-        return $this['imageboard.common'];
+    public function aibMessage() {
+        return $this['imageboard.message'];
     }
 
 } 

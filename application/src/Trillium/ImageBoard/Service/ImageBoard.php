@@ -171,4 +171,26 @@ class ImageBoard {
         $this->image()->remove($id, 'post');
     }
 
+    /**
+     * Remove redudant threads
+     *
+     * @param string $board Name of the board
+     * @param int    $max   The maximum number of threads
+     *
+     * @return void
+     */
+    public function removeRedudantThreads($board, $max) {
+        $totalThreads = $this->thread()->total($board);
+        $redundantThreads = $totalThreads - $max;
+        if ($redundantThreads > 0) {
+            $redundantThreads = $this->thread->getRedundant($board, $redundantThreads);
+            if (!empty($redundantThreads)) {
+                $this->post()->remove($redundantThreads, 'thread');
+                $this->image()->removeFiles($this->image()->getList($redundantThreads, 'thread'));
+                $this->image()->remove($redundantThreads, 'thread');
+                $this->thread()->remove($redundantThreads, 'id');
+            }
+        }
+    }
+
 }
