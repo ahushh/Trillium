@@ -9,7 +9,7 @@
 namespace Trillium\ImageBoard\Service;
 
 /**
- * Generic Class
+ * Message Class
  *
  * @package Trillium\ImageBoard\Service
  */
@@ -57,7 +57,7 @@ class Message {
                     $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);
                 }
                 if ($newThread) {
-                    $this->aib->removeRedudantThreads($board['name'], $board['pages'] * $board['threads_per_page']);
+                    $this->aib->removeRedundantThreads($board['name'], $board['pages'] * $board['threads_per_page']);
                 }
                 return $created['thread'];
             }

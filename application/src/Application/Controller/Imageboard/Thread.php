@@ -72,4 +72,4 @@ class Thread extends ImageBoard {
         ]);
     }
 
-} 
+}

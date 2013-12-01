@@ -117,7 +117,6 @@ class Image {
      *
      * @param int $id ID of the image
      *
-     * @throws \InvalidArgumentException
      * @return array|null
      */
     public function get($id) {

@@ -14,6 +14,8 @@ use Trillium\ImageBoard\Service\Image\Image;
 /**
  * Ajax Class
  *
+ * Ajax requests handler
+ *
  * @package Application\Controller\Imageboard
  */
 class Ajax extends ImageBoard {

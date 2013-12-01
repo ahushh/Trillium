@@ -30,7 +30,7 @@ class UserServiceProvider implements ServiceProviderInterface {
      */
     public function register(Application $app) {
         $app['user.manager'] = $app->share(function () use($app) {
-            return new UserManager($app['model.mysqli'], $app['security.encoder_factory']);
+            return new UserManager($app['mysqli'], $app['security.encoder_factory']);
         });
         $app['user.roles'] = !empty($app['user.roles']) ? $app['user.roles'] : [];
     }

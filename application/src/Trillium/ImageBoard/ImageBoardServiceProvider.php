@@ -43,10 +43,10 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
         $app['imageboard.resources_path'] = null;
         $app['imageboard'] = $app->share(function () use ($app) {
             return new ImageBoard(
-                new Board(new BoardModel($app['model.mysqli'], 'boards'), $app['imageboard.resources_path']),
-                new Thread(new ThreadModel($app['model.mysqli'], 'threads', 'posts')),
-                new Post(new PostModel($app['model.mysqli'], 'posts')),
-                new Image(new ImageModel($app['model.mysqli'], 'images'), $app['imageboard.resources_path']),
+                new Board(new BoardModel($app['mysqli'], 'boards'), $app['imageboard.resources_path']),
+                new Thread(new ThreadModel($app['mysqli'], 'threads', 'posts')),
+                new Post(new PostModel($app['mysqli'], 'posts')),
+                new Image(new ImageModel($app['mysqli'], 'images'), $app['imageboard.resources_path']),
                 new Markup(new Highlighter(new HtmlManual())),
                 $app['imageboard.resources_path']
             );

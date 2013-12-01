@@ -180,14 +180,14 @@ class ImageBoard {
     }
 
     /**
-     * Remove redudant threads
+     * Remove redundant threads
      *
      * @param string $board Name of the board
      * @param int    $max   The maximum number of threads
      *
      * @return void
      */
-    public function removeRedudantThreads($board, $max) {
+    public function removeRedundantThreads($board, $max) {
         $totalThreads = $this->thread()->total($board);
         $redundantThreads = $totalThreads - $max;
         if ($redundantThreads > 0) {

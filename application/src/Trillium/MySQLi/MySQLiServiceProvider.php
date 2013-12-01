@@ -29,7 +29,7 @@ class MySQLiServiceProvider implements ServiceProviderInterface {
      * @param Application $app An Application instance
      */
     public function register(Application $app) {
-        $app['model.mysqli'] = $app->share(function () use ($app) {
+        $app['mysqli'] = $app->share(function () use ($app) {
             $mysqli = new MySQLi($app['mysqli.host'], $app['mysqli.user'], $app['mysqli.password'], $app['mysqli.database']);
             $mysqli->set_charset($app['mysqli.charset']);
             return $mysqli;

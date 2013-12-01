@@ -61,7 +61,6 @@ class Model extends ModelExtended {
      *
      * @param int $id ID of the post
      *
-     * @throws \InvalidArgumentException
      * @return array|null
      */
     public function get($id) {

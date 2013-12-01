@@ -114,7 +114,6 @@ class Model extends ModelExtended {
      *
      * @param int $id ID
      *
-     * @throws \InvalidArgumentException
      * @return array|null
      */
     public function get($id) {

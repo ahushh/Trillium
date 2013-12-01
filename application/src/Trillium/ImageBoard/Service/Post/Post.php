@@ -65,7 +65,6 @@ class Post {
      *
      * @param int $id ID of the thread
      *
-     * @throws \InvalidArgumentException
      * @return array
      */
     public function getList($id) {
@@ -94,7 +93,6 @@ class Post {
      *
      * @param int $id ID of the post
      *
-     * @throws \InvalidArgumentException
      * @return array|null
      */
     public function get($id) {
