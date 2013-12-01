@@ -37,7 +37,7 @@ class Board extends ImageBoard {
         $totalThreads = $this->app->aib()->thread()->total($name);
         if ($totalThreads > 0) {
             $pagination  = $this->app->pagination($totalThreads, $page, $this->app->url('imageboard.board.view', ['name' => $name]) . '/', 5);
-            $threadView  = $this->app->view('imageboard/thread/item')->bind('thread', $thread);
+            $threadView  = $this->app->view('imageboard/threadItem')->bind('thread', $thread);
             foreach ($this->app->aib()->thread()->getList($name, $pagination->offset(), $pagination->limit()) as $thread) {
                 $thread   = $this->prepareThread($thread);
                 $threads .= $threadView->render();
@@ -49,7 +49,7 @@ class Board extends ImageBoard {
         $title            = '/' . $board['name'] . '/' . (!empty($board['summary']) ? ' - ' . $board['summary'] : '');
         $this->app['trillium.pageTitle'] .= ': ' . $title;
 
-        return $this->app->view('imageboard/board/view', [
+        return $this->app->view('imageboard/boardView', [
             'name'        => $board['name'],
             'title'       => $title,
             'messageForm' => $this->messageForm(true, $board['images_per_post'], is_array($result) ? $result : []),

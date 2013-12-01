@@ -132,7 +132,7 @@ class ImageBoard extends Controller {
      * @return string
      */
     public final function messageForm($newThread, $imagesNumber, array $error = []) {
-       return (string) $this->app->view('imageboard/common/message', [
+       return (string) $this->app->view('imageboard/messageForm', [
            'error'        => $error,
            'theme'        => $newThread ? (isset($_POST['theme']) ? trim($_POST['theme']) : '') : '',
            'text'         => isset($_POST['text']) ? trim($_POST['text']) : '',

@@ -35,8 +35,8 @@ class Thread extends ImageBoard {
         $result = $this->messageSend($board, $thread);
 
         $posts = '';
-        $postView = $this->app->view('imageboard/post/item')->bind('post', $post)->bind('image', $postImage);
-        $imageView = $this->app->view('imageboard/image/item')->bind('image', $imageData);
+        $postView = $this->app->view('imageboard/postItem')->bind('post', $post)->bind('image', $postImage);
+        $imageView = $this->app->view('imageboard/imageItem')->bind('image', $imageData);
         $postsList = $this->app->aib()->post()->getList($id);
         $imagesList = $this->app->aib()->image()->getList($id);
 
@@ -63,7 +63,7 @@ class Thread extends ImageBoard {
         $boardName = $this->app->escape($thread['board']);
         $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
 
-        return $this->app->view('imageboard/thread/view', [
+        return $this->app->view('imageboard/threadView', [
             'board'  => $boardName,
             'id'     => (int) $thread['id'],
             'theme'  => $theme,
