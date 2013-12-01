@@ -110,11 +110,11 @@ var previewThread = {
                 .text('Youtube')
                 .appendTo(videoContainer);
             $('<input />')
-                .attr({id: 'videoSRC' + post.id, type: 'hidden', value: 'http://' + post.video})
+                .attr({id: 'videoSRC' + post.id, type: 'hidden', value: post.video.source})
                 .appendTo(videoContainer);
             $('<img />')
                 .attr({
-                    src: 'http://' + post.video.replace(/youtube\.com\/embed/, 'img.youtube.com/vi') + '/1.jpg',
+                    src: post.video.image,
                     id: 'videoIMG' + post.id
                 })
                 .appendTo(videoContainer);

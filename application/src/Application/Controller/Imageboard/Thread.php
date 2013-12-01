@@ -8,14 +8,14 @@
 
 namespace Application\Controller\Imageboard;
 
-use Trillium\Controller\Controller;
+use Application\Controller\ImageBoard;
 
 /**
  * Thread Class
  *
  * @package Application\Controller\Imageboard
  */
-class Thread extends Controller {
+class Thread extends ImageBoard {
 
     /**
      * Display thread
@@ -30,45 +30,13 @@ class Thread extends Controller {
         if ($thread === null) {
             $this->app->abort(404, $this->app->trans('Thread does not exists'));
         }
+
         $board = $this->app->aib()->board()->get($thread['board']);
-        if (!empty($_POST)) {
-            /** @var $request \Symfony\Component\HttpFoundation\Request */
-            $request = $this->app['request'];
-            $ip = ip2long($request->getClientIp());
-            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $thread);
-            if (is_int($result)) {
-                $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
-            } else {
-                $error = array_map(
-                    function ($item) {
-                        if (is_array($item)) {
-                            $item[0] = $this->app->trans($item[0]);
-                            $item = call_user_func_array('sprintf', $item);
-                        } else {
-                            $item = $this->app->trans($item);
-                        }
-                        return $item;
-                    },
-                    $result['error']
-                );
-            }
-        }
+        $result = $this->messageSend($board, $thread);
 
         $posts = '';
-        $postView = $this->app->view('imageboard/post/item')
-            ->bind('id', $postID)
-            ->bind('text', $postText)
-            ->bind('time', $postTime)
-            ->bind('image', $postImage)
-            ->bind('sage', $postSage)
-            ->bind('video', $postVideo);
-        $imageView = $this->app->view('imageboard/image/item')
-            ->bind('original', $imageOriginal)
-            ->bind('thumbnail', $imageThumbnail)
-            ->bind('resolution', $imageResolution)
-            ->bind('size', $imageSize)
-            ->bind('type', $imageType)
-            ->bind('id', $imageID);
+        $postView = $this->app->view('imageboard/post/item')->bind('post', $post)->bind('image', $postImage);
+        $imageView = $this->app->view('imageboard/image/item')->bind('image', $imageData);
         $postsList = $this->app->aib()->post()->getList($id);
         $imagesList = $this->app->aib()->image()->getList($id);
 
@@ -80,45 +48,27 @@ class Thread extends Controller {
         ));
 
         foreach ($postsList as $post) {
-            $postID = (int) $post['id'];
-            $postText = $this->app->aib()->markup()->handle($post['text'], $postID);
-            $postTime = date('d.m.Y / H:i:s', $post['time']);
-            $postSage = (int) $post['sage'];
-            $postVideo = !empty($post['video'])
-                ? [
-                    'source' => 'http://' . $post['video'],
-                    'image' => 'http://' . str_replace('youtube.com/embed/', 'img.youtube.com/vi/', $post['video']) . '/1.jpg',
-                ]
-                : null;
+            $post = $this->preparePost($post);
             $postImage = '';
-            if (array_key_exists($postID, $imagesList)) {
-                foreach ($imagesList[$postID] as $image) {
-                    $imageID = (int) $image['id'];
-                    $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $thread['board'] . '/' . $image['name'];
-                    $imageOriginal = $imageBaseURL . '.' . $image['ext'];
-                    $imageThumbnail = $imageBaseURL . '_small.' .$image['ext'];
-                    $imageResolution = $image['width'] . 'x' . $image['height'] . ' px';
-                    $imageSize = round($image['size'] / 1024) . ' KiB';
-                    $imageType = strtoupper($image['ext']);
+            if (array_key_exists($post['id'], $imagesList)) {
+                $imagesList[$post['id']] = $this->prepareImages($imagesList[$post['id']]);
+                foreach ($imagesList[$post['id']] as $imageData) {
                     $postImage .= $imageView->render();
                 }
             }
             $posts .= $postView->render();
         }
+
         $theme = $this->app->escape($thread['theme']);
         $boardName = $this->app->escape($thread['board']);
         $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
+
         return $this->app->view('imageboard/thread/view', [
             'board'  => $boardName,
             'id'     => (int) $thread['id'],
             'theme'  => $theme,
             'posts'  => $posts,
-            'answer' => $this->app->view('imageboard/common/message', [
-                'error'        => isset($error) ? $error : [],
-                'text'         => isset($_POST['text']) ? $_POST['text'] : '',
-                'imagesNumber' => $board['images_per_post'],
-                'newThread'    => false,
-            ]),
+            'answer' => $this->messageForm(false, $board['images_per_post'], is_array($result) ? $result : []),
         ]);
     }
 
