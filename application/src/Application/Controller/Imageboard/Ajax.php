@@ -30,7 +30,7 @@ class Ajax extends ImageBoard {
     public function post($id) {
         $post = $this->app->aib()->post()->get((int) $id);
         if ($post === null) {
-            $this->app->abort(404, 'The post is not exists');
+            $this->app->abort(404, 'Post does not exists');
         }
         $post = $this->preparePost($post);
         unset($post['ip'], $post['user_agent']);
