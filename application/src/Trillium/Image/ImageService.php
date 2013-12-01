@@ -68,6 +68,7 @@ class ImageService {
         if ($this->resource === false) {
             throw new \RuntimeException('Illegal file type');
         }
+        $this->resource = $this->saveTransparent($this->resource, $this->type);
     }
 
     /**
@@ -146,13 +147,7 @@ class ImageService {
      * @return resource
      */
     public function resize($width, $height) {
-        $resized = imagecreatetruecolor($width, $height);
-        if ($this->type === IMAGETYPE_GIF) {
-            imagecolortransparent($resized, imagecolorallocate($resized, 0, 0, 0));
-        } elseif ($this->type === IMAGETYPE_PNG) {
-            imagealphablending($resized, false);
-            imagesavealpha($resized, true);
-        }
+        $resized = $this->saveTransparent(imagecreatetruecolor($width, $height), $this->type);
         imagecopyresampled($resized, $this->resource, 0, 0, 0, 0, $width, $height, $this->width(), $this->height());
         return $resized;
     }
@@ -192,6 +187,24 @@ class ImageService {
         if ($permissions !== null) {
             chmod($path, $permissions);
         }
+    }
+
+    /**
+     * Save transparent for image
+     *
+     * @param resource $resource Resource
+     * @param int      $type     Type
+     *
+     * @return resource
+     */
+    public function saveTransparent($resource, $type) {
+        if ($type === IMAGETYPE_GIF) {
+            imagecolortransparent($resource, imagecolorallocate($resource, 0, 0, 0));
+        } elseif ($type === IMAGETYPE_PNG) {
+            imagealphablending($resource, false);
+            imagesavealpha($resource, true);
+        }
+        return $resource;
     }
 
 } 
