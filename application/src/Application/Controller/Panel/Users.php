@@ -54,10 +54,10 @@ class Users extends Controller {
         if ($name !== '') {
             $user = $this->app->userManager()->findBy('username', $name);
             if ($user === null) {
-                $this->app->abort(404, $this->app->trans('User does not exists'));
+                $this->app->abort(404, 'User does not exists');
             }
             if (in_array('ROLE_ROOT', $user->getRoles())) {
-                $this->app->abort(403, $this->app->trans('User is root'));
+                $this->app->abort(403, 'User is root');
             }
             $data = ['username' => $user->getUsername(), 'roles' => $user->getRoles(),];
         } else {
@@ -122,10 +122,10 @@ class Users extends Controller {
     public function remove($name) {
         $user = $this->app->userManager()->findBy('username', $name);
         if ($user === null) {
-            $this->app->abort(404, $this->app->trans('User does not exists'));
+            $this->app->abort(404, 'User does not exists');
         }
         if (in_array('ROLE_ROOT', $user->getRoles())) {
-            $this->app->abort(403, $this->app->trans('User is root'));
+            $this->app->abort(403, 'User is root');
         }
         $this->app->userManager()->deleteUser($name);
         $this->app->redirect($this->app->url('panel.users'))->send();

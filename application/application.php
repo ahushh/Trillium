@@ -154,21 +154,27 @@ $app['assetic.asset_manager'] = $app->share(
 
 /** Custom errors handler */
 $app->error(function (\Exception $exception, $code) use ($app) {
-    if ($app['debug']) {
+    if ($app['debug'] === true) {
         return null;
     }
     if ($code !== 404 && $code !== 403) {
         $app->log($exception->getMessage(), [], Logger::ERROR);
     }
-    return new Response($app->view(
-        'error/' . (in_array($code, [403, 404, 500]) ? $code : 'default'),
-        ['message' => ($code === 403 || $code === 404 ? $exception->getMessage() : '')]
-    ));
+    $messages = [
+        403       => 'Access Forbidden',
+        404       => 'The requested page could not be found',
+        500       => 'Internal Server Error',
+        'default' => 'Something went terribly wrong',
+    ];
+    return new Response((string) $app->view('error', [
+        'error'      => isset($message[$code]) ? $messages[$code] : $messages['default'],
+        'additional' => ($code === 403 || $code === 404 ? $exception->getMessage() : ''),
+    ]));
 });
 
 /** Insert views to the layout */
 $app->after(function (Request $request, Response $response) use ($app) {
-    if (strpos($response->headers->get('Content-Type'), 'text/html') !== false) {
+    if (!in_array($response->getStatusCode(), [404, 403, 500]) && strpos($response->headers->get('Content-Type'), 'text/html') !== false) {
         $response->setContent($app->view('layout', [
             'title' => $app['trillium.pageTitle'],
             'boards' => $app->aib()->board()->getList(false),

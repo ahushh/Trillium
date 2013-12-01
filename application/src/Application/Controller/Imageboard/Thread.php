@@ -28,7 +28,7 @@ class Thread extends ImageBoard {
         $id = (int) $id;
         $thread = $this->app->aib()->thread()->get($id);
         if ($thread === null) {
-            $this->app->abort(404, $this->app->trans('Thread does not exists'));
+            $this->app->abort(404, 'Thread does not exists');
         }
 
         $board = $this->app->aib()->board()->get($thread['board']);

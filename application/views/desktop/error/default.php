@@ -1,1 +1,0 @@
-<p class="error"><?= $this->__('Something went terribly wrong') ?></p>
