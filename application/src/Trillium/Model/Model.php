@@ -8,6 +8,8 @@
 
 namespace Trillium\Model;
 
+use Trillium\MySQLi\MySQLi;
+
 /**
  * Model Class
  *

@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Trillium\Exception\InvalidArgumentException;
-use Trillium\Model\MySQLi;
+use Trillium\MySQLi\MySQLi;
 
 /**
  * UserManager Class

@@ -6,14 +6,14 @@
  * @package Trillium
  */
 
-namespace Trillium\Model;
+namespace Trillium\MySQLi;
 
 /**
  * MySQLi Class
  *
  * Represents a connection between PHP and a MySQL database.
  *
- * @package Trillium\Model
+ * @package Trillium\MySQLi
  */
 class MySQLi extends \mysqli {
 

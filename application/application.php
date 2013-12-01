@@ -27,7 +27,7 @@ use Trillium\Controller\ControllerProvider;
 use Trillium\Image\ImageServiceProvider;
 use Trillium\ImageBoard\ImageBoardServiceProvider;
 use Trillium\MobileDetect\MobileDetectServiceProvider;
-use Trillium\Model\ModelServiceProvider;
+use Trillium\MySQLi\MySQLiServiceProvider;
 use Trillium\Silex\Application;
 use Trillium\User\UserServiceProvider;
 
@@ -45,7 +45,7 @@ $app->register(new MonologServiceProvider, [
 ]);
 
 $app->register(new UrlGeneratorServiceProvider);
-$app->register(new ModelServiceProvider);
+$app->register(new MySQLiServiceProvider);
 $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
 $app->register(new ImageServiceProvider);

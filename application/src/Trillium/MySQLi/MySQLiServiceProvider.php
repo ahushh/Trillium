@@ -6,19 +6,19 @@
  * @package Trillium
  */
 
-namespace Trillium\Model;
+namespace Trillium\MySQLi;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 /**
- * ModelServiceProvider Class
+ * MySQLiServiceProvider Class
  *
- * Provider for the models
+ * Provider for the MySQLi class
  *
- * @package Trillium\Model
+ * @package Trillium\MySQLi
  */
-class ModelServiceProvider implements ServiceProviderInterface {
+class MySQLiServiceProvider implements ServiceProviderInterface {
 
     /**
      * Registers services on the given app.
@@ -33,14 +33,6 @@ class ModelServiceProvider implements ServiceProviderInterface {
             $mysqli = new MySQLi($app['mysqli.host'], $app['mysqli.user'], $app['mysqli.password'], $app['mysqli.database']);
             $mysqli->set_charset($app['mysqli.charset']);
             return $mysqli;
-        });
-        $app['model'] = $app->protect(function ($name) use ($app) {
-            $className = '\Application\Model\\' . ucwords($name);
-            $object = new $className($app['model.mysqli']);
-            if (!($object instanceof Model)) {
-                throw new \RuntimeException('Object of the model should be instance of \trillium\Model');
-            }
-            return $object;
         });
     }
 

@@ -9,6 +9,7 @@
 namespace Trillium\Model;
 
 use Trillium\Exception\InvalidArgumentException;
+use Trillium\MySQLi\MySQLi;
 
 /**
  * ModelExtended Class

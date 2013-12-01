@@ -10,7 +10,7 @@ namespace Trillium\ImageBoard\Service\Thread;
 
 use Trillium\Exception\InvalidArgumentException;
 use Trillium\Model\ModelExtended;
-use Trillium\Model\MySQLi;
+use Trillium\MySQLi\MySQLi;
 
 /**
  * Model Class
