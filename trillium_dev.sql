@@ -26,13 +26,14 @@ CREATE TABLE IF NOT EXISTS `boards` (
   `thumb_width` int(3) unsigned NOT NULL DEFAULT '0',
   `pages` int(2) unsigned NOT NULL DEFAULT '0',
   `threads_per_page` int(2) unsigned NOT NULL DEFAULT '0',
+  `ip_seconds_limit` int(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.boards: 0 rows
+-- Дамп данных таблицы trillium_development.boards: 1 rows
 /*!40000 ALTER TABLE `boards` DISABLE KEYS */;
-INSERT INTO `boards` (`name`, `summary`, `hidden`, `bump_limit`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`) VALUES
-	('b', 'Random', 0, 100, 10485760, 2, 64, 1, 2);
+INSERT INTO `boards` (`name`, `summary`, `hidden`, `bump_limit`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`, `ip_seconds_limit`) VALUES
+	('b', 'Random', 0, 100, 10485760, 2, 64, 1, 2, 20);
 /*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
