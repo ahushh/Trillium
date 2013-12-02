@@ -26,6 +26,7 @@ Image is not exists: Изображение не существует
 Images: Изображения
 Images per post: Изображений на пост
 Internal Server Error: Внутренная ошибка сервера
+Limit for create posts by one IP in seconds (0 - unlimited): Лимит на создание сообщений с одного IP в секундах (0 - неограничено)
 List is empty: Список пуст
 List of the users: Список пользователей
 Login: Вход
@@ -61,6 +62,7 @@ The value could not be empty: Значение не может быть пуст
 The value is incorrect: Значение некорректно
 The value must be between %s and %s: Значение должно находиться в интервале между %s и %s
 Theme: Тема
+Too many requests from your IP. Wait %s seconds.: Слишком много запросов с вашего IP. Подождите %s секунд.
 Thread does not exists: Треда не существует
 Threads per page: Тредов на страницу
 Thumbnail width: Ширина превью

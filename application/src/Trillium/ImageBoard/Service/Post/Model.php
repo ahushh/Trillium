@@ -67,4 +67,25 @@ class Model extends ModelExtended {
         return $this->findItem('id', $id);
     }
 
-} 
+    /**
+     * Get time of last post for given IP
+     *
+     * @param int $ip IP address in the long format
+     *
+     * @throws InvalidArgumentException
+     * @return int|null
+     */
+    public function timeOfLastIP($ip) {
+        if (!is_int($ip)) {
+            throw new InvalidArgumentException('ip', 'integer', gettype($ip));
+        }
+        $result = $this->db->query("SELECT `time` FROM `" . $this->tableName . "` WHERE `ip` = '" . $ip . "' ORDER BY `time` DESC LIMIT 0,1");
+        $time = $result->fetch_row();
+        if ($time !== null) {
+            $time = (int) $time[0];
+        }
+        $result->free();
+        return $time;
+    }
+
+}

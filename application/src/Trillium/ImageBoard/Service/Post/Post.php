@@ -99,4 +99,15 @@ class Post {
         return $this->model->get($id);
     }
 
-} 
+    /**
+     * Get time of last post for given IP
+     *
+     * @param int $ip IP address in the long format
+     *
+     * @return int|null
+     */
+    public function timeOfLastIP($ip) {
+        return $this->model->timeOfLastIP($ip);
+    }
+
+}

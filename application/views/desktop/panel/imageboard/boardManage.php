@@ -108,6 +108,18 @@
         </label>
     </p>
     <p>
+        <label><?= $this->__('Limit for create posts by one IP in seconds (0 - unlimited)') ?>:<br />
+            <input
+                type="text"
+                name="ip_seconds_limit"
+                size="3"
+                maxlength="3"
+                value="<?= isset($this->data['ip_seconds_limit']) ? (int) $this->data['ip_seconds_limit'] : '' ?>" />
+            <small>[0 - 300]</small>
+        </label>
+        <?= !empty($this->error['ip_seconds_limit']) ? '<span class="error">' . $this->error['ip_seconds_limit'] . '</span>' : '' ?>
+    </p>
+    <p>
         <input type="submit" name="save" value="<?= $this->__('Save') ?>" />
     </p>
 </form>

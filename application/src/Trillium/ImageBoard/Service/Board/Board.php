@@ -129,6 +129,7 @@ class Board {
                 'thumb_width'      => 64,    // Width of the thumbnail in the pixels
                 'pages'            => 1,     // Number of the pages in the board
                 'threads_per_page' => 1,     // Threads per page
+                'ip_seconds_limit' => 10,    // Limit for create posts by one IP in seconds (0 - unlimited)
                 'hidden'           => false, // Is board hidden?
             ];
             $save['name'] = isset($data['name']) ? trim($data['name']) : '';
@@ -169,6 +170,10 @@ class Board {
         $save['threads_per_page'] = isset($data['threads_per_page']) ? (int) $data['threads_per_page'] : $defaults['threads_per_page'];
         if ($save['threads_per_page'] < 1 || $save['threads_per_page'] > 99) {
             $error['threads_per_page'] = ['The value must be between %s and %s', 1, 99];
+        }
+        $save['ip_seconds_limit'] = isset($data['ip_seconds_limit']) ? (int) $data['ip_seconds_limit'] : $defaults['ip_seconds_limit'];
+        if ($save['ip_seconds_limit'] < 0 || $save['ip_seconds_limit'] > 300) {
+            $error['ip_seconds_limit'] = ['The value must be between %s and %s', 0, 300];
         }
         $save['hidden'] = (int) isset($data['hidden']);
         if (empty($error)) {

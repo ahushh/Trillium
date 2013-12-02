@@ -43,7 +43,7 @@ class Message {
         $newThread = $thread === null;
         $error = [];
         if (!empty($data)) {
-            $result = $this->check($data, $newThread);
+            $result = $this->check($data, $newThread, $ip, $board['ip_seconds_limit']);
             if (isset($result['error'])) {
                 $error = $result['error'];
             } else {
@@ -70,12 +70,21 @@ class Message {
     /**
      * Check message data
      *
-     * @param array   $data      Data
-     * @param boolean $newThread Is new thread?
+     * @param array   $data           Data
+     * @param boolean $newThread      Is new thread?
+     * @param int     $ip             IP address of the poster
+     * @param int     $ipSecondsLimit Limit for IP in seconds (0 - unlimited)
      *
      * @return array
      */
-    protected function check(array $data, $newThread) {
+    protected function check(array $data, $newThread, $ip, $ipSecondsLimit) {
+        $error = [];
+        if ($ipSecondsLimit > 0) {
+            $lastPostTime = $this->aib->post()->timeOfLastIP((int) $ip);
+            if ($lastPostTime !== null && (time() - $ipSecondsLimit < $lastPostTime)) {
+                $error['text'] = ['Too many requests from your IP. Wait %s seconds.', abs(time() - $lastPostTime - $ipSecondsLimit)];
+            }
+        }
         $save = [];
         if ($newThread) {
             // Theme of the thread
