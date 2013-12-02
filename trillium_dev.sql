@@ -18,20 +18,21 @@ USE `trillium_development`;
 -- Дамп структуры для таблица trillium_development.boards
 CREATE TABLE IF NOT EXISTS `boards` (
   `name` varchar(10) NOT NULL DEFAULT '',
-  `summary` varchar(200) NOT NULL,
+  `summary` varchar(200) NOT NULL DEFAULT '',
   `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `max_file_size` int(10) unsigned NOT NULL,
-  `images_per_post` int(2) unsigned NOT NULL,
-  `thumb_width` int(3) unsigned NOT NULL,
-  `pages` int(2) unsigned NOT NULL,
-  `threads_per_page` int(2) unsigned NOT NULL,
+  `bump_limit` int(3) unsigned NOT NULL DEFAULT '0',
+  `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `images_per_post` int(2) unsigned NOT NULL DEFAULT '0',
+  `thumb_width` int(3) unsigned NOT NULL DEFAULT '0',
+  `pages` int(2) unsigned NOT NULL DEFAULT '0',
+  `threads_per_page` int(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.boards: 2 rows
+-- Дамп данных таблицы trillium_development.boards: 0 rows
 /*!40000 ALTER TABLE `boards` DISABLE KEYS */;
-INSERT INTO `boards` (`name`, `summary`, `hidden`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`) VALUES
-	('b', 'Random', 0, 10485760, 2, 64, 1, 2);
+INSERT INTO `boards` (`name`, `summary`, `hidden`, `bump_limit`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`) VALUES
+	('b', 'Random', 0, 100, 10485760, 2, 64, 1, 2);
 /*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
@@ -47,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `images` (
   `height` int(5) NOT NULL,
   `size` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы trillium_development.images: 0 rows
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
@@ -66,9 +67,9 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `ip` int(10) NOT NULL,
   `user_agent` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.posts: 2 rows
+-- Дамп данных таблицы trillium_development.posts: 0 rows
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 
@@ -82,9 +83,9 @@ CREATE TABLE IF NOT EXISTS `threads` (
   `bump` int(10) unsigned NOT NULL DEFAULT '0',
   `op` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы trillium_development.threads: 2 rows
+-- Дамп данных таблицы trillium_development.threads: 0 rows
 /*!40000 ALTER TABLE `threads` DISABLE KEYS */;
 /*!40000 ALTER TABLE `threads` ENABLE KEYS */;
 

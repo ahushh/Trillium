@@ -91,17 +91,18 @@ class ImageBoard extends Controller {
      * Returns Response, if message created
      * Returns null, if data is empty
      *
-     * @param array      $board  Data of the board
-     * @param array|null $thread Data of the thread
+     * @param array      $board      Data of the board
+     * @param array|null $thread     Data of the thread
+     * @param int|null   $totalPosts Number of posts in the thread
      *
      * @return array|\Symfony\Component\HttpFoundation\Response|null
      */
-    public final function messageSend(array $board, array $thread = null) {
+    public final function messageSend(array $board, array $thread = null, $totalPosts = null) {
         if (!empty($_POST)) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $this->app['request'];
             $ip = ip2long($request->getClientIp());
-            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $thread);
+            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $thread, $totalPosts);
             if (is_int($result)) {
                 return $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
             } else {

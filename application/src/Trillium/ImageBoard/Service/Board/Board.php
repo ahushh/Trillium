@@ -37,7 +37,7 @@ class Board {
     public function __construct(Model $model, $resourcesDir) {
         $this->model = $model;
         $this->stored = [];
-        $this->resourcesPath = realpath($resourcesDir) . DS;
+        $this->resourcesDir = realpath($resourcesDir) . DS;
     }
 
     /**
@@ -123,6 +123,7 @@ class Board {
             $defaults = [
                 'name'             => '',    // Name
                 'summary'          => '',    // Summary
+                'bump_limit'       => 500,   // Bump limit
                 'max_file_size'    => 1024,  // Max file size in KiB
                 'images_per_post'  => 1,     // Number of the images per post
                 'thumb_width'      => 64,    // Width of the thumbnail in the pixels
@@ -144,6 +145,10 @@ class Board {
         $save['summary'] = isset($data['summary']) ? trim($data['summary']) : $defaults['summary'];
         if (strlen($save['summary']) > 200) {
             $error['summary'] = ['The length of the value must not exceed %s characters', 200];
+        }
+        $save['bump_limit'] = isset($data['bump_limit']) ? (int) $data['bump_limit'] : $defaults['bump_limit'];
+        if ($save['bump_limit'] < 100 || $save['bump_limit'] > 999) {
+            $error['bump_limit'] = ['The value must be between %s and %s', 100, 999];
         }
         $save['max_file_size'] = isset($data['max_file_size']) ? (int) $data['max_file_size'] : $defaults['max_file_size'];
         if ($save['max_file_size'] > 10240 || $save['max_file_size'] < 1024) {

@@ -136,4 +136,4 @@ class Thread {
         $this->model->remove($by, $id);
     }
 
-} 
+}

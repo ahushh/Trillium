@@ -31,13 +31,13 @@ class Thread extends ImageBoard {
             $this->app->abort(404, 'Thread does not exists');
         }
 
+        $postsList = $this->app->aib()->post()->getList($id);
         $board = $this->app->aib()->board()->get($thread['board']);
-        $result = $this->messageSend($board, $thread);
+        $result = $this->messageSend($board, $thread, sizeof($postsList));
 
         $posts = '';
         $postView = $this->app->view('imageboard/postItem')->bind('post', $post)->bind('image', $postImage);
         $imageView = $this->app->view('imageboard/imageItem')->bind('image', $imageData);
-        $postsList = $this->app->aib()->post()->getList($id);
         $imagesList = $this->app->aib()->image()->getList($id);
 
         $this->app->aib()->markup()->setPosts(array_map(

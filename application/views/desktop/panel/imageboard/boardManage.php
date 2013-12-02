@@ -27,6 +27,18 @@
         <?= !empty($this->error['summary']) ? '<span class="error">' . $this->error['summary'] . '</span>' : '' ?>
     </p>
     <p>
+        <label><?= $this->__('Bump limit') ?>:<br />
+            <input
+                type="text"
+                name="bump_limit"
+                maxlength="3"
+                size="3"
+                value="<?= isset($this->data['bump_limit']) ? (int)$this->data['bump_limit'] : '' ?>" />
+            <small>[100-999]</small>
+        </label>
+        <?= !empty($this->error['bump_limit']) ? '<span class="error">' . $this->error['bump_limit'] . '</span>' : '' ?>
+    </p>
+    <p>
         <label><?= $this->__('Max file size (Kb)') ?>:<br />
             <input
                 type="text"
