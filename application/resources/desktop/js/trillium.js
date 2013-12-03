@@ -35,12 +35,18 @@ var answers = {
         $('.answer').each(function () {
             var self = $(this);
             var currentID = self.attr('rel');
-            var refID = self.attr('href').replace('#', 'post_');
-            if (!answers.stored[refID]) {
-                answers.stored[refID] = [];
+            if (currentID) {
+                var refID = self.attr('href').replace('#', 'post_');
+                if (!answers.stored[refID]) {
+                    answers.stored[refID] = [];
+                }
+                answers.stored[refID].push(currentID);
             }
-            answers.stored[refID].push(currentID);
         });
+        $.each(answers.stored, function (index, value) {
+            $.unique(value);
+        });
+
     },
     build: function () {
         answers.store();
