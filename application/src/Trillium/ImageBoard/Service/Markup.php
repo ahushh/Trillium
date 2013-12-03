@@ -58,18 +58,22 @@ class Markup {
      * @return void
      */
     public function setPosts(array $posts) {
-        $this->posts = array_map('intval', $posts);
+        $this->posts = [];
+        foreach ($posts as $post) {
+            $this->posts[(int) $post['id']] = $post;
+        }
     }
 
     /**
      * Handle string
      *
-     * @param string   $string String
-     * @param int|null $pid    ID of the current post
+     * @param string      $string String
+     * @param int|null    $pid    ID of the current post
+     * @param string|null $author ID of the post's author
      *
      * @return string
      */
-    public function handle($string, $pid = null) {
+    public function handle($string, $pid = null, $author = null) {
         // Prepare
         $string = htmlspecialchars($string);
         $string = preg_replace('~\r\n?~', "\n", $string);
@@ -80,7 +84,7 @@ class Markup {
         $string = preg_replace_callback(
             '~&gt;&gt;([\d]+)~u',
             function ($matches) use($pid) {
-                if (in_array($matches[1], $this->posts)) {
+                if (array_key_exists($matches[1], $this->posts)) {
                     return '<a '
                             . ($pid === null ? : 'rel="' . $pid . '"')
                             . ' href="#' . $matches[1] . '"'
@@ -135,6 +139,24 @@ class Markup {
         }
 
         $string = preg_replace('~\[(.+?)\]\((https?\:\/\/.+?)\)~us', '<a rel="noreferrer" href="$2" target="_blank">$1</a>', $string);
+
+        // Prooflabes
+        $string = preg_replace_callback(
+            '~\%\%(\d+)~u',
+            function ($matches) use ($author) {
+                $isAuthor = (array_key_exists($matches[1], $this->posts) && $this->posts[$matches[1]]['author'] == $author);
+                return '<span class="prooflabel_' . ($isAuthor ? 'yes' : 'no') . '">'
+                    . '<a '
+                        . ' href="#' . $matches[1] . '"'
+                        . ' class="answer"'
+                        . ' onclick="previewPost.show(event, \'' . $matches[1] . '\')"'
+                    . '>'
+                    . '##' . $matches[1]
+                    . '</a></span>';
+            },
+            $string
+        );
+
 
         return nl2br($string);
     }

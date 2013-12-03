@@ -40,12 +40,7 @@ class Thread extends ImageBoard {
         $imageView = $this->app->view('imageboard/imageItem')->bind('image', $imageData);
         $imagesList = $this->app->aib()->image()->getList($id);
 
-        $this->app->aib()->markup()->setPosts(array_map(
-            function ($post) {
-                return $post['id'];
-            },
-            $postsList
-        ));
+        $this->app->aib()->markup()->setPosts($postsList);
 
         foreach ($postsList as $post) {
             $post = $this->preparePost($post);

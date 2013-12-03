@@ -34,12 +34,13 @@ class Message {
      * @param array      $board      Data of the board
      * @param array      $data       Data of the new message
      * @param int        $ip         IP address of the poster
+     * @param string     $userID     ID of the user
      * @param array|null $thread     Data of the thread for answer
      * @param int|null   $totalPosts Number of posts in the thread
      *
      * @return array|int
      */
-    public function send(array $board, array $data, $ip, array $thread = null, $totalPosts = null) {
+    public function send(array $board, array $data, $ip, $userID, array $thread = null, $totalPosts = null) {
         $newThread = $thread === null;
         $error = [];
         if (!empty($data)) {
@@ -54,7 +55,7 @@ class Message {
             }
             if (empty($error)) {
                 $inBumpLimit = $totalPosts !== null ? ($board['bump_limit'] < $totalPosts) : false;
-                $created = $this->create($board['name'], $newThread ? null : (int) $thread['id'], $ip, $result['data'], $inBumpLimit);
+                $created = $this->create($board['name'], $newThread ? null : (int) $thread['id'], $ip, $userID, $result['data'], $inBumpLimit);
                 if (!empty($images)) {
                     $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);
                 }
@@ -129,12 +130,13 @@ class Message {
      * @param string   $board       Name of the board
      * @param int|null $thread      ID of the thread
      * @param int      $ip          IP address of the poster in the long format
+     * @param string   $userID      ID of the user
      * @param array    $data        Data of the new message
      * @param boolean  $inBumpLimit Number of the posts in thread
      *
      * @return array
      */
-    protected function create($board, $thread, $ip, array $data, $inBumpLimit = false) {
+    protected function create($board, $thread, $ip, $userID, array $data, $inBumpLimit = false) {
         if ($thread === null) {
             $thread = $this->aib->thread()->create($board, $data['theme']);
             $newThread = true;
@@ -152,6 +154,7 @@ class Message {
             'ip'         => $ip,
             'user_agent' => $userAgent,
             'time'       => time(),
+            'author'     => $userID,
         ]);
         if ($inBumpLimit !== false) {
             $bump = false;

@@ -79,3 +79,17 @@
     min-height: 300px;
     min-width: 400px;
 }
+
+.prooflabel_yes, .prooflabel_no {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+
+.prooflabel_yes {
+    background: #00ff00;
+}
+
+.prooflabel_no {
+    background: #ff0000;
+}

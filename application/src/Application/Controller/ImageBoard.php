@@ -52,7 +52,7 @@ class ImageBoard extends Controller {
     public final function preparePost(array $post) {
         return [
             'id'         => (int) $post['id'],
-            'text'       => $this->app->aib()->markup()->handle($post['text'], (int) $post['id']),
+            'text'       => $this->app->aib()->markup()->handle($post['text'], (int) $post['id'], $post['author']),
             'time'       => $this->formatDate((int) $post['time']),
             'sage'       => (int) $post['sage'],
             'ip'         => long2ip($post['ip']),
@@ -102,7 +102,11 @@ class ImageBoard extends Controller {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $this->app['request'];
             $ip = ip2long($request->getClientIp());
-            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $thread, $totalPosts);
+            $userID = !empty($_COOKIE['user_id']) ? trim($_COOKIE['user_id']) : md5($ip . microtime(true) . rand(1000, 9999));
+            if (empty($_COOKIE['user_id'])) {
+                setcookie('user_id', $userID, time() + 86400 * 365, '/', '.' . $_SERVER['SERVER_NAME']);
+            }
+            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $userID, $thread, $totalPosts);
             if (is_int($result)) {
                 return $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
             } else {
