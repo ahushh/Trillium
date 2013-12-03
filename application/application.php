@@ -8,6 +8,7 @@
 
 use Assetic\AssetManager;
 use Igorw\Silex\ConfigServiceProvider;
+use Kilte\Captcha\CaptchaServiceProvider;
 use Kilte\SilexPagination\PaginationServiceProvider;
 use Kilte\View\ViewServiceProvider;
 use Monolog\Logger;
@@ -50,6 +51,7 @@ $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
 $app->register(new ImageServiceProvider);
 $app->register(new PaginationServiceProvider);
+$app->register(new CaptchaServiceProvider);
 
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [

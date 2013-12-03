@@ -14,7 +14,8 @@
         "kilte/silex-view": "dev-master",
         "mheap/silex-markdown": "dev-master",
         "kilte/silex-pagination": "dev-master",
-        "kukulich/fshl": "2.*"
+        "kukulich/fshl": "2.*",
+        "kilte/silex-captcha": "dev-master"
     },
     "repositories":[
         {
@@ -24,6 +25,10 @@
         {
             "type": "git",
             "url": "http://github.com/Kilte/SilexPagination"
+        },
+        {
+            "type": "git",
+            "url":  "http://github.com/Kilte/silex-captcha"
         }
     ],
     "autoload": {
