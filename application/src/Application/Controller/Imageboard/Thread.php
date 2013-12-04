@@ -57,13 +57,14 @@ class Thread extends ImageBoard {
         $theme = $this->app->escape($thread['theme']);
         $boardName = $this->app->escape($thread['board']);
         $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
+        $captcha = $board['captcha'] && $this->app->user() === null;
 
         return $this->app->view('imageboard/threadView', [
             'board'  => $boardName,
             'id'     => (int) $thread['id'],
             'theme'  => $theme,
             'posts'  => $posts,
-            'answer' => $this->messageForm(false, $board['images_per_post'], $board['captcha'], is_array($result) ? $result : []),
+            'answer' => $this->messageForm(false, $board['images_per_post'], $captcha, is_array($result) ? $result : []),
         ]);
     }
 

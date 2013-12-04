@@ -48,11 +48,12 @@ class Board extends ImageBoard {
         $board['summary'] = $this->app->escape($board['summary']);
         $title            = '/' . $board['name'] . '/' . (!empty($board['summary']) ? ' - ' . $board['summary'] : '');
         $this->app['trillium.pageTitle'] .= ': ' . $title;
+        $captcha = $board['captcha'] && $this->app->user() === null;
 
         return $this->app->view('imageboard/boardView', [
             'name'        => $board['name'],
             'title'       => $title,
-            'messageForm' => $this->messageForm(true, $board['images_per_post'], $board['captcha'], is_array($result) ? $result : []),
+            'messageForm' => $this->messageForm(true, $board['images_per_post'], $captcha, is_array($result) ? $result : []),
             'threads'     => $threads,
             'pagination'  => isset($pagination) ? $pagination->view() : '',
         ]);
