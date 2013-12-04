@@ -64,7 +64,7 @@ class Thread extends ImageBoard {
             'id'     => (int) $thread['id'],
             'theme'  => $theme,
             'posts'  => $posts,
-            'answer' => $this->messageForm(false, $board['images_per_post'], $captcha, is_array($result) ? $result : []),
+            'answer' => $this->messageForm(false, $board['images_per_post'], $board['max_file_size'], $captcha, is_array($result) ? $result : []),
         ]);
     }
 

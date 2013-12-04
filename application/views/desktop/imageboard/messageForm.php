@@ -22,6 +22,7 @@
     ?>
     <p>
         <label><?= $this->__('Images') ?>:</label><br />
+        <small><?= sprintf($this->__('Max file size - %s Kb'), $this->maxFileSize) ?></small><br />
         <?php
         for ($i = 0; $i < $this->imagesNumber; $i++) {
             echo '<input type="file" name="images[]" value="" /><br />';
