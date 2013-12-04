@@ -9,6 +9,8 @@
 namespace Trillium\ImageBoard\Service;
 
 use Kilte\Captcha\Captcha;
+use Trillium\ImageBoard\Exception\ServiceImageException;
+use Trillium\ImageBoard\Exception\ServiceMessageException;
 
 /**
  * Message Class
@@ -16,6 +18,11 @@ use Kilte\Captcha\Captcha;
  * @package Trillium\ImageBoard\Service
  */
 class Message {
+
+    /**
+     * Empty string error message
+     */
+    const ERROR_EMPTY_STRING = 'The value could not be empty';
 
     /**
      * @var ImageBoard ImageBoard Service
@@ -36,13 +43,13 @@ class Message {
      * @return Message
      */
     public function __construct(ImageBoard $aib, Captcha $captcha) {
-        $this->aib = $aib;
+        $this->aib     = $aib;
         $this->captcha = $captcha;
     }
 
     /**
      * Send message
-     * Returns ID of the thread, if message created, else returns array with errors
+     * Returns ID of the thread, if message created
      *
      * @param array      $board      Data of the board
      * @param array      $data       Data of the new message
@@ -51,34 +58,44 @@ class Message {
      * @param array|null $thread     Data of the thread for answer
      * @param int|null   $totalPosts Number of posts in the thread
      *
-     * @return array|int
+     * @throws ServiceMessageException
+     * @return int|null
      */
     public function send(array $board, array $data, $ip, $userID, array $thread = null, $totalPosts = null) {
-        $newThread = $thread === null;
-        $error = [];
         if (!empty($data)) {
-            $result = $this->check($data, $newThread, $ip, $board['ip_seconds_limit'], (boolean) $board['captcha']);
-            if (isset($result['error'])) {
-                $error = $result['error'];
-            } else {
-                if (!empty($data['images']) && is_array($data['images'])) {
-                    $check = $this->aib->image()->performCheck($data['images'], $board['images_per_post'], $board['max_file_size']);
-                    isset($check['error']) ? $error['images'] = $check['error'] : $images = $check['images'];
+            $newThread = $thread === null;
+            $error = [];
+            $result = [];
+            try {
+                $result = $this->check($data, $newThread, $ip, $board['ip_seconds_limit'], (boolean) $board['captcha']);
+            } catch (ServiceMessageException $e) {
+                $error = $e->getMessage();
+            }
+            if (!empty($data['images']) && is_array($data['images'])) {
+                try {
+                    $images = $this->aib->image()->performCheck($data['images'], $board['images_per_post'], $board['max_file_size']);
+                } catch (ServiceImageException $e) {
+                    $error['images'] = $e->getMessage();
                 }
             }
-            if (empty($error)) {
-                $inBumpLimit = $totalPosts !== null ? ($board['bump_limit'] < $totalPosts) : false;
-                $created = $this->create($board['name'], $newThread ? null : (int) $thread['id'], $ip, $userID, $result['data'], $inBumpLimit);
-                if (!empty($images)) {
-                    $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);
-                }
-                if ($newThread) {
-                    $this->aib->removeRedundantThreads($board['name'], $board['pages'] * $board['threads_per_page']);
-                }
-                return $created['thread'];
+            // Allow empty message, if attaches exists
+            if (isset($error['text']) && ($error['text'] === self::ERROR_EMPTY_STRING) && !empty($images)) {
+                unset($error['text']);
             }
+            if (!empty($error)) {
+                throw new ServiceMessageException($error);
+            }
+            $inBumpLimit = $totalPosts !== null ? ($board['bump_limit'] < $totalPosts) : false;
+            $created = $this->create($board['name'], ($newThread ? null : (int) $thread['id']), $ip, $userID, $result, $inBumpLimit);
+            if (!empty($images)) {
+                $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);
+            }
+            if ($newThread) {
+                $this->aib->removeRedundantThreads($board['name'], $board['pages'] * $board['threads_per_page']);
+            }
+            return $created['thread'];
         }
-        return $error;
+        return null;
     }
 
     /**
@@ -90,6 +107,7 @@ class Message {
      * @param int     $ipSecondsLimit Limit for IP in seconds (0 - unlimited)
      * @param boolean $captcha        Check captha
      *
+     * @throws ServiceMessageException
      * @return array
      */
     protected function check(array $data, $newThread, $ip, $ipSecondsLimit, $captcha) {
@@ -120,7 +138,7 @@ class Message {
         // Message
         $save['text'] = !empty($data['text']) ? trim($data['text']) : '';
         if (empty($save['text'])) {
-            $error['text'] = 'The value could not be empty';
+            $error['text'] = self::ERROR_EMPTY_STRING;
         } elseif (strlen($save['text']) > 8000) {
             $error['text'] = ['The length of the value must not exceed %s characters', 8000];
         }
@@ -139,10 +157,13 @@ class Message {
                 $error['video'] = 'Wrong video URL given';
             }
         }
-        if (empty($save['text']) && (!empty($save['video']) || !empty($data['images']))) {
+        if (empty($save['text']) && !empty($save['video'])) {
             unset($error['text']);
         }
-        return !empty($error) ? ['error' => $error] : ['data' => $save];
+        if (!empty($error)) {
+            throw new ServiceMessageException($error);
+        }
+        return $save;
     }
 
     /**
@@ -170,7 +191,7 @@ class Message {
         $postID = $this->aib->post()->create([
             'board'      => $board,
             'thread'     => $thread,
-            'text'       => $data['text'],
+            'text'       => isset($data['text']) ? $data['text'] : '',
             'video'      => isset($data['video']) ? $data['video'] : '',
             'sage'       => !$bump ? 1 : 0,
             'ip'         => $ip,

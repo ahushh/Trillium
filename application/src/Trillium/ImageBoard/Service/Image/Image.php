@@ -10,6 +10,7 @@ namespace Trillium\ImageBoard\Service\Image;
 
 use Trillium\Exception\UnexpectedValueException;
 use Trillium\Image\ImageService;
+use Trillium\ImageBoard\Exception\ServiceImageException;
 
 /**
  * Image Class
@@ -150,11 +151,12 @@ class Image {
     /**
      * Perfrom check images
      *
-     * @param array    $images         List of the images
-     * @param int      $maxImages      Max number of the images
-     * @param int      $maxSize        Max file size
+     * @param array $images    List of the images
+     * @param int   $maxImages Max number of the images
+     * @param int   $maxSize   Max file size
      *
-     * @return array|string
+     * @throws ServiceImageException
+     * @return array
      */
     public function performCheck(array $images, $maxImages, $maxSize) {
         $tmpImages = [];
@@ -201,7 +203,10 @@ class Image {
                 }
             }
         }
-        return isset($error) ? ['error' => $error] : ['images' => $images];
+        if (isset($error)) {
+            throw new ServiceImageException($error);
+        }
+        return $images;
     }
 
     /**

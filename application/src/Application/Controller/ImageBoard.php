@@ -9,6 +9,7 @@
 namespace Application\Controller;
 
 use Trillium\Controller\Controller;
+use Trillium\ImageBoard\Exception\ServiceMessageException;
 
 /**
  * ImageBoard Class
@@ -98,6 +99,7 @@ class ImageBoard extends Controller {
      * @return array|\Symfony\Component\HttpFoundation\Response|null
      */
     public final function messageSend(array $board, array $thread = null, $totalPosts = null) {
+        $return = null;
         if (!empty($_POST)) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $this->app['request'];
@@ -106,11 +108,13 @@ class ImageBoard extends Controller {
             if (empty($_COOKIE['user_id'])) {
                 setcookie('user_id', $userID, time() + 86400 * 365, '/', '.' . $_SERVER['SERVER_NAME']);
             }
-            $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $userID, $thread, $totalPosts);
-            if (is_int($result)) {
-                return $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
-            } else {
-                return array_map(
+            try {
+                $result = $this->app->aibMessage()->send($board, array_merge($_POST, $_FILES), $ip, $userID, $thread, $totalPosts);
+                if (is_int($result)) {
+                    $return = $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => $result]))->send();
+                }
+            } catch (ServiceMessageException $e) {
+                $return = array_map(
                     function ($item) {
                         if (is_array($item)) {
                             $item[0] = $this->app->trans($item[0]);
@@ -120,11 +124,11 @@ class ImageBoard extends Controller {
                         }
                         return $item;
                     },
-                    $result
+                    $e->getMessage()
                 );
             }
         }
-        return null;
+        return $return;
     }
 
     /**
