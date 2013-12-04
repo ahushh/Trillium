@@ -131,6 +131,7 @@ class Board {
                 'threads_per_page' => 1,     // Threads per page
                 'ip_seconds_limit' => 10,    // Limit for create posts by one IP in seconds (0 - unlimited)
                 'hidden'           => false, // Is board hidden?
+                'captcha'          => true,  // Enable/Disable captcha
             ];
             $save['name'] = isset($data['name']) ? trim($data['name']) : '';
             if (strlen($save['name']) < 1 || strlen($save['name']) > 10) {
@@ -176,6 +177,8 @@ class Board {
             $error['ip_seconds_limit'] = ['The value must be between %s and %s', 0, 300];
         }
         $save['hidden'] = (int) isset($data['hidden']);
+        $save['captcha'] = (int) isset($data['captcha']);
+
         if (empty($error)) {
             $save['max_file_size'] = $save['max_file_size'] * 1024;
             $this->model->saveBoard($save);

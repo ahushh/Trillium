@@ -108,6 +108,15 @@
         </label>
     </p>
     <p>
+        <label>
+            <input
+                type="checkbox"
+                name="captcha"
+                value="1"<?= isset($this->data['captcha']) && (bool) $this->data['captcha'] === true ? 'checked="checked"' : '' ?> />
+            <?= $this->__('Captcha') ?>
+        </label>
+    </p>
+    <p>
         <label><?= $this->__('Limit for create posts by one IP in seconds (0 - unlimited)') ?>:<br />
             <input
                 type="text"

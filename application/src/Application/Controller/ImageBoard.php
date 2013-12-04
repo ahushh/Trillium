@@ -132,18 +132,25 @@ class ImageBoard extends Controller {
      *
      * @param boolean $newThread    New thread or answer to thread
      * @param int     $imagesNumber Number of the images to attach
+     * @param boolean $captcha      Display captcha
      * @param array   $error        Error messages
      *
      * @return string
      */
-    public final function messageForm($newThread, $imagesNumber, array $error = []) {
-       return (string) $this->app->view('imageboard/messageForm', [
-           'error'        => $error,
-           'theme'        => $newThread ? (isset($_POST['theme']) ? trim($_POST['theme']) : '') : '',
-           'text'         => isset($_POST['text']) ? trim($_POST['text']) : '',
-           'imagesNumber' => $imagesNumber,
-           'newThread'    => $newThread,
-       ]);
+    public final function messageForm($newThread, $imagesNumber, $captcha = true, array $error = []) {
+        return (string) $this->app->view('imageboard/messageForm', [
+            'error'        => $error,
+            'theme'        => $newThread ? (isset($_POST['theme']) ? trim($_POST['theme']) : '') : '',
+            'text'         => isset($_POST['text']) ? trim($_POST['text']) : '',
+            'imagesNumber' => $imagesNumber,
+            'newThread'    => $newThread,
+            'captcha'      => $captcha
+               ? [
+                     'image' => (string) $this->app->captcha(),
+                     'chars' => $this->app->captcha()->getInputOnly()
+                 ]
+               : null,
+        ]);
     }
 
     /**

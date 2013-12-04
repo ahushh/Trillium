@@ -35,6 +35,15 @@
             <?= !empty($this->error['video']) ? '<span class="error">' . $this->error['video'] . '</span>' : '' ?>
         </label>
     </p>
+    <?php if (is_array($this->captcha)): ?>
+        <p>
+            <img src="<?= $this->captcha['image'] ?>" alt="Captcha" /><br />
+            <label><?= sprintf($this->__('Type only the "%s" symbols'), $this->captcha['chars']) ?>:<br />
+                <input type="text" name="captcha" value="" />
+            </label>
+            <?= isset($this->error['captcha']) ? '<span class="error">' . $this->error['captcha'] . '</span>' : '' ?>
+        </p>
+    <?php endif; ?>
     <p>
         <input type="submit" name="send" value="<?= $this->__('Send') ?>" />
     </p>

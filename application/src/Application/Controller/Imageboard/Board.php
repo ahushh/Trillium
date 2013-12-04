@@ -52,7 +52,7 @@ class Board extends ImageBoard {
         return $this->app->view('imageboard/boardView', [
             'name'        => $board['name'],
             'title'       => $title,
-            'messageForm' => $this->messageForm(true, $board['images_per_post'], is_array($result) ? $result : []),
+            'messageForm' => $this->messageForm(true, $board['images_per_post'], $board['captcha'], is_array($result) ? $result : []),
             'threads'     => $threads,
             'pagination'  => isset($pagination) ? $pagination->view() : '',
         ]);

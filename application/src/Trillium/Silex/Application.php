@@ -8,6 +8,7 @@
 
 namespace Trillium\Silex;
 
+use Kilte\Captcha\CaptchaTrait;
 use Kilte\SilexPagination\PaginationTrait;
 use Kilte\View\ViewTrait;
 use Silex\Application\FormTrait;
@@ -26,6 +27,7 @@ use Trillium\User\UserTrait;
  */
 class Application extends \Silex\Application {
 
+    use CaptchaTrait;
     use FormTrait;
     use ImageBoardTrait;
     use ImageTrait;

@@ -51,7 +51,9 @@ $app->register(new SessionServiceProvider);
 $app->register(new UserServiceProvider);
 $app->register(new ImageServiceProvider);
 $app->register(new PaginationServiceProvider);
-$app->register(new CaptchaServiceProvider);
+$app->register(new CaptchaServiceProvider, [
+    'captcha.session_handler' => $app['session'],
+]);
 
 $app->register(new SecurityServiceProvider, [
     'security.firewalls' => [

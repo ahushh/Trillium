@@ -6,6 +6,7 @@ Board does not exists: Доска не существует
 Boards: Доски
 Bump limit: Bump лимит
 Cancel: Отмена
+Captcha: Капча
 Change password: Сменить пароль
 Confirm password: Подтвердить пароль
 Control panel: Панель управления
@@ -66,6 +67,7 @@ Too many requests from your IP. Wait %s seconds.: Слишком много за
 Thread does not exists: Треда не существует
 Threads per page: Тредов на страницу
 Thumbnail width: Ширина превью
+Type only the "%s" symbols: Введите только "%s" символы
 User does not exists: Пользователь не существует
 User is root: Корневой пользователь
 Username: Имя пользователя

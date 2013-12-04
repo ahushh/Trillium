@@ -8,6 +8,8 @@
 
 namespace Trillium\ImageBoard\Service;
 
+use Kilte\Captcha\Captcha;
+
 /**
  * Message Class
  *
@@ -21,10 +23,21 @@ class Message {
     private $aib;
 
     /**
-     * @param ImageBoard $aib ImageBoard service
+     * @var Captcha Captcha instance
      */
-    public function __construct(ImageBoard $aib) {
+    private $captcha;
+
+    /**
+     * Create Message instance
+     *
+     * @param ImageBoard             $aib ImageBoard service
+     * @param \Kilte\Captcha\Captcha $captcha
+     *
+     * @return Message
+     */
+    public function __construct(ImageBoard $aib, Captcha $captcha) {
         $this->aib = $aib;
+        $this->captcha = $captcha;
     }
 
     /**
@@ -44,7 +57,7 @@ class Message {
         $newThread = $thread === null;
         $error = [];
         if (!empty($data)) {
-            $result = $this->check($data, $newThread, $ip, $board['ip_seconds_limit']);
+            $result = $this->check($data, $newThread, $ip, $board['ip_seconds_limit'], (boolean) $board['captcha']);
             if (isset($result['error'])) {
                 $error = $result['error'];
             } else {
@@ -75,15 +88,21 @@ class Message {
      * @param boolean $newThread      Is new thread?
      * @param int     $ip             IP address of the poster
      * @param int     $ipSecondsLimit Limit for IP in seconds (0 - unlimited)
+     * @param boolean $captcha        Check captha
      *
      * @return array
      */
-    protected function check(array $data, $newThread, $ip, $ipSecondsLimit) {
+    protected function check(array $data, $newThread, $ip, $ipSecondsLimit, $captcha) {
         $error = [];
         if ($ipSecondsLimit > 0) {
             $lastPostTime = $this->aib->post()->timeOfLastIP((int) $ip);
             if ($lastPostTime !== null && (time() - $ipSecondsLimit < $lastPostTime)) {
                 $error['text'] = ['Too many requests from your IP. Wait %s seconds.', abs(time() - $lastPostTime - $ipSecondsLimit)];
+            }
+        }
+        if ($captcha) {
+            if (!$this->captcha->performCheck(isset($data['captcha']) ? $data['captcha'] : null)) {
+                $error['captcha'] = 'The value is incorrect';
             }
         }
         $save = [];

@@ -52,7 +52,7 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
             );
         });
         $app['imageboard.message'] = $app->share(function () use ($app) {
-            return new Message($app['imageboard']);
+            return new Message($app['imageboard'], $app['captcha']);
         });
     }
 
