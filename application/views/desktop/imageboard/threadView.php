@@ -8,7 +8,6 @@
     &raquo;
     <?= $this->theme ?>
 </div>
-<div class="list"><?= $this->answer ?></div>
 <?php if ($this->isGranted('ROLE_ADMIN')): ?>
     <a href="<?= $this->url('panel.imageboard.thread.remove', ['id' => $this->id]) ?>"><?= $this->__('Remove') ?></a>
     <form method="post" action="<?= $this->url('panel.imageboard.post.remove', ['id' => $this->id]) ?>">
@@ -18,3 +17,5 @@
         <input type="submit" name="remove" value="<?= $this->__('Remove checked') ?>" />
     </form>
 <?php endif; ?>
+<div><?= $this->__('Before bump limit') ?>: <?= $this->beforeBumpLimit ?></div>
+<div class="list"><?= $this->answer ?></div>
