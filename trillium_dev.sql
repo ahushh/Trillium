@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `boards` (
   `name` varchar(10) NOT NULL DEFAULT '',
   `summary` varchar(200) NOT NULL DEFAULT '',
   `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `captcha` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `bump_limit` int(3) unsigned NOT NULL DEFAULT '0',
   `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
   `images_per_post` int(2) unsigned NOT NULL DEFAULT '0',
@@ -32,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `boards` (
 
 -- Дамп данных таблицы trillium_development.boards: 1 rows
 /*!40000 ALTER TABLE `boards` DISABLE KEYS */;
-INSERT INTO `boards` (`name`, `summary`, `hidden`, `bump_limit`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`, `ip_seconds_limit`) VALUES
-	('b', 'Random', 0, 100, 10485760, 2, 64, 1, 2, 20);
+INSERT INTO `boards` (`name`, `summary`, `hidden`, `captcha`, `bump_limit`, `max_file_size`, `images_per_post`, `thumb_width`, `pages`, `threads_per_page`, `ip_seconds_limit`) VALUES
+	('b', 'Random', 0, 0, 100, 10485760, 2, 64, 1, 2, 20);
 /*!40000 ALTER TABLE `boards` ENABLE KEYS */;
 
 
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `sage` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ip` int(10) NOT NULL,
   `user_agent` varchar(150) NOT NULL,
+  `author` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
