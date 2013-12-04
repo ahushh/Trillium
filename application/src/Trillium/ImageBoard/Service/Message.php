@@ -139,6 +139,9 @@ class Message {
                 $error['video'] = 'Wrong video URL given';
             }
         }
+        if (empty($save['text']) && (!empty($save['video']) || !empty($data['images']))) {
+            unset($error['text']);
+        }
         return !empty($error) ? ['error' => $error] : ['data' => $save];
     }
 
