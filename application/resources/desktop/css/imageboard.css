@@ -31,9 +31,6 @@
     width: 10px;
     height: 10px;
 }
-.threadItem div {
-    cursor: pointer;
-}
 .threadCreated {
     color: #dadbb1;
     font-style: italic;
@@ -92,4 +89,12 @@
 
 .prooflabel_no {
     background: #ff0000;
+}
+
+img.openThread {
+    width: auto;
+    height: auto;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
 }

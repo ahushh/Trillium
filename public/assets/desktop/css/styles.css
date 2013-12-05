@@ -141,9 +141,6 @@
     width: 10px;
     height: 10px;
 }
-.threadItem div {
-    cursor: pointer;
-}
 .threadCreated {
     color: #dadbb1;
     font-style: italic;
@@ -188,6 +185,28 @@
 .playVideo iframe {
     min-height: 300px;
     min-width: 400px;
+}
+
+.prooflabel_yes, .prooflabel_no {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+
+.prooflabel_yes {
+    background: #00ff00;
+}
+
+.prooflabel_no {
+    background: #ff0000;
+}
+
+img.openThread {
+    width: auto;
+    height: auto;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
 }
 /*! jQuery UI - v1.10.3 - 2013-11-04
 * http://jqueryui.com
