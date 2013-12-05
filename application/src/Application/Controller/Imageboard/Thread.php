@@ -58,18 +58,19 @@ class Thread extends ImageBoard {
         $boardName = $this->app->escape($thread['board']);
         $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
         $captcha = $board['captcha'] && $this->app->user() === null;
-        $beforeBumpLimit = $board['bump_limit'] - sizeof($postsList);
+        $beforeBumpLimit = $board['bump_limit'] == 0 ? null : $board['bump_limit'] - sizeof($postsList);
 
         return $this->app->view('imageboard/threadView', [
             'board'           => $boardName,
             'id'              => (int) $thread['id'],
             'theme'           => $theme,
             'posts'           => $posts,
-            'beforeBumpLimit' => $beforeBumpLimit > 0 ? $beforeBumpLimit : 0,
+            'beforeBumpLimit' => $beforeBumpLimit === null ? null : ($beforeBumpLimit > 0 ? $beforeBumpLimit : 0),
             'answer'          => $this->messageForm(
                 false,
                 $board['images_per_post'],
                 $board['max_file_size'],
+                $board['blotter'],
                 $captcha,
                 is_array($result) ? $result : []
             ),

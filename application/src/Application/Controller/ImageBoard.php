@@ -137,12 +137,13 @@ class ImageBoard extends Controller {
      * @param boolean $newThread    New thread or answer to thread
      * @param int     $imagesNumber Number of the images to attach
      * @param int     $maxFileSize  Max file size in bytes
+     * @param string  $blotter      Blotter
      * @param boolean $captcha      Display captcha
      * @param array   $error        Error messages
      *
      * @return string
      */
-    public final function messageForm($newThread, $imagesNumber, $maxFileSize, $captcha = true, array $error = []) {
+    public final function messageForm($newThread, $imagesNumber, $maxFileSize, $blotter = '', $captcha = true, array $error = []) {
         return (string) $this->app->view('imageboard/messageForm', [
             'error'        => $error,
             'theme'        => $newThread ? (isset($_POST['theme']) ? trim($_POST['theme']) : '') : '',
@@ -150,6 +151,7 @@ class ImageBoard extends Controller {
             'imagesNumber' => $imagesNumber,
             'newThread'    => $newThread,
             'maxFileSize'  => round($maxFileSize / 1024),
+            'blotter'      => explode("\n", $this->app->escape($blotter)),
             'captcha'      => $captcha
                ? [
                      'image' => (string) $this->app->captcha(),

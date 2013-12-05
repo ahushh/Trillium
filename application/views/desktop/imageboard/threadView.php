@@ -17,5 +17,5 @@
         <input type="submit" name="remove" value="<?= $this->__('Remove checked') ?>" />
     </form>
 <?php endif; ?>
-<div><?= $this->__('Before bump limit') ?>: <?= $this->beforeBumpLimit ?></div>
+<?= $this->beforeBumpLimit !== null ? '<div>' . $this->__('Before bump limit') . ': ' . $this->beforeBumpLimit . '</div>' : '' ?>
 <div class="list"><?= $this->answer ?></div>

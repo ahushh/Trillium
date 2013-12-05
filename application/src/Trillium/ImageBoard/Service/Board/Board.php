@@ -123,7 +123,7 @@ class Board {
             $defaults = [
                 'name'             => '',    // Name
                 'summary'          => '',    // Summary
-                'bump_limit'       => 500,   // Bump limit
+                'bump_limit'       => 500,   // Bump limit (0 - unlimited)
                 'max_file_size'    => 1024,  // Max file size in KiB
                 'images_per_post'  => 1,     // Number of the images per post
                 'thumb_width'      => 64,    // Width of the thumbnail in the pixels
@@ -132,6 +132,7 @@ class Board {
                 'ip_seconds_limit' => 10,    // Limit for create posts by one IP in seconds (0 - unlimited)
                 'hidden'           => false, // Is board hidden?
                 'captcha'          => true,  // Enable/Disable captcha
+                'blotter'          => '',    // Blotter
             ];
             $save['name'] = isset($data['name']) ? trim($data['name']) : '';
             if (strlen($save['name']) < 1 || strlen($save['name']) > 10) {
@@ -149,12 +150,12 @@ class Board {
             $error['summary'] = ['The length of the value must not exceed %s characters', 200];
         }
         $save['bump_limit'] = isset($data['bump_limit']) ? (int) $data['bump_limit'] : $defaults['bump_limit'];
-        if ($save['bump_limit'] < 100 || $save['bump_limit'] > 999) {
+        if ($save['bump_limit'] !== 0 && ($save['bump_limit'] < 100 || $save['bump_limit'] > 999)) {
             $error['bump_limit'] = ['The value must be between %s and %s', 100, 999];
         }
         $save['max_file_size'] = isset($data['max_file_size']) ? (int) $data['max_file_size'] : $defaults['max_file_size'];
-        if ($save['max_file_size'] > 10240 || $save['max_file_size'] < 1024) {
-            $error['max_file_size'] = ['The value must be between %s and %s', 1024, 10240];
+        if ($save['max_file_size'] > 20480 || $save['max_file_size'] < 1024) {
+            $error['max_file_size'] = ['The value must be between %s and %s', 1024, 20480];
         }
         $save['images_per_post'] = isset($data['images_per_post']) ? (int) $data['images_per_post'] : $defaults['images_per_post'];
         if ($save['images_per_post'] > 10 || $save['images_per_post'] < 1) {
@@ -176,6 +177,11 @@ class Board {
         if ($save['ip_seconds_limit'] < 0 || $save['ip_seconds_limit'] > 300) {
             $error['ip_seconds_limit'] = ['The value must be between %s and %s', 0, 300];
         }
+        $save['blotter'] = isset($data['blotter']) ? trim($data['blotter']) : $defaults['bloter'];
+        if (strlen($save['blotter']) > 800) {
+            $error['blotter'] = ['The length of the value must not exceed %s characters', 800];
+        }
+        $save['blotter'] = preg_replace('~\r\n?~', "\n", $save['blotter']);
         $save['hidden'] = (int) isset($data['hidden']);
         $save['captcha'] = (int) isset($data['captcha']);
 

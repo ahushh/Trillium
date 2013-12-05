@@ -85,7 +85,11 @@ class Message {
             if (!empty($error)) {
                 throw new ServiceMessageException($error);
             }
-            $inBumpLimit = $totalPosts !== null ? ($board['bump_limit'] < $totalPosts) : false;
+            if ($board['bump_limit'] != 0 && $totalPosts !== null) {
+                $inBumpLimit = $board['bump_limit'] < $totalPosts;
+            } else {
+                $inBumpLimit = false;
+            }
             $created = $this->create($board['name'], ($newThread ? null : (int) $thread['id']), $ip, $userID, $result, $inBumpLimit);
             if (!empty($images)) {
                 $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);

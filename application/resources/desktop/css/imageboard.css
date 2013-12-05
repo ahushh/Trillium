@@ -98,3 +98,10 @@ img.openThread {
     vertical-align: middle;
     cursor: pointer;
 }
+
+ul.blotter {
+    word-wrap: break-word;
+    max-width: 500px;
+    padding: 0;
+    margin: 0 0 0 20px;
+}

@@ -27,7 +27,14 @@
         <?= !empty($this->error['summary']) ? '<span class="error">' . $this->error['summary'] . '</span>' : '' ?>
     </p>
     <p>
+        <label><?= $this->__('Blotter') ?>:<br />
+            <textarea name="blotter"><?= !empty($this->data['blotter']) ? $this->escape($this->data['blotter']) : '' ?></textarea>
+        </label>
+        <?= !empty($this->error['blotter']) ? '<span class="error">' . $this->error['blotter'] . '</span>' : '' ?>
+    </p>
+    <p>
         <label><?= $this->__('Bump limit') ?>:<br />
+            <small><?= $this->__('0 - unlimited') ?></small><br />
             <input
                 type="text"
                 name="bump_limit"
@@ -46,7 +53,7 @@
                 maxlength="5"
                 size="5"
                 value="<?= isset($this->data['max_file_size']) ? (int) $this->data['max_file_size'] : '' ?>" />
-            <small>[1024 - 10240]</small>
+            <small>[1024 - 20480]</small>
         </label>
         <?= !empty($this->error['max_file_size']) ? '<span class="error">' . $this->error['max_file_size'] . '</span>' : '' ?>
     </p>
@@ -117,7 +124,8 @@
         </label>
     </p>
     <p>
-        <label><?= $this->__('Limit for create posts by one IP in seconds (0 - unlimited)') ?>:<br />
+        <label><?= $this->__('Limit for create posts by one IP in seconds') ?>:<br />
+            <small><?= $this->__('0 - unlimited') ?></small><br />
             <input
                 type="text"
                 name="ip_seconds_limit"

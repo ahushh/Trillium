@@ -45,6 +45,13 @@
             <?= isset($this->error['captcha']) ? '<span class="error">' . $this->error['captcha'] . '</span>' : '' ?>
         </p>
     <?php endif; ?>
+    <?php if (is_array($this->blotter) && !empty($this->blotter)): ?>
+        <ul class="blotter">
+            <?php foreach ($this->blotter as $blotterItem): ?>
+                <li><?= $blotterItem ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
     <p>
         <input type="submit" name="send" value="<?= $this->__('Send') ?>" />
     </p>

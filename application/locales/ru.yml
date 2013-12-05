@@ -1,7 +1,9 @@
+0 - unlimited: 0 - неограничено
 Access Forbidden: Доступ запрещен
 Answer: Ответ
 Bad credentials: Неверные учётные данные
 Before bump limit: До бамп лимита
+Blotter: Блоттер
 Board already exists: Такая доска уже существует
 Board does not exists: Доска не существует
 Boards: Доски
@@ -28,7 +30,7 @@ Image is not exists: Изображение не существует
 Images: Изображения
 Images per post: Изображений на пост
 Internal Server Error: Внутренная ошибка сервера
-Limit for create posts by one IP in seconds (0 - unlimited): Лимит на создание сообщений с одного IP в секундах (0 - неограничено)
+Limit for create posts by one IP in seconds: Лимит на создание сообщений с одного IP в секундах
 List is empty: Список пуст
 List of the users: Список пользователей
 Login: Вход
