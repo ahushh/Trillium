@@ -25,7 +25,9 @@
         <small><?= sprintf($this->__('Max file size - %s Kb'), $this->maxFileSize) ?></small><br />
         <?php
         for ($i = 0; $i < $this->imagesNumber; $i++) {
-            echo '<input type="file" name="images[]" value="" /><br />';
+            echo '<div class="fileInput" id="fileInput' . $i . '">'
+                . '<input type="file" name="images[]" value="" />'
+                . '</div>';
         }
         ?>
         <?= !empty($this->error['images']) ? '<span class="error">' . $this->error['images'] . '</span>' : '' ?>
@@ -56,3 +58,8 @@
         <input type="submit" name="send" value="<?= $this->__('Send') ?>" />
     </p>
 </form>
+<script type="text/javascript">
+    $(document).ready(function () {
+        fileInputs();
+    });
+</script>

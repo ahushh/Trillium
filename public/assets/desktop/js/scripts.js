@@ -161,3 +161,18 @@ function showVideo(id) {
         $('#videoTitle' + id).hide();
     }
 }
+
+function fileInputs() {
+    $('div.fileInput').each(function () {
+        var $this = $(this);
+        if ($this.attr('id') != 'fileInput0') {
+            $('<span class="fileInputClose">X</span>').click(function () {
+                    $(this).prev().attr('value', '').parent().slideUp();
+            }).appendTo($this);
+            $this.hide();
+        }
+        $this.find('input[type=file]').change(function () {
+            $this.next().slideDown().find('fileInputClose').slideDown();
+        });
+    });
+}

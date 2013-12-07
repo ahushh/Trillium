@@ -105,3 +105,13 @@ ul.blotter {
     padding: 0;
     margin: 0 0 0 20px;
 }
+
+div.fileInput span.fileInputClose {
+    color: #ff0000;
+    font-weight: bolder;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 6px;
+    text-shadow: 0 0 3px #000000;
+    cursor: pointer;
+}
