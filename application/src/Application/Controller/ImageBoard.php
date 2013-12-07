@@ -80,6 +80,7 @@ class ImageBoard extends Controller {
             'theme'   => $this->app->escape($thread['theme']),
             'created' => $this->formatDate((int) $thread['created']),
             'op'      => (int) $thread['op'],
+            'postcount' => (int) $thread['postcount'],
             'text'    => $this->app->aib()->markup()->handle(mb_substr($thread['text'], 0, 100))
                        . (mb_strlen($thread['text']) > 100 ? '&hellip;' : ''),
         ];

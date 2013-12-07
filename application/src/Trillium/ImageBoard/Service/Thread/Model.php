@@ -95,7 +95,9 @@ class Model extends ModelExtended {
             $where = "WHERE `" . $this->tableName . "`.`board` = '" . $board . "'";
         }
         $result = $this->db->query(
-            "SELECT `" . $this->tableName . "`.*, `" . $this->postsTable . "`.`text` FROM `" . $this->tableName . "` "
+            "SELECT `" . $this->tableName . "`.*, `" . $this->postsTable . "`.`text`"
+            . ",(SELECT COUNT(*) FROM `" . $this->postsTable . "` WHERE `thread` = `" . $this->tableName . "`.`id`) as `postcount`"
+            . " FROM `" . $this->tableName . "` "
             . "LEFT JOIN `" . $this->postsTable . "` ON `" . $this->tableName . "`.`op` = `" . $this->postsTable . "`.`id` "
             . (isset($where) ? $where : "")
             . " ORDER BY `bump` DESC "

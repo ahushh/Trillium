@@ -1,6 +1,7 @@
 <div class="threadItem">
     <?=($this->isGranted('ROLE_ADMIN') ? '<input type="checkbox" name="threads[]" value="' . $this->thread['id'] . '" />' : '')?>
     <a href="<?= $this->url('imageboard.thread.view', ['id' => $this->thread['id']]) ?>"><?= $this->thread['theme'] ?></a>
+    [<?= $this->thread['postcount'] ?>]
     <img
         class="openThread"
         src="<?= $this->assets('images/openThread.png') ?>"
