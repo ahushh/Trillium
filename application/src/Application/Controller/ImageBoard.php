@@ -151,7 +151,7 @@ class ImageBoard extends Controller {
             'imagesNumber' => $imagesNumber,
             'newThread'    => $newThread,
             'maxFileSize'  => round($maxFileSize / 1024),
-            'blotter'      => explode("\n", $this->app->escape($blotter)),
+            'blotter'      => !empty($blotter) ? explode("\n", $this->app->escape($blotter)) : '',
             'captcha'      => $captcha
                ? [
                      'image' => (string) $this->app->captcha(),
