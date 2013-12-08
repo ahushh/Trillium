@@ -71,7 +71,7 @@ class Message {
             } catch (ServiceMessageException $e) {
                 $error = $e->getMessage();
             }
-            if (!empty($data['images']) && is_array($data['images'])) {
+            if (!empty($data['images']) && is_array($data['images']) && $board['images_per_post'] > 0) {
                 try {
                     $images = $this->aib->image()->performCheck($data['images'], $board['images_per_post'], $board['max_file_size']);
                 } catch (ServiceImageException $e) {

@@ -158,8 +158,8 @@ class Board {
             $error['max_file_size'] = ['The value must be between %s and %s', 1024, 20480];
         }
         $save['images_per_post'] = isset($data['images_per_post']) ? (int) $data['images_per_post'] : $defaults['images_per_post'];
-        if ($save['images_per_post'] > 10 || $save['images_per_post'] < 1) {
-            $error['images_per_post'] = ['The value must be between %s and %s', 1, 10];
+        if ($save['images_per_post'] > 10 || $save['images_per_post'] < 0) {
+            $error['images_per_post'] = ['The value must be between %s and %s', 0, 10];
         }
         $save['thumb_width'] = isset($data['thumb_width']) ? (int) $data['thumb_width'] : $defaults['thumb_width'];
         if ($save['thumb_width'] < 64 || $save['thumb_width'] > 999) {

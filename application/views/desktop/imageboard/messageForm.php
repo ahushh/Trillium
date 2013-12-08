@@ -20,6 +20,7 @@
         echo '<p><input type="checkbox" name="sage" value="1" id="sage" /> <label for="sage">' . $this->__('Sage') . '</label></p>';
     }
     ?>
+    <?php if ($this->imagesNumber > 0): ?>
     <p>
         <label><?= $this->__('Images') ?>:</label><br />
         <small><?= sprintf($this->__('Max file size - %s Kb'), $this->maxFileSize) ?></small><br />
@@ -32,6 +33,7 @@
         ?>
         <?= !empty($this->error['images']) ? '<span class="error">' . $this->error['images'] . '</span>' : '' ?>
     </p>
+    <?php endif; ?>
     <p>
         <label><?= $this->__('Video') ?> (Youtube):<br />
             <input type="text" name="video" value="<?= $this->escape($this->video) ?>" />

@@ -65,7 +65,7 @@
                 maxlength="2"
                 size="2"
                 value="<?= isset($this->data['images_per_post']) ? (int) $this->data['images_per_post'] : '' ?>" />
-            <small>[1 - 10]</small>
+            <small>[0 - 10]</small>
         </label>
         <?= !empty($this->error['images_per_post']) ? '<span class="error">' . $this->error['images_per_post'] . '</span>' : '' ?>
     </p>
