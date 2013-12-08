@@ -1,6 +1,9 @@
 0 - unlimited: 0 - неограничено
 Access Forbidden: Доступ запрещен
 Answer: Ответ
+Attach: Прикрепить
+Autobump: Автобамп
+Autosage: Автосажа
 Bad credentials: Неверные учётные данные
 Before bump limit: До бамп лимита
 Blotter: Блоттер
@@ -11,6 +14,8 @@ Bump limit: Bump лимит
 Cancel: Отмена
 Captcha: Капча
 Change password: Сменить пароль
+Choose board: Выберите доску
+Close: Закрыть
 Confirm password: Подтвердить пароль
 Control panel: Панель управления
 Create board: Создать доску
@@ -38,17 +43,22 @@ Logout: Выйти
 Max file size (Kb): Макс. размер файла (Kb)
 Max file size - %s Kb: Максимальный размер файла - %s Kb
 Message: Сообщение
+Move: Переместить
+Move thread: Переместить тред
 Number of the pages: Количество страниц
 Name: Имя
 New password: Новый пароль
 Old password: Старый пароль
 Old password is incorrect: Старый пароль указан неверно
+Open: Открыть
 Password: Пароль
 Passwords do not match: Пароли не совпадают
 Post does not exists: Пост не существует
 Remove: Удалить
 Remove checked: Удалить отмеченные
 Remove image: Удалить изображение
+Rename: Переименовать
+Rename thread: Переименовать тред
 Roles: Роли
 Something went terribly wrong: Что-то пошло не так
 Sage: Sage
