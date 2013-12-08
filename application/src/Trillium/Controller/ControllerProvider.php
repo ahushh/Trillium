@@ -77,6 +77,7 @@ class ControllerProvider implements ControllerProviderInterface {
         $collection->match('panel/change.password', 'controllers.panel.users:changePassword')
             ->bind('panel.users.change.password');
         /** Imageboard */
+        /** Boards */
         $collection->get('panel/imageboard/board/list', 'controllers.panel.imageboard:boardList')
             ->bind('panel.imageboard.board.list');
         $collection->match('panel/imageboard/board/manage/{name}', 'controllers.panel.imageboard:boardManage')
@@ -84,10 +85,20 @@ class ControllerProvider implements ControllerProviderInterface {
             ->value('name', '');
         $collection->get('panel/imageboard/board/remove/{name}', 'controllers.panel.imageboard:boardRemove')
             ->bind('panel.imageboard.board.remove');
+        /** Threads */
         $collection->get('panel/imageboard/thread/remove/{id}', 'controllers.panel.imageboard:threadRemove')
             ->bind('panel.imageboard.thread.remove');
         $collection->post('panel/imageboard/thread/remove', 'controllers.panel.imageboard:threadRemove')
             ->bind('panel.imageboard.thread.mass_remove');
+        $collection->match('panel/imageboard/thread/manage/{action}/{id}', 'controllers.panel.imageboard:threadManage')
+            ->bind('panel.imageboard.thread.manage')
+            ->assert('id', '[\d]+');
+        $collection->match('panel/imageboard/thread/rename/{id}', 'controllers.panel.imageboard:threadRename')
+            ->bind('panel.imageboard.thread.rename')
+            ->assert('id', '[\d]+');
+        $collection->match('panel/imageboard/thread/move/{id}', 'controllers.panel.imageboard:threadMove')
+            ->bind('panel.imageboard.thread.move')
+            ->assert('id', '[\d]+');
         /** Posts */
         $collection->match('panel/imageboard/post/remove/{id}', 'controllers.panel.imageboard:postRemove')
             ->bind('panel.imageboard.post.remove');

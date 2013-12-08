@@ -88,4 +88,17 @@ class Model extends ModelExtended {
         return $time;
     }
 
+    /**
+     * Update data of the post
+     *
+     * @param array      $data  New Data
+     * @param string     $key   Update by
+     * @param string|int $value Value of the key
+     *
+     * @return void
+     */
+    public function update(array $data, $key, $value) {
+        parent::update($data, $key, $value);
+    }
+
 }

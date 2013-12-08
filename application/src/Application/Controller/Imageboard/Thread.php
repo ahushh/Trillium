@@ -33,7 +33,9 @@ class Thread extends ImageBoard {
 
         $postsList = $this->app->aib()->post()->getList($id);
         $board = $this->app->aib()->board()->get($thread['board']);
-        $result = $this->messageSend($board, $thread, sizeof($postsList));
+        if ($thread['close'] == 0) {
+            $result = $this->messageSend($board, $thread, sizeof($postsList));
+        }
 
         $posts = '';
         $postView = $this->app->view('imageboard/postItem')->bind('post', $post)->bind('image', $postImage);
@@ -54,25 +56,46 @@ class Thread extends ImageBoard {
             $posts .= $postView->render();
         }
 
-        $theme = $this->app->escape($thread['theme']);
+        $thread['theme'] = $this->app->escape($thread['theme']);
         $boardName = $this->app->escape($thread['board']);
-        $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $theme;
+        $this->app['trillium.pageTitle'] .= ' - /' . $boardName . '/: ' . $thread['theme'];
         $captcha = $board['captcha'] && $this->app->user() === null;
         $beforeBumpLimit = $board['bump_limit'] == 0 ? null : $board['bump_limit'] - sizeof($postsList);
 
+        // Manage menu
+        /** @var \Symfony\Component\Security\Core\SecurityContext $security */
+        $security = $this->app['security'];
+        if ($security->isGranted('ROLE_ADMIN')) {
+            $manageMenu = [];
+            $manageParams = [
+                ['panel.imageboard.thread.remove', ['id' => $id], 'Remove'],
+                ['panel.imageboard.thread.rename', ['id' => $id], 'Rename'],
+                ['panel.imageboard.thread.move',   ['id' => $id], 'Move'],
+                ['panel.imageboard.thread.manage', ['id' => $id, 'action' => 'autosage'], 'Autosage'],
+                ['panel.imageboard.thread.manage', ['id' => $id, 'action' => 'autobump'], 'Autobump'],
+                ['panel.imageboard.thread.manage', ['id' => $id, 'action' => 'attach'], 'Attach'],
+                ['panel.imageboard.thread.manage', ['id' => $id, 'action' => 'close'], ($thread['close'] == 0 ? 'Close' : 'Open')],
+            ];
+            foreach ($manageParams as $manageParam) {
+                $manageMenu[] = [
+                    'title' => $this->app->trans($manageParam[2]),
+                    'url' => $this->app->url($manageParam[0], $manageParam[1]),
+                ];
+            }
+        }
+
         return $this->app->view('imageboard/threadView', [
-            'board'           => $boardName,
-            'id'              => (int) $thread['id'],
-            'theme'           => $theme,
+            'manageMenu'      => isset($manageMenu) ? $manageMenu : null,
+            'thread'          => $thread,
             'posts'           => $posts,
             'beforeBumpLimit' => $beforeBumpLimit === null ? null : ($beforeBumpLimit > 0 ? $beforeBumpLimit : 0),
-            'answer'          => $this->messageForm(
+            'answer'          => $thread['close'] == 1 ? '' : $this->messageForm(
                 false,
                 $board['images_per_post'],
                 $board['max_file_size'],
                 $board['blotter'],
                 $captcha,
-                is_array($result) ? $result : []
+                isset($result) && is_array($result) ? $result : []
             ),
         ]);
     }

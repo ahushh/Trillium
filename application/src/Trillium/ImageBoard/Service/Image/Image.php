@@ -252,4 +252,27 @@ class Image {
         $this->insert($imagesData);
     }
 
+    /**
+     * Move images of the thread to other board
+     *
+     * @param int    $thread   ID of the thread
+     * @param string $newBoard Name of the new board
+     *
+     * @return void
+     */
+    public function move($thread, $newBoard) {
+        $list = [];
+        foreach ($this->getList($thread, self::THREAD) as $images) {
+            $list = array_merge($list, $images);
+        }
+        if (!empty($list)) {
+            foreach ($list as $image) {
+                $path = $this->resourcesDir . '%s' . DS . $image['name'] . '%s.' . $image['ext'];
+                rename(sprintf($path, $image['board'], ''), sprintf($path, $newBoard, ''));
+                rename(sprintf($path, $image['board'], '_small'), sprintf($path, $newBoard, '_small'));
+            }
+            $this->model->update(['board' => $newBoard], 'thread', $thread);
+        }
+    }
+
 }

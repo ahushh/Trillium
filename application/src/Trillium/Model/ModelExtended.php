@@ -160,4 +160,38 @@ class ModelExtended extends Model {
         return $count;
     }
 
+    /**
+     * Update data
+     *
+     * @param array  $data  New data
+     * @param string $key   Update by
+     * @param string $value Value of the "by"
+     *
+     * @throws \LogicException
+     * @throws InvalidArgumentException
+     * @return void
+     */
+    protected function update(array $data, $key, $value) {
+        if (empty($data)) {
+            throw new \LogicException('Empty data');
+        }
+        if (!is_string($key)) {
+            throw new InvalidArgumentException('key', 'string', gettype($key));
+        }
+        if (!is_string($value) && !is_int($value)) {
+            throw new InvalidArgumentException('value', 'string, int', gettype($value));
+        }
+        $statement = "";
+        foreach ($data as $dKey => $dValue) {
+            if (is_string($dValue)) {
+                $data[$dKey] = $this->db->real_escape_string($dValue);
+            } elseif (!is_int($dValue)) {
+                throw new InvalidArgumentException('data[' . $dKey . ']', 'int, string', gettype($dValue));
+            }
+            $statement .= "`" . $dKey . "` = '" . $dValue . "',";
+        }
+        $value = is_string($value) ? $this->db->real_escape_string($value) : $value;
+        $this->db->query("UPDATE `" . $this->tableName . "` SET " . rtrim($statement, ',') . " WHERE `" . $key . "` = '" . $value . "'");
+    }
+
 }

@@ -110,4 +110,17 @@ class Post {
         return $this->model->timeOfLastIP($ip);
     }
 
+    /**
+     * Update data of the post
+     *
+     * @param array  $data  Data of the post
+     * @param string $key   Update by
+     * @param mixed  $value Value of the field
+     *
+     * @return void
+     */
+    public function update(array $data, $key, $value) {
+        $this->model->update($data, $key, $value);
+    }
+
 }

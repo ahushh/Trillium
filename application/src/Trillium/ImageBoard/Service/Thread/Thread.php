@@ -136,4 +136,58 @@ class Thread {
         $this->model->remove($by, $id);
     }
 
+    /**
+     * Update data of the thread
+     *
+     * @param array      $data  New data
+     * @param string     $key   Update by
+     * @param int|string $value Value of the key
+     *
+     * @return void
+     */
+    public function update(array $data, $key, $value) {
+        $this->model->update($data, $key, $value);
+    }
+
+    /**
+     * Check theme of the thread
+     *
+     * @param string $theme Theme
+     *
+     * @return array|null|string
+     */
+    public function checkTheme($theme) {
+        if (empty($theme)) {
+            $error = 'The value could not be empty';
+        } elseif (strlen($theme) > 200) {
+            $error = ['The length of the value must not exceed %s characters', 200];
+        } else {
+            $error = null;
+        }
+        return $error;
+    }
+
+    /**
+     * Manage thread
+     *
+     * @param array  $thread Data of the thread
+     * @param string $action Name of the action
+     *
+     * @return void
+     * @throws UnexpectedValueException
+     */
+    public function manage(array $thread, $action) {
+        $actions = [
+            'autosage' => ['auto_sage_bump' => $thread['auto_sage_bump'] == 1 ? 0 : 1], // Autosage (Disable bump)
+            'autobump' => ['auto_sage_bump' => $thread['auto_sage_bump'] == 2 ? 0 : 2], // Autobump (Disable sage)
+            'attach'   => ['attach' => $thread['attach'] == 1 ? 0 : 1],                 // Attach (Never redundant)
+            'close'    => ['close' => $thread['close'] == 1 ? 0 : 1],                   // Open/close
+        ];
+        $expected = array_keys($actions);
+        if (!in_array($action, $expected)) {
+            throw new UnexpectedValueException('action', implode(', ', $expected));
+        }
+        $this->update($actions[$action], 'id', (int) $thread['id']);
+    }
+
 }

@@ -85,12 +85,23 @@ class Message {
             if (!empty($error)) {
                 throw new ServiceMessageException($error);
             }
-            if ($board['bump_limit'] != 0 && $totalPosts !== null) {
-                $inBumpLimit = $board['bump_limit'] < $totalPosts;
+            // Define bump
+            if (is_array($thread)) {
+                if ($thread['auto_sage_bump'] == 1) { // Autosage
+                    $bump = false;
+                } elseif ($thread['auto_sage_bump'] == 2) { // Autobump
+                    $bump = true;
+                } else {
+                    if ($board['bump_limit'] != 0 && $totalPosts !== null) { //Bump limit
+                        $bump = $totalPosts > $board['bump_limit'] ? false : true;
+                    } else {
+                        $bump = !$result['sage']; // Sage
+                    }
+                }
             } else {
-                $inBumpLimit = false;
+                $bump = true; // New thread
             }
-            $created = $this->create($board['name'], ($newThread ? null : (int) $thread['id']), $ip, $userID, $result, $inBumpLimit);
+            $created = $this->create($board['name'], ($newThread ? null : (int) $thread['id']), $ip, $userID, $result, $bump);
             if (!empty($images)) {
                 $this->aib->image()->upload($images, $board['name'], $created['thread'], $created['post'], (int) $board['thumb_width']);
             }
@@ -131,11 +142,11 @@ class Message {
         if ($newThread) {
             // Theme of the thread
             $save['theme'] = !empty($data['theme']) ? trim($data['theme']) : '';
-            if (empty($save['theme'])) {
-                $error['theme'] = 'The value could not be empty';
-            } elseif (strlen($save['theme']) > 200) {
-                $error['theme'] = ['The length of the value must not exceed %s characters', 200];
+            $result = $this->aib->thread()->checkTheme($save['theme']);
+            if ($result !== null) {
+                $error['theme'] = $result;
             }
+            unset($result);
         } else {
             $save['sage'] = isset($data['sage']);
         }
@@ -179,11 +190,11 @@ class Message {
      * @param int      $ip          IP address of the poster in the long format
      * @param string   $userID      ID of the user
      * @param array    $data        Data of the new message
-     * @param boolean  $inBumpLimit Number of the posts in thread
+     * @param boolean  $bump        Bump thread?
      *
      * @return array
      */
-    protected function create($board, $thread, $ip, $userID, array $data, $inBumpLimit = false) {
+    protected function create($board, $thread, $ip, $userID, array $data, $bump) {
         if ($thread === null) {
             $thread = $this->aib->thread()->create($board, $data['theme']);
             $newThread = true;
@@ -191,21 +202,17 @@ class Message {
             $newThread = false;
         }
         $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? trim(substr($_SERVER['HTTP_USER_AGENT'], 0, 150)) : '';
-        $bump = isset($data['sage']) && $data['sage'] === true ? false : true;
         $postID = $this->aib->post()->create([
             'board'      => $board,
             'thread'     => $thread,
             'text'       => isset($data['text']) ? $data['text'] : '',
             'video'      => isset($data['video']) ? $data['video'] : '',
-            'sage'       => !$bump ? 1 : 0,
+            'sage'       => $data['sage'] ? 1 : 0,
             'ip'         => $ip,
             'user_agent' => $userAgent,
             'time'       => time(),
             'author'     => $userID,
         ]);
-        if ($inBumpLimit !== false) {
-            $bump = false;
-        }
         $this->aib->thread()->bump($thread, $newThread ? $postID : null, $bump);
         return ['thread' => $thread, 'post' => $postID];
     }

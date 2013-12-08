@@ -100,7 +100,7 @@ class Model extends ModelExtended {
             . " FROM `" . $this->tableName . "` "
             . "LEFT JOIN `" . $this->postsTable . "` ON `" . $this->tableName . "`.`op` = `" . $this->postsTable . "`.`id` "
             . (isset($where) ? $where : "")
-            . " ORDER BY `bump` DESC "
+            . " ORDER BY `attach` DESC, `bump` DESC "
             . ($offset !== null || $limit !== null ? "LIMIT " . (int) $offset . ", " . (int) $limit : "")
         );
         $list = [];
@@ -147,7 +147,7 @@ class Model extends ModelExtended {
                 'by'        => 'bump',
                 'direction' => 'ASC'
             ],
-            "`board` = '" . $this->db->real_escape_string($board) . "'",
+            "`board` = '" . $this->db->real_escape_string($board) . "' AND `attach` != '1'",
             [
                 'offset' => 0,
                 'limit'  => (int) $redundant
@@ -165,6 +165,19 @@ class Model extends ModelExtended {
      */
     public function remove($key, $value) {
         parent::remove($key, $value);
+    }
+
+    /**
+     * Update data of the thread
+     *
+     * @param array      $data  New data
+     * @param string     $key   Update by
+     * @param int|string $value Value of the key
+     *
+     * @return void
+     */
+    public function update(array $data, $key, $value) {
+        parent::update($data, $key, $value);
     }
 
 }

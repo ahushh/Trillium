@@ -151,16 +151,129 @@ class ImageBoard extends Controller {
     public function threadRemove(Request $request, $id = null) {
         $id = !empty($_POST['threads']) && is_array($_POST['threads']) ? $_POST['threads'] : (int) $id;
         if (is_int($id)) {
-            $thread = $this->app->aib()->thread()->get($id);
-            if (is_null($thread)) {
-                $this->app->abort(404, 'Thread does not exists');
-            }
+            $thread = $this->threadFind($id);
         }
         $this->app->aib()->removeThread($id);
         $url = isset($thread)
             ? $this->app->url('imageboard.board.view', ['name' => $thread['board']])
             : $request->headers->get('Referer', 'http://' . $_SERVER['SERVER_NAME']);
         $this->app->redirect($url)->send();
+    }
+
+    /**
+     * Manage thread
+     *
+     * @param string $action Name of the action
+     * @param int    $id     ID of the thread
+     *
+     * @return void
+     */
+    public function threadManage($action, $id) {
+        $thread = $this->threadFind($id);
+        try {
+            $this->app->aib()->thread()->manage($thread, $action);
+        } catch (\UnexpectedValueException $e) {
+            $this->app->abort(500, 'Illegal action');
+        }
+        $this->threadRedirectTo($thread['id']);
+    }
+
+    /**
+     * Rename thread
+     *
+     * @param int $id ID of the thread
+     *
+     * @return mixed
+     */
+    public function threadRename($id) {
+        $thread = $this->threadFind($id);
+        if (isset($_POST['cancel'])) {
+            $this->threadRedirectTo($thread['id']);
+        }
+        if (isset($_POST['submit'])) {
+            $theme = isset($_POST['theme']) ? trim($_POST['theme']) : '';
+            $error = $this->app->aib()->thread()->checkTheme($theme);
+            if ($error === null) {
+                $this->app->aib()->thread()->update(['theme' => $theme], 'id', $thread['id']);
+                $this->threadRedirectTo($thread['id']);
+            } else {
+                $error = is_array($error) ? sprintf($this->app->trans($error[0]), $error[1]) : $this->app->trans($error);
+            }
+        }
+        return $this->app->view('panel/imageboard/threadRename', [
+            'theme' => $this->app->escape(isset($theme) ? $theme : $thread['theme']),
+            'error' => isset($error) ? $error : '',
+        ]);
+    }
+
+    /**
+     * Move thread to the board
+     *
+     * @param int $id ID of the thread
+     *
+     * @return mixed
+     */
+    public function threadMove($id) {
+        $thread = $this->threadFind($id);
+        if (isset($_POST['cancel'])) {
+            $this->threadRedirectTo($thread['id']);
+        }
+        $boards = array_map(
+            function ($board) {
+                return $board['name'];
+            },
+            $this->app->aib()->board()->getList(true)
+        );
+        $currentBoard = array_search($thread['board'], $boards);
+        if ($currentBoard !== false) {
+            unset($boards[$currentBoard]);
+        }
+        if (empty($boards)) {
+            $this->threadRedirectTo($thread['id']);
+        }
+        if (isset($_POST['submit'])) {
+            $board = isset($_POST['board']) ? trim($_POST['board']) : '';
+            if (in_array($board, $boards)) {
+                $this->app->aib()->thread()->update(['board' => $board], 'id', $thread['id']);
+                $this->app->aib()->post()->update(['board' => $board], 'thread', $thread['id']);
+                $this->app->aib()->image()->move($thread['id'], $board);
+                $this->threadRedirectTo($thread['id']);
+            } else {
+                $error = $this->app->trans('Board does not exists');
+            }
+        }
+        return $this->app->view('panel/imageboard/threadMove', [
+            'boards' => $boards,
+            'error'  => isset($error) ? $error : '',
+        ]);
+    }
+
+    /**
+     * Find thread
+     * If thread is not exists, abort
+     *
+     * @param int $id ID of the thread
+     *
+     * @return array|null
+     */
+    protected function threadFind($id) {
+        $thread = $this->app->aib()->thread()->get($id);
+        if ($thread === null) {
+            $this->app->abort(404, 'Thread does not exists');
+        }
+        $thread['id'] = (int) $thread['id'];
+        return $thread;
+    }
+
+    /**
+     * Redirect to the thread
+     *
+     * @param int $id ID of the thread
+     *
+     * @return void
+     */
+    protected function threadRedirectTo($id) {
+        $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => (int) $id]))->send();
     }
 
 }
