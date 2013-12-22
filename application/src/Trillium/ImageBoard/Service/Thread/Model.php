@@ -17,8 +17,8 @@ use Trillium\MySQLi\MySQLi;
  *
  * @package Trillium\ImageBoard\Service\Thread
  */
-class Model extends ModelExtended {
-
+class Model extends ModelExtended
+{
     /**
      * @var string Name of the posts table in database
      */
@@ -33,7 +33,8 @@ class Model extends ModelExtended {
      *
      * @return Model
      */
-    public function __construct(MySQLi $mysqli, $tableName, $postsTable) {
+    public function __construct(MySQLi $mysqli, $tableName, $postsTable)
+    {
         parent::__construct($mysqli, $tableName);
         $this->postsTable = $postsTable;
     }
@@ -46,7 +47,8 @@ class Model extends ModelExtended {
      *
      * @return int
      */
-    public function create($board, $theme) {
+    public function create($board, $theme)
+    {
         return $this->save([
             'board'   => $board,
             'theme'   => $theme,
@@ -64,7 +66,8 @@ class Model extends ModelExtended {
      * @throws InvalidArgumentException
      * @return void
      */
-    public function bump($tid, $pid = null, $bump = true) {
+    public function bump($tid, $pid = null, $bump = true)
+    {
         if (!is_int($tid)) {
             throw new InvalidArgumentException('tid', 'integer', gettype($tid));
         }
@@ -89,7 +92,8 @@ class Model extends ModelExtended {
      *
      * @return array
      */
-    public function getThreads($board = null, $offset = null, $limit = null) {
+    public function getThreads($board = null, $offset = null, $limit = null)
+    {
         if ($board !== null) {
             $board = $this->db->real_escape_string($board);
             $where = "WHERE `" . $this->tableName . "`.`board` = '" . $board . "'";
@@ -108,6 +112,7 @@ class Model extends ModelExtended {
             $list[] = $item;
         }
         $result->free();
+
         return $list;
     }
 
@@ -118,7 +123,8 @@ class Model extends ModelExtended {
      *
      * @return array|null
      */
-    public function get($id) {
+    public function get($id)
+    {
         return $this->findItem('id', $id);
     }
 
@@ -129,19 +135,21 @@ class Model extends ModelExtended {
      *
      * @return int
      */
-    public function total($board) {
+    public function total($board)
+    {
         return $this->count("`board` = '" . $this->db->real_escape_string($board) . "'");
     }
 
     /**
      * Get IDs of redundant threads
      *
-     * @param string $board    Name of the board
+     * @param string $board     Name of the board
      * @param int    $redundant Redudant
      *
      * @return array
      */
-    public function getRedundant($board, $redundant) {
+    public function getRedundant($board, $redundant)
+    {
         return parent::getList(
             [
                 'by'        => 'bump',
@@ -163,7 +171,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function remove($key, $value) {
+    public function remove($key, $value)
+    {
         parent::remove($key, $value);
     }
 
@@ -176,7 +185,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function update(array $data, $key, $value) {
+    public function update(array $data, $key, $value)
+    {
         parent::update($data, $key, $value);
     }
 

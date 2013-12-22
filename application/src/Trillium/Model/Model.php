@@ -17,8 +17,8 @@ use Trillium\MySQLi\MySQLi;
  *
  * @package Trillium\Model
  */
-abstract class Model {
-
+abstract class Model
+{
     /**
      * @var MySQLi instance of the MySQLi class
      */
@@ -28,8 +28,9 @@ abstract class Model {
      * Create instance
      * @param MySQLi $db Instance of the MySQLi class
      */
-    public function __construct(MySQLi $db) {
+    public function __construct(MySQLi $db)
+    {
         $this->db = $db;
     }
 
-} 
+}

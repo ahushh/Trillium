@@ -17,8 +17,8 @@ use Trillium\ImageBoard\Exception\ServiceMessageException;
  *
  * @package Trillium\ImageBoard\Service
  */
-class Message {
-
+class Message
+{
     /**
      * Empty string error message
      */
@@ -37,12 +37,13 @@ class Message {
     /**
      * Create Message instance
      *
-     * @param ImageBoard             $aib ImageBoard service
+     * @param ImageBoard             $aib     ImageBoard service
      * @param \Kilte\Captcha\Captcha $captcha
      *
      * @return Message
      */
-    public function __construct(ImageBoard $aib, Captcha $captcha) {
+    public function __construct(ImageBoard $aib, Captcha $captcha)
+    {
         $this->aib     = $aib;
         $this->captcha = $captcha;
     }
@@ -61,7 +62,8 @@ class Message {
      * @throws ServiceMessageException
      * @return int|null
      */
-    public function send(array $board, array $data, $ip, $userID, array $thread = null, $totalPosts = null) {
+    public function send(array $board, array $data, $ip, $userID, array $thread = null, $totalPosts = null)
+    {
         if (!empty($data)) {
             $newThread = $thread === null;
             $error = [];
@@ -108,8 +110,10 @@ class Message {
             if ($newThread) {
                 $this->aib->removeRedundantThreads($board['name'], $board['pages'] * $board['threads_per_page']);
             }
+
             return $created['thread'];
         }
+
         return null;
     }
 
@@ -125,7 +129,8 @@ class Message {
      * @throws ServiceMessageException
      * @return array
      */
-    protected function check(array $data, $newThread, $ip, $ipSecondsLimit, $captcha) {
+    protected function check(array $data, $newThread, $ip, $ipSecondsLimit, $captcha)
+    {
         $error = [];
         if ($ipSecondsLimit > 0) {
             $lastPostTime = $this->aib->post()->timeOfLastIP((int) $ip);
@@ -178,6 +183,7 @@ class Message {
         if (!empty($error)) {
             throw new ServiceMessageException($error);
         }
+
         return $save;
     }
 
@@ -185,16 +191,17 @@ class Message {
      * Save data of the new message in the database
      * Returns identifiers of the thread and of the post
      *
-     * @param string   $board       Name of the board
-     * @param int|null $thread      ID of the thread
-     * @param int      $ip          IP address of the poster in the long format
-     * @param string   $userID      ID of the user
-     * @param array    $data        Data of the new message
-     * @param boolean  $bump        Bump thread?
+     * @param string   $board  Name of the board
+     * @param int|null $thread ID of the thread
+     * @param int      $ip     IP address of the poster in the long format
+     * @param string   $userID ID of the user
+     * @param array    $data   Data of the new message
+     * @param boolean  $bump   Bump thread?
      *
      * @return array
      */
-    protected function create($board, $thread, $ip, $userID, array $data, $bump) {
+    protected function create($board, $thread, $ip, $userID, array $data, $bump)
+    {
         if ($thread === null) {
             $thread = $this->aib->thread()->create($board, $data['theme']);
             $newThread = true;
@@ -214,6 +221,7 @@ class Message {
             'author'     => $userID,
         ]);
         $this->aib->thread()->bump($thread, $newThread ? $postID : null, $bump);
+
         return ['thread' => $thread, 'post' => $postID];
     }
 

@@ -18,8 +18,8 @@ use Trillium\ImageBoard\Service\Image\Image;
  *
  * @package Application\Controller\Imageboard
  */
-class Ajax extends ImageBoard {
-
+class Ajax extends ImageBoard
+{
     /**
      * Returns data of the single post
      *
@@ -27,7 +27,8 @@ class Ajax extends ImageBoard {
      *
      * @return string
      */
-    public function post($id) {
+    public function post($id)
+    {
         $post = $this->app->aib()->post()->get((int) $id);
         if ($post === null) {
             $this->app->abort(404, 'Post does not exists');
@@ -39,7 +40,8 @@ class Ajax extends ImageBoard {
         if (isset($imagesList[$id])) {
             $images = $this->prepareImages($imagesList[$id]);
         }
+
         return $this->app->json(['post' => $post, 'images' => $images]);
     }
 
-} 
+}

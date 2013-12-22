@@ -15,8 +15,8 @@ use Trillium\Exception\UnexpectedValueException;
  *
  * @package Trillium\ImageBoard\Service\Post
  */
-class Post {
-
+class Post
+{
     /**
      * Name of the ID key
      */
@@ -44,7 +44,8 @@ class Post {
      *
      * @return Post
      */
-    public function __construct(Model $model) {
+    public function __construct(Model $model)
+    {
         $this->model = $model;
     }
 
@@ -56,7 +57,8 @@ class Post {
      *
      * @return int
      */
-    public function create(array $data) {
+    public function create(array $data)
+    {
         return $this->model->create($data);
     }
 
@@ -67,7 +69,8 @@ class Post {
      *
      * @return array
      */
-    public function getList($id) {
+    public function getList($id)
+    {
         return $this->model->getPosts($id);
     }
 
@@ -80,7 +83,8 @@ class Post {
      * @throws UnexpectedValueException
      * @return void
      */
-    public function remove($id, $by) {
+    public function remove($id, $by)
+    {
         $expected = [self::ID, self::BOARD, self::THREAD];
         if (!in_array($by, $expected)) {
             throw new UnexpectedValueException('by', implode(', ', $expected));
@@ -95,7 +99,8 @@ class Post {
      *
      * @return array|null
      */
-    public function get($id) {
+    public function get($id)
+    {
         return $this->model->get($id);
     }
 
@@ -106,7 +111,8 @@ class Post {
      *
      * @return int|null
      */
-    public function timeOfLastIP($ip) {
+    public function timeOfLastIP($ip)
+    {
         return $this->model->timeOfLastIP($ip);
     }
 
@@ -119,7 +125,8 @@ class Post {
      *
      * @return void
      */
-    public function update(array $data, $key, $value) {
+    public function update(array $data, $key, $value)
+    {
         $this->model->update($data, $key, $value);
     }
 

@@ -23,8 +23,8 @@ use Trillium\MySQLi\MySQLi;
  *
  * @package Trillium\User
  */
-class UserManager implements UserProviderInterface {
-
+class UserManager implements UserProviderInterface
+{
     /**
      * @var MySQLi MySQLi object
      */
@@ -43,7 +43,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return UserManager
      */
-    public function __construct(MySQLi $db, EncoderFactory $encoderFactory) {
+    public function __construct(MySQLi $db, EncoderFactory $encoderFactory)
+    {
         $this->db = $db;
         $this->encoderFactory = $encoderFactory;
     }
@@ -63,11 +64,13 @@ class UserManager implements UserProviderInterface {
      * @throws UsernameNotFoundException if the user is not found
      *
      */
-    public function loadUserByUsername($username) {
+    public function loadUserByUsername($username)
+    {
         $user = $this->findBy('username', $username);
         if ($user === null) {
             throw new UsernameNotFoundException(sprintf('Username %s does not exists', $username));
         }
+
         return $user;
     }
 
@@ -85,10 +88,12 @@ class UserManager implements UserProviderInterface {
      *
      * @throws UnsupportedUserException if the account is not supported
      */
-    public function refreshUser(UserInterface $user) {
+    public function refreshUser(UserInterface $user)
+    {
         if (!$this->supportsClass(get_class($user))) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
+
         return $this->loadUserByUsername($user->getUsername());
     }
 
@@ -99,7 +104,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return Boolean
      */
-    public function supportsClass($class) {
+    public function supportsClass($class)
+    {
         return $class === 'Trillium\User\User';
     }
 
@@ -112,7 +118,8 @@ class UserManager implements UserProviderInterface {
      * @throws InvalidArgumentException
      * @return User|null
      */
-    public function findBy($key, $value) {
+    public function findBy($key, $value)
+    {
         $value = is_numeric($value) ? (int) $value : (is_string($value) ? $this->db->real_escape_string($value) : null);
         if ($value === null) {
             throw new InvalidArgumentException('value', 'string, integer', gettype($value));
@@ -124,6 +131,7 @@ class UserManager implements UserProviderInterface {
         if (is_array($data)) {
             $data['roles'] = explode(',', $data['roles']);
         }
+
         return is_array($data) ? $this->userObject($data) : null;
     }
 
@@ -137,11 +145,13 @@ class UserManager implements UserProviderInterface {
      *
      * @return User
      */
-    public function createUser($username, $password, array $roles, $encodePassword = true) {
+    public function createUser($username, $password, array $roles, $encodePassword = true)
+    {
         if ($encodePassword) {
             $password = $this->encodePassword($username, $password);
         }
         $user = $this->userObject(['username' => $username, 'password' => $password, 'roles' => $roles]);
+
         return $user;
     }
 
@@ -152,7 +162,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return void
      */
-    public function insertUser(User $user) {
+    public function insertUser(User $user)
+    {
         $username = $this->db->real_escape_string($user->getUsername());
         $password = $this->db->real_escape_string($user->getPassword());
         $roles = $this->db->real_escape_string(implode(',', $user->getRoles()));
@@ -169,7 +180,8 @@ class UserManager implements UserProviderInterface {
      * @throws InvalidArgumentException
      * @return void
      */
-    public function updateValue($username, $key, $value) {
+    public function updateValue($username, $key, $value)
+    {
         if (!is_string($value) && !is_int($value)) {
             throw new InvalidArgumentException('value', 'string, integer', gettype($value));
         }
@@ -185,7 +197,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return void
      */
-    public function deleteUser($username) {
+    public function deleteUser($username)
+    {
         $username = $this->db->real_escape_string($username);
         $this->db->query("DELETE FROM `users` WHERE `username` = '$username'");
     }
@@ -197,11 +210,13 @@ class UserManager implements UserProviderInterface {
      *
      * @return boolean
      */
-    public function isUsernameExists($username) {
+    public function isUsernameExists($username)
+    {
         $username = $this->db->real_escape_string($username);
         $result = $this->db->query("SELECT COUNT(*) FROM `users` WHERE `username` = '$username'");
         $isExists = (bool) $result->fetch_row()[0];
         $result->free();
+
         return $isExists;
     }
 
@@ -213,7 +228,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return array
      */
-    public function getList(array $limit = [], array $order = []) {
+    public function getList(array $limit = [], array $order = [])
+    {
         $limit = isset($limit['offset'], $limit['limit']) ? "LIMIT " . (int) $limit['offset'] . ", " . (int) $limit['limit'] : "";
         $order = isset($order['by'], $order['direction']) ? "ORDER BY `" . $order['by'] . "` " . $order['direction'] : "";
         $result = $this->db->query("SELECT * FROM `users` $limit $order");
@@ -222,6 +238,7 @@ class UserManager implements UserProviderInterface {
             $list[] = $user;
         }
         $result->free();
+
         return $list;
     }
 
@@ -233,8 +250,10 @@ class UserManager implements UserProviderInterface {
      *
      * @return string
      */
-    public function encodePassword($username, $plainPassword) {
+    public function encodePassword($username, $plainPassword)
+    {
         $user = new User($username, $plainPassword);
+
         return $this->encoderFactory->getEncoder($user)->encodePassword($plainPassword, $user->getSalt());
     }
 
@@ -245,7 +264,8 @@ class UserManager implements UserProviderInterface {
      *
      * @return User
      */
-    protected function userObject(array $data) {
+    protected function userObject(array $data)
+    {
         return new User($data['username'], $data['password'], $data['roles'], true, true, true, true);
     }
 

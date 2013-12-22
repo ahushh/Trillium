@@ -17,8 +17,8 @@ use Trillium\Silex\Application;
  *
  * @package Trillium\Controller
  */
-abstract class Controller {
-
+abstract class Controller
+{
     /**
      * @var Application Silex application instance
      */
@@ -29,8 +29,9 @@ abstract class Controller {
      *
      * @param Application $app Silex application instance
      */
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+    {
         $this->app = $app;
     }
 
-} 
+}

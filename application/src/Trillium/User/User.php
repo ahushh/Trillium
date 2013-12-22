@@ -17,8 +17,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @package Trillium\User
  */
-class User implements AdvancedUserInterface {
-
+class User implements AdvancedUserInterface
+{
     /**
      * @var string Username
      */
@@ -95,6 +95,7 @@ class User implements AdvancedUserInterface {
      */
     public function getRoles()
     {
+
         return $this->roles;
     }
 
@@ -103,6 +104,7 @@ class User implements AdvancedUserInterface {
      */
     public function getPassword()
     {
+
         return $this->password;
     }
 
@@ -111,6 +113,7 @@ class User implements AdvancedUserInterface {
      */
     public function getSalt()
     {
+
         return null;
     }
 
@@ -119,6 +122,7 @@ class User implements AdvancedUserInterface {
      */
     public function getUsername()
     {
+
         return $this->username;
     }
 
@@ -127,6 +131,7 @@ class User implements AdvancedUserInterface {
      */
     public function isAccountNonExpired()
     {
+
         return $this->accountNonExpired;
     }
 
@@ -135,6 +140,7 @@ class User implements AdvancedUserInterface {
      */
     public function isAccountNonLocked()
     {
+
         return $this->accountNonLocked;
     }
 
@@ -143,6 +149,7 @@ class User implements AdvancedUserInterface {
      */
     public function isCredentialsNonExpired()
     {
+
         return $this->credentialsNonExpired;
     }
 
@@ -151,6 +158,7 @@ class User implements AdvancedUserInterface {
      */
     public function isEnabled()
     {
+
         return $this->enabled;
     }
 
@@ -172,6 +180,7 @@ class User implements AdvancedUserInterface {
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -185,6 +194,7 @@ class User implements AdvancedUserInterface {
     public function setPassword($password)
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -195,9 +205,11 @@ class User implements AdvancedUserInterface {
      *
      * @return User
      */
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
+
         return $this;
     }
 
-} 
+}

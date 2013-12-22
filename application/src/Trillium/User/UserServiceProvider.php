@@ -18,8 +18,8 @@ use Silex\ServiceProviderInterface;
  *
  * @package Trillium\User
  */
-class UserServiceProvider implements ServiceProviderInterface {
-
+class UserServiceProvider implements ServiceProviderInterface
+{
     /**
      * Registers services on the given app.
      *
@@ -28,8 +28,10 @@ class UserServiceProvider implements ServiceProviderInterface {
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app) {
-        $app['user.manager'] = $app->share(function () use($app) {
+    public function register(Application $app)
+    {
+        $app['user.manager'] = $app->share(function () use ($app) {
+
             return new UserManager($app['mysqli'], $app['security.encoder_factory']);
         });
         $app['user.roles'] = !empty($app['user.roles']) ? $app['user.roles'] : [];
@@ -42,7 +44,8 @@ class UserServiceProvider implements ServiceProviderInterface {
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
      */
-    public function boot(Application $app) {
+    public function boot(Application $app)
+    {
     }
 
 }

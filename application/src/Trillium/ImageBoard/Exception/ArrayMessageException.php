@@ -15,8 +15,8 @@ namespace Trillium\ImageBoard\Exception;
  *
  * @package Trillium\ImageBoard\Exception
  */
-class ArrayMessageException extends \Exception {
-
+class ArrayMessageException extends \Exception
+{
     /**
      * @var array Messages
      */
@@ -31,7 +31,8 @@ class ArrayMessageException extends \Exception {
      *
      * @return ArrayMessageException
      */
-    public function __construct($message, $code = 0, \Exception $previous = null) {
+    public function __construct($message, $code = 0, \Exception $previous = null)
+    {
         parent::__construct(get_class($this), $code, $previous);
         $this->message = $message;
     }

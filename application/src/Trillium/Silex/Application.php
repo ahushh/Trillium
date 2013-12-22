@@ -25,8 +25,8 @@ use Trillium\User\UserTrait;
  *
  * @package Trillium\Silex
  */
-class Application extends \Silex\Application {
-
+class Application extends \Silex\Application
+{
     use CaptchaTrait;
     use FormTrait;
     use ImageBoardTrait;

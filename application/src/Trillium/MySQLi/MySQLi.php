@@ -15,8 +15,8 @@ namespace Trillium\MySQLi;
  *
  * @package Trillium\MySQLi
  */
-class MySQLi extends \mysqli {
-
+class MySQLi extends \mysqli
+{
     /**
      * Run Query
      *
@@ -26,12 +26,14 @@ class MySQLi extends \mysqli {
      * @throws \RuntimeException
      * @return \mysqli_result
      */
-    public function query($statement, $type = MYSQLI_USE_RESULT) {
+    public function query($statement, $type = MYSQLI_USE_RESULT)
+    {
         $result = parent::query($statement, $type);
         if (!empty($this->error)) {
             throw new \RuntimeException('Error: ' . $this->error . "\r\n\t" . 'Statement: ' . $statement, $this->errno);
         }
+
         return $result;
     }
 
-} 
+}

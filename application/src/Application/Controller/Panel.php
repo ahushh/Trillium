@@ -15,15 +15,17 @@ use Trillium\Controller\Controller;
  *
  * @package Application\Controller
  */
-class Panel extends Controller {
-
+class Panel extends Controller
+{
     /**
      * Index page of the control panel
      *
      * @return mixed
      */
-    public function menu() {
+    public function menu()
+    {
         $this->app['trillium.pageTitle'] = $this->app->trans('Control panel');
+
         return $this->app->view('panel/menu');
     }
 
@@ -32,7 +34,8 @@ class Panel extends Controller {
      *
      * @return mixed
      */
-    public function mainpage() {
+    public function mainpage()
+    {
         $error = '';
         $filePath = RESOURCES_DIR . 'common' . DS . 'mainpage.markdown';
         $text = is_file($filePath) ? file_get_contents($filePath) : '';
@@ -48,6 +51,7 @@ class Panel extends Controller {
                 $this->app->redirect($this->app->url('panel'))->send();
             }
         }
+
         return $this->app->view('panel/mainpage', [
             'error' => $error,
             'text'  => $text,

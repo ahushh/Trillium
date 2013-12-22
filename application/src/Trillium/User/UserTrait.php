@@ -13,15 +13,16 @@ namespace Trillium\User;
  *
  * @package Trillium\User
  */
-trait UserTrait {
-
+trait UserTrait
+{
     /**
      * Returns the user manager
      *
      * @return \Trillium\User\UserManager
      */
-    public function userManager() {
+    public function userManager()
+    {
         return $this['user.manager'];
     }
 
-} 
+}

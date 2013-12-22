@@ -65,6 +65,7 @@ $app->register(new SecurityServiceProvider, [
             ],
             'logout'  => ['logout_path' => '/panel/logout'],
             'users'   => $app->share(function ($app) {
+
                 return $app['user.manager'];
             }),
             'anonymous' => true,
@@ -87,7 +88,7 @@ $app->mount('/', new ControllerProvider);
 
 /** Translation */
 $app->register(new TranslationServiceProvider, array('locale_fallbacks' => ['en'],));
-$app['translator'] = $app->share($app->extend('translator', function(Translator $translator) {
+$app['translator'] = $app->share($app->extend('translator', function (Translator $translator) {
     $translator->addLoader('yaml', new YamlFileLoader());
     $locales = scandir(LOCALES_DIR);
     $locales = array_diff($locales, ['.', '..']);
@@ -95,6 +96,7 @@ $app['translator'] = $app->share($app->extend('translator', function(Translator 
         $locale = strtolower($locale);
         $translator->addResource('yaml', LOCALES_DIR . $locale, str_replace('.yml', '', $locale));
     }
+
     return $translator;
 }));
 
@@ -115,20 +117,25 @@ $app->register(new ViewServiceProvider, ['view.path' => VIEWS_DIR . $app['trilli
 
 /** Macroses for the views */
 $app->viewMacros('__', function ($id, array $parameters = array(), $domain = null, $locale = null) use ($app) {
+
     return $app->trans($id, $parameters, $domain, $locale);
 });
 $app->viewMacros('url', function ($route, $parameters = array()) use ($app) {
+
     return $app->url($route, $parameters);
 });
 $app->viewMacros('escape', function ($string, $quotes = ENT_QUOTES, $charset = null, $doubleEncode = true) use ($app) {
+
     return $app->escape($string, $quotes, ($charset ?: $app['charset']), $doubleEncode);
 });
 $app->viewMacros('isGranted', function ($role) use ($app) {
     /** @var SecurityContext $security */
     $security = $app['security'];
+
     return $security->isGranted($role);
 });
 $app->viewMacros('assets', function ($path) use ($app) {
+
     return 'http://' . $_SERVER['SERVER_NAME'] . '/assets/' . $app['trillium.views_set'] . '/' . $path;
 });
 
@@ -141,7 +148,7 @@ $app['assetic.options'] = array(
     'auto_dump_assets' => $app['debug'],
 );
 $app['assetic.asset_manager'] = $app->share(
-    $app->extend('assetic.asset_manager', function(AssetManager $am) use ($app) {
+    $app->extend('assetic.asset_manager', function (AssetManager $am) use ($app) {
         $am->set('styles', new Assetic\Asset\AssetCache(
             new Assetic\Asset\GlobAsset(RESOURCES_DIR . $app['trillium.views_set'] . DS . 'css' . DS . '*.css'),
             new Assetic\Cache\FilesystemCache(CACHE_DIR . 'assetic')
@@ -152,6 +159,7 @@ $app['assetic.asset_manager'] = $app->share(
             new Assetic\Cache\FilesystemCache(CACHE_DIR . 'assetic')
         ));
         $am->get('scripts')->setTargetPath($app['trillium.views_set'] . '/js/scripts.js');
+
         return $am;
     })
 );
@@ -159,6 +167,7 @@ $app['assetic.asset_manager'] = $app->share(
 /** Custom errors handler */
 $app->error(function (\Exception $exception, $code) use ($app) {
     if ($app['debug'] === true) {
+
         return null;
     }
     if ($code !== 404 && $code !== 403) {
@@ -170,6 +179,7 @@ $app->error(function (\Exception $exception, $code) use ($app) {
         500       => 'Internal Server Error',
         'default' => 'Something went terribly wrong',
     ];
+
     return new Response((string) $app->view('error', [
         'error'      => isset($message[$code]) ? $messages[$code] : $messages['default'],
         'additional' => ($code === 403 || $code === 404 ? $exception->getMessage() : ''),

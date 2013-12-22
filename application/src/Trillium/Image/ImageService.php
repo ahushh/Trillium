@@ -17,8 +17,8 @@ use Trillium\Exception\InvalidArgumentException;
  *
  * @package Trillium\Image
  */
-class ImageService {
-
+class ImageService
+{
     /**
      * @var resource Image
      */
@@ -43,7 +43,8 @@ class ImageService {
      * @throws InvalidArgumentException
      * @return ImageService
      */
-    public function __construct($path) {
+    public function __construct($path)
+    {
         if (!is_string($path)) {
             throw new InvalidArgumentException('path', 'string',  gettype($path));
         }
@@ -76,7 +77,8 @@ class ImageService {
      *
      * @return int
      */
-    public function type() {
+    public function type()
+    {
         return $this->type;
     }
 
@@ -85,7 +87,8 @@ class ImageService {
      *
      * @return string
      */
-    public function extension() {
+    public function extension()
+    {
         return $this->extension;
     }
 
@@ -94,7 +97,8 @@ class ImageService {
      *
      * @return resource
      */
-    public function resource() {
+    public function resource()
+    {
         return $this->resource;
     }
 
@@ -103,7 +107,8 @@ class ImageService {
      *
      * @return int
      */
-    public function width() {
+    public function width()
+    {
         return imagesx($this->resource);
     }
 
@@ -112,7 +117,8 @@ class ImageService {
      *
      * @return int
      */
-    public function height() {
+    public function height()
+    {
         return imagesy($this->resource);
     }
 
@@ -123,7 +129,8 @@ class ImageService {
      *
      * @return resource
      */
-    public function resizeWidth($width) {
+    public function resizeWidth($width)
+    {
         return $this->resize($width, $this->height() * ($width / $this->width()));
     }
 
@@ -134,7 +141,8 @@ class ImageService {
      *
      * @return resource
      */
-    public function resizeHeight($height) {
+    public function resizeHeight($height)
+    {
         return $this->resize($this->width() * ($height / $this->height()), $height);
     }
 
@@ -146,9 +154,11 @@ class ImageService {
      *
      * @return resource
      */
-    public function resize($width, $height) {
+    public function resize($width, $height)
+    {
         $resized = $this->saveTransparent(imagecreatetruecolor($width, $height), $this->type);
         imagecopyresampled($resized, $this->resource, 0, 0, 0, 0, $width, $height, $this->width(), $this->height());
+
         return $resized;
     }
 
@@ -165,7 +175,8 @@ class ImageService {
      * @return void
      * @throws \RuntimeException
      */
-    public function save($path, $resource = null, $type = null, $compression = 100, $permissions = null) {
+    public function save($path, $resource = null, $type = null, $compression = 100, $permissions = null)
+    {
         $resource = $resource === null ? $this->resource : $resource;
         $type = $type === null ? $this->type : $type;
         switch ($type) {
@@ -197,14 +208,16 @@ class ImageService {
      *
      * @return resource
      */
-    public function saveTransparent($resource, $type) {
+    public function saveTransparent($resource, $type)
+    {
         if ($type === IMAGETYPE_GIF) {
             imagecolortransparent($resource, imagecolorallocate($resource, 0, 0, 0));
         } elseif ($type === IMAGETYPE_PNG) {
             imagealphablending($resource, false);
             imagesavealpha($resource, true);
         }
+
         return $resource;
     }
 
-} 
+}

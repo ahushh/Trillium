@@ -18,8 +18,8 @@ use Trillium\ImageBoard\Exception\ServiceMessageException;
  *
  * @package Application\Controller
  */
-class ImageBoard extends Controller {
-
+class ImageBoard extends Controller
+{
     /**
      * Prepare list of the images to display
      *
@@ -27,7 +27,8 @@ class ImageBoard extends Controller {
      *
      * @return array
      */
-    public final function prepareImages(array $images) {
+    final public function prepareImages(array $images)
+    {
         $result = [];
         foreach ($images as $image) {
             $imageBaseURL = 'http://' . $_SERVER['SERVER_NAME'] . '/assets/boards/' . $image['board'] . '/' . $image['name'];
@@ -40,6 +41,7 @@ class ImageBoard extends Controller {
                 'type'       => strtoupper($image['ext']),
             ];
         }
+
         return $result;
     }
 
@@ -50,7 +52,8 @@ class ImageBoard extends Controller {
      *
      * @return array
      */
-    public final function preparePost(array $post) {
+    final public function preparePost(array $post)
+    {
         return [
             'id'         => (int) $post['id'],
             'text'       => $this->app->aib()->markup()->handle($post['text'], (int) $post['id'], $post['author']),
@@ -74,7 +77,8 @@ class ImageBoard extends Controller {
      *
      * @return array
      */
-    public final function prepareThread(array $thread) {
+    final public function prepareThread(array $thread)
+    {
         return [
             'id'      => (int) $thread['id'],
             'theme'   => $this->app->escape($thread['theme']),
@@ -99,7 +103,8 @@ class ImageBoard extends Controller {
      *
      * @return array|\Symfony\Component\HttpFoundation\Response|null
      */
-    public final function messageSend(array $board, array $thread = null, $totalPosts = null) {
+    final public function messageSend(array $board, array $thread = null, $totalPosts = null)
+    {
         $return = null;
         if (!empty($_POST)) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
@@ -123,12 +128,14 @@ class ImageBoard extends Controller {
                         } else {
                             $item = $this->app->trans($item);
                         }
+
                         return $item;
                     },
                     $e->getMessage()
                 );
             }
         }
+
         return $return;
     }
 
@@ -144,7 +151,8 @@ class ImageBoard extends Controller {
      *
      * @return string
      */
-    public final function messageForm($newThread, $imagesNumber, $maxFileSize, $blotter = '', $captcha = true, array $error = []) {
+    final public function messageForm($newThread, $imagesNumber, $maxFileSize, $blotter = '', $captcha = true, array $error = [])
+    {
         return (string) $this->app->view('imageboard/messageForm', [
             'error'        => $error,
             'theme'        => $newThread ? (isset($_POST['theme']) ? trim($_POST['theme']) : '') : '',
@@ -170,7 +178,8 @@ class ImageBoard extends Controller {
      *
      * @return boolean|string
      */
-    public final function formatDate($time) {
+    final public function formatDate($time)
+    {
         return date('d.m.Y / H:i:s', $time);
     }
 

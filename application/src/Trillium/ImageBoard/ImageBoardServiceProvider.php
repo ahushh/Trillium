@@ -29,8 +29,8 @@ use Trillium\ImageBoard\Service\Thread\Thread;
  *
  * @package Trillium\ImageBoard
  */
-class ImageBoardServiceProvider implements ServiceProviderInterface {
-
+class ImageBoardServiceProvider implements ServiceProviderInterface
+{
     /**
      * Registers services on the given app.
      *
@@ -39,9 +39,11 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app) {
+    public function register(Application $app)
+    {
         $app['imageboard.resources_path'] = null;
         $app['imageboard'] = $app->share(function () use ($app) {
+
             return new ImageBoard(
                 new Board(new BoardModel($app['mysqli'], 'boards'), $app['imageboard.resources_path']),
                 new Thread(new ThreadModel($app['mysqli'], 'threads', 'posts')),
@@ -52,6 +54,7 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
             );
         });
         $app['imageboard.message'] = $app->share(function () use ($app) {
+
             return new Message($app['imageboard'], $app['captcha']);
         });
     }
@@ -63,7 +66,8 @@ class ImageBoardServiceProvider implements ServiceProviderInterface {
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
      */
-    public function boot(Application $app) {
+    public function boot(Application $app)
+    {
     }
 
 }

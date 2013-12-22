@@ -15,8 +15,8 @@ use FSHL\Highlighter;
  *
  * @package Trillium\ImageBoard\Service
  */
-class Markup {
-
+class Markup
+{
     /**
      * @var array Inline rules
      */
@@ -46,7 +46,8 @@ class Markup {
      *
      * @return Markup
      */
-    public function __construct(Highlighter $highlighter) {
+    public function __construct(Highlighter $highlighter)
+    {
         $this->highlighter = $highlighter;
     }
 
@@ -57,7 +58,8 @@ class Markup {
      *
      * @return void
      */
-    public function setPosts(array $posts) {
+    public function setPosts(array $posts)
+    {
         $this->posts = [];
         foreach ($posts as $post) {
             $this->posts[(int) $post['id']] = $post;
@@ -73,7 +75,8 @@ class Markup {
      *
      * @return string
      */
-    public function handle($string, $pid = null, $author = null) {
+    public function handle($string, $pid = null, $author = null)
+    {
         // Prepare
         $string = htmlspecialchars($string);
         $string = preg_replace('~\r\n?~', "\n", $string);
@@ -83,8 +86,9 @@ class Markup {
         // Answers
         $string = preg_replace_callback(
             '~&gt;&gt;([\d]+)~u',
-            function ($matches) use($pid) {
+            function ($matches) use ($pid) {
                 if (array_key_exists($matches[1], $this->posts)) {
+
                     return '<a '
                             . ($pid === null ? : 'rel="' . $pid . '"')
                             . ' href="#' . $matches[1] . '"'
@@ -94,6 +98,7 @@ class Markup {
                         . $matches[0]
                         . '</a>';
                 } else {
+
                     return $matches[0];
                 }
             },
@@ -110,6 +115,7 @@ class Markup {
                     $matches[2] = $this->highlighter->highlight($matches[2], new $lexer);
                 }
                 $matches[2] = $this->transformReserved($matches[2]);
+
                 return '<pre>' . $matches[2] . '</pre>';
             },
             $string
@@ -121,6 +127,7 @@ class Markup {
             '~^(\#{1,6})(.+?)$~m',
             function ($matches) {
                 $level = strlen($matches[1]);
+
                 return '<h' . $level . '>' . $matches[2] . '</h' . $level . '>';
             },
             $string
@@ -132,6 +139,7 @@ class Markup {
                 $pattern,
                 function ($matches) use ($replace) {
                     $matches[1] = $this->transformReserved($matches[1]);
+
                     return str_replace('$1', $matches[1], $replace);
                 },
                 $string
@@ -145,6 +153,7 @@ class Markup {
             '~\%\%(\d+)~u',
             function ($matches) use ($author) {
                 $isAuthor = (array_key_exists($matches[1], $this->posts) && $this->posts[$matches[1]]['author'] == $author);
+
                 return '<span class="prooflabel_' . ($isAuthor ? 'yes' : 'no') . '">'
                     . '<a '
                         . ' href="#' . $matches[1] . '"'
@@ -158,6 +167,7 @@ class Markup {
         );
 
 
+
         return nl2br($string);
     }
 
@@ -168,7 +178,8 @@ class Markup {
      *
      * @return string
      */
-    private function transformReserved($string) {
+    private function transformReserved($string)
+    {
         return strtr($string, [
             '*' => '&#42;',
             '%' => '&#37;',

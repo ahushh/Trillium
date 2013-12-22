@@ -17,8 +17,8 @@ use Silex\ServiceProviderInterface;
  *
  * @package Trillium\MobileDetect
  */
-class MobileDetectServiceProvider implements ServiceProviderInterface {
-
+class MobileDetectServiceProvider implements ServiceProviderInterface
+{
     /**
      * Registers services on the given app.
      *
@@ -27,15 +27,18 @@ class MobileDetectServiceProvider implements ServiceProviderInterface {
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app) {
+    public function register(Application $app)
+    {
         $app['mobiledetect.headers'] = [];
         $app['mobiledetect.user_agent'] = null;
         $app['mobiledetect'] = $app->share(function () use ($app) {
+
             return new MobileDetect($app['mobiledetect.headers'], $app['mobiledetect.user_agent']);
         });
         $app['mobiledetect.version'] = function () use ($app) {
             /** @var $detector MobileDetect */
             $detector = $app['mobiledetect'];
+
             return $detector->isMobile() ? 'mobile' : ($detector->isTablet() ? 'tablet' : null);
         };
     }
@@ -47,7 +50,8 @@ class MobileDetectServiceProvider implements ServiceProviderInterface {
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
      */
-    public function boot(Application $app) {
+    public function boot(Application $app)
+    {
     }
 
 }

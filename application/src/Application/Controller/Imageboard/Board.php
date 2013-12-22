@@ -15,8 +15,8 @@ use Application\Controller\ImageBoard;
  *
  * @package Application\Controller\Imageboard
  */
-class Board extends ImageBoard {
-
+class Board extends ImageBoard
+{
     /**
      * Display board
      *
@@ -25,7 +25,8 @@ class Board extends ImageBoard {
      *
      * @return mixed
      */
-    public function view($name, $page = 1) {
+    public function view($name, $page = 1)
+    {
         $board = $this->app->aib()->board()->get($name);
         if ($board === null) {
             $this->app->abort(404, 'Board does not exists');
@@ -49,6 +50,7 @@ class Board extends ImageBoard {
         $title            = '/' . $board['name'] . '/' . (!empty($board['summary']) ? ' - ' . $board['summary'] : '');
         $this->app['trillium.pageTitle'] .= ': ' . $title;
         $captcha = $board['captcha'] && $this->app->user() === null;
+
 
         return $this->app->view('imageboard/boardView', [
             'name'        => $board['name'],

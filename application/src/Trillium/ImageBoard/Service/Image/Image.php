@@ -17,8 +17,8 @@ use Trillium\ImageBoard\Exception\ServiceImageException;
  *
  * @package Trillium\ImageBoard\Service\Image
  */
-class Image {
-
+class Image
+{
     /**
      * Name of the ID key
      */
@@ -57,7 +57,8 @@ class Image {
      *
      * @return Image
      */
-    public function __construct(Model $model, $resourcesDir) {
+    public function __construct(Model $model, $resourcesDir)
+    {
         $this->model = $model;
         $this->resourcesDir = realpath($resourcesDir) . DS;
     }
@@ -69,7 +70,8 @@ class Image {
      *
      * @return void
      */
-    public function insert(array $images) {
+    public function insert(array $images)
+    {
         $this->model->insert($images);
     }
 
@@ -82,7 +84,8 @@ class Image {
      * @throws UnexpectedValueException
      * @return array
      */
-    public function getList($id, $by = self::THREAD) {
+    public function getList($id, $by = self::THREAD)
+    {
         $expected = [self::BOARD, self::THREAD, self::POST];
         if (!in_array($by, $expected)) {
             throw new UnexpectedValueException('by', implode(', ', $expected));
@@ -92,6 +95,7 @@ class Image {
         foreach ($list as $image) {
             $return[$image['post']][] = $image;
         }
+
         return $return;
     }
 
@@ -104,7 +108,8 @@ class Image {
      * @throws UnexpectedValueException
      * @return void
      */
-    public function remove($id, $by) {
+    public function remove($id, $by)
+    {
         $expected = [self::ID, self::BOARD, self::THREAD, self::POST];
         if (!in_array($by, $expected)) {
             throw new UnexpectedValueException('by', implode(', ',$expected));
@@ -120,7 +125,8 @@ class Image {
      *
      * @return array|null
      */
-    public function get($id) {
+    public function get($id)
+    {
         return $this->model->get($id);
     }
 
@@ -131,7 +137,8 @@ class Image {
      *
      * @return void
      */
-    public function removeFiles(array $images) {
+    public function removeFiles(array $images)
+    {
         array_map(
             function ($images) {
                 foreach ($images as $image) {
@@ -158,7 +165,8 @@ class Image {
      * @throws ServiceImageException
      * @return array
      */
-    public function performCheck(array $images, $maxImages, $maxSize) {
+    public function performCheck(array $images, $maxImages, $maxSize)
+    {
         $tmpImages = [];
         $i = 0;
         foreach ($images as $key => $values) {
@@ -206,6 +214,7 @@ class Image {
         if (isset($error)) {
             throw new ServiceImageException($error);
         }
+
         return $images;
     }
 
@@ -220,7 +229,8 @@ class Image {
      *
      * @return void
      */
-    public function upload(array $images, $board, $thread, $post, $thumbWidth) {
+    public function upload(array $images, $board, $thread, $post, $thumbWidth)
+    {
         $imagesData = [];
         $filePath = $this->resourcesDir . $board . DS;
         foreach ($images as $image) {
@@ -260,7 +270,8 @@ class Image {
      *
      * @return void
      */
-    public function move($thread, $newBoard) {
+    public function move($thread, $newBoard)
+    {
         $list = [];
         foreach ($this->getList($thread, self::THREAD) as $images) {
             $list = array_merge($list, $images);

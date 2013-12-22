@@ -13,8 +13,8 @@ namespace Trillium\Image;
  *
  * @package Trillium\Image
  */
-trait ImageTrait {
-
+trait ImageTrait
+{
     /**
      * Image Service
      *
@@ -22,8 +22,9 @@ trait ImageTrait {
      *
      * @return ImageService
      */
-    public function image($path) {
+    public function image($path)
+    {
         return $this['image']($path);
     }
 
-} 
+}

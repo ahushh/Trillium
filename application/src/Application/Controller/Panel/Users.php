@@ -17,14 +17,15 @@ use Trillium\Controller\Controller;
  *
  * @package Application\Controller\Panel
  */
-class Users extends Controller {
-
+class Users extends Controller
+{
     /**
      * List of the users
      *
      * @return mixed
      */
-    public function usersList() {
+    public function usersList()
+    {
         $list = $this->app->userManager()->getList();
         $output = '';
         $viewItem = $this->app->view('panel/users/item')
@@ -38,6 +39,7 @@ class Users extends Controller {
             $output .= $viewItem->render();
         }
         $this->app['trillium.pageTitle'] = $this->app->trans('List of the users');
+
         return $this->app->view('panel/users/list', [
             'list' => $output,
         ]);
@@ -50,7 +52,8 @@ class Users extends Controller {
      *
      * @return mixed
      */
-    public function manage($name) {
+    public function manage($name)
+    {
         if ($name !== '') {
             $user = $this->app->userManager()->findBy('username', $name);
             if ($user === null) {
@@ -103,6 +106,7 @@ class Users extends Controller {
             }
         }
         $this->app['trillium.pageTitle'] = $this->app->trans($name !== '' ? 'Edit user' : 'Create user');
+
         return $this->app->view('panel/users/manage', [
             'title'    => $this->app['trillium.pageTitle'],
             'data'     => $data,
@@ -119,7 +123,8 @@ class Users extends Controller {
      *
      * @return void
      */
-    public function remove($name) {
+    public function remove($name)
+    {
         $user = $this->app->userManager()->findBy('username', $name);
         if ($user === null) {
             $this->app->abort(404, 'User does not exists');
@@ -136,7 +141,8 @@ class Users extends Controller {
      *
      * @return mixed
      */
-    public function changePassword() {
+    public function changePassword()
+    {
         $error = [];
         if (!empty($_POST)) {
             $user = $this->app->user();
@@ -160,6 +166,7 @@ class Users extends Controller {
             }
         }
         $this->app['trillium.pageTitle'] = $this->app->trans('Change password');
+
         return $this->app->view('panel/users/changePassword', ['error' => $error]);
     }
 

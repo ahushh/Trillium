@@ -17,14 +17,15 @@ use Trillium\ImageBoard\Service\Image\Image;
  *
  * @package Application\Controller\Panel
  */
-class ImageBoard extends Controller {
-
+class ImageBoard extends Controller
+{
     /**
      * List of the boards
      *
      * @return mixed
      */
-    public function boardList() {
+    public function boardList()
+    {
         $output = '';
         $list = $this->app->aib()->board()->getList();
         if (!empty($list)) {
@@ -35,6 +36,7 @@ class ImageBoard extends Controller {
                 $output.= $itemWrapper->render();
             }
         }
+
         return $this->app->view('panel/imageboard/boardList', ['list' => $output]);
     }
 
@@ -45,7 +47,8 @@ class ImageBoard extends Controller {
      *
      * @return mixed
      */
-    public function boardManage($name = '') {
+    public function boardManage($name = '')
+    {
         if ($name !== '') {
             $data = $this->app->aib()->board()->get($name);
             if ($data === null) {
@@ -70,12 +73,14 @@ class ImageBoard extends Controller {
                         } else {
                             $item = $this->app->trans($item);
                         }
+
                         return $item;
                     },
                     $result['error']
                 );
             }
         }
+
         return $this->app->view('panel/imageboard/boardManage', [
             'error' => isset($error) ? $error : [],
             'data'  => isset($data) ? $data : [],
@@ -90,7 +95,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    public function boardRemove($name) {
+    public function boardRemove($name)
+    {
         $this->app->aib()->removeBoard($name);
         $this->app->redirect($this->app->url('panel.imageboard.board.list'))->send();
     }
@@ -102,7 +108,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    public function imageRemove($id) {
+    public function imageRemove($id)
+    {
         $id = (int) $id;
         $image = $this->app->aib()->image()->get($id);
         if ($image === null) {
@@ -120,7 +127,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    public function postRemove($id) {
+    public function postRemove($id)
+    {
         $id = (int) $id;
         if (empty($_POST)) {
             $post = $this->app->aib()->post()->get($id);
@@ -148,7 +156,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    public function threadRemove(Request $request, $id = null) {
+    public function threadRemove(Request $request, $id = null)
+    {
         $id = !empty($_POST['threads']) && is_array($_POST['threads']) ? $_POST['threads'] : (int) $id;
         if (is_int($id)) {
             $thread = $this->threadFind($id);
@@ -168,7 +177,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    public function threadManage($action, $id) {
+    public function threadManage($action, $id)
+    {
         $thread = $this->threadFind($id);
         try {
             $this->app->aib()->thread()->manage($thread, $action);
@@ -185,7 +195,8 @@ class ImageBoard extends Controller {
      *
      * @return mixed
      */
-    public function threadRename($id) {
+    public function threadRename($id)
+    {
         $thread = $this->threadFind($id);
         if (isset($_POST['cancel'])) {
             $this->threadRedirectTo($thread['id']);
@@ -200,6 +211,7 @@ class ImageBoard extends Controller {
                 $error = is_array($error) ? sprintf($this->app->trans($error[0]), $error[1]) : $this->app->trans($error);
             }
         }
+
         return $this->app->view('panel/imageboard/threadRename', [
             'theme' => $this->app->escape(isset($theme) ? $theme : $thread['theme']),
             'error' => isset($error) ? $error : '',
@@ -213,13 +225,15 @@ class ImageBoard extends Controller {
      *
      * @return mixed
      */
-    public function threadMove($id) {
+    public function threadMove($id)
+    {
         $thread = $this->threadFind($id);
         if (isset($_POST['cancel'])) {
             $this->threadRedirectTo($thread['id']);
         }
         $boards = array_map(
             function ($board) {
+
                 return $board['name'];
             },
             $this->app->aib()->board()->getList(true)
@@ -242,6 +256,7 @@ class ImageBoard extends Controller {
                 $error = $this->app->trans('Board does not exists');
             }
         }
+
         return $this->app->view('panel/imageboard/threadMove', [
             'boards' => $boards,
             'error'  => isset($error) ? $error : '',
@@ -256,12 +271,14 @@ class ImageBoard extends Controller {
      *
      * @return array|null
      */
-    protected function threadFind($id) {
+    protected function threadFind($id)
+    {
         $thread = $this->app->aib()->thread()->get($id);
         if ($thread === null) {
             $this->app->abort(404, 'Thread does not exists');
         }
         $thread['id'] = (int) $thread['id'];
+
         return $thread;
     }
 
@@ -272,7 +289,8 @@ class ImageBoard extends Controller {
      *
      * @return void
      */
-    protected function threadRedirectTo($id) {
+    protected function threadRedirectTo($id)
+    {
         $this->app->redirect($this->app->url('imageboard.thread.view', ['id' => (int) $id]))->send();
     }
 

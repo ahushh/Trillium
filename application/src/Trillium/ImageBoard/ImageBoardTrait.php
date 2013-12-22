@@ -18,14 +18,15 @@ use Trillium\ImageBoard\Service\Message;
  *
  * @package Trillium\ImageBoard
  */
-trait ImageBoardTrait {
-
+trait ImageBoardTrait
+{
     /**
      * Returns ImageBoard service
      *
      * @return ImageBoard
      */
-    public function aib() {
+    public function aib()
+    {
         return $this['imageboard'];
     }
 
@@ -34,8 +35,9 @@ trait ImageBoardTrait {
      *
      * @return Message
      */
-    public function aibMessage() {
+    public function aibMessage()
+    {
         return $this['imageboard.message'];
     }
 
-} 
+}

@@ -13,8 +13,8 @@ namespace Trillium\Exception;
  *
  * @package Trillium\Exception
  */
-class UnexpectedValueException extends \UnexpectedValueException {
-
+class UnexpectedValueException extends \UnexpectedValueException
+{
     /**
      * Create UnexpectedValueException instance
      *
@@ -25,9 +25,10 @@ class UnexpectedValueException extends \UnexpectedValueException {
      *
      * @return UnexpectedValueException
      */
-    public function __construct($argName, $expected, $code = 0, \Exception $previous = null) {
+    public function __construct($argName, $expected, $code = 0, \Exception $previous = null)
+    {
         $message = 'Unexpected value of the argument ' . $argName . ', ' . $expected . ' expected';
         parent::__construct($message, $code, $previous);
     }
 
-} 
+}

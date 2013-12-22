@@ -17,14 +17,15 @@ use Trillium\Controller\Controller;
  *
  * @package Application\Controller
  */
-class Trillium extends Controller {
-
+class Trillium extends Controller
+{
     /**
      * Mainpage
      *
      * @return string
      */
-    public function mainpage() {
+    public function mainpage()
+    {
         $boards = $this->app->aib()->board()->getList(false);
         $contentPath = RESOURCES_DIR . 'common' . DS . 'mainpage.markdown';
         if (is_file($contentPath)) {
@@ -32,6 +33,7 @@ class Trillium extends Controller {
             $markdown = $this->app['markdown'];
             $content = $markdown->transformMarkdown(file_get_contents($contentPath));
         }
+
         return $this->app->view('trillium/mainpage', [
             'boards' => $boards,
             'content' => isset($content) ? $content : '',
@@ -45,12 +47,14 @@ class Trillium extends Controller {
      *
      * @return mixed
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         /**
          * @var Session $session
          */
         $session = $this->app['session'];
         $this->app['trillium.pageTitle'] = $this->app->trans('Login');
+
         return $this->app['view']('trillium/login', [
             'error' => $this->app->trans($this->app['security.last_error']($request)),
             'last_username' => $session->get('_security.last_username'),

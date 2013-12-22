@@ -16,8 +16,8 @@ use Trillium\Model\ModelExtended;
  *
  * @package Trillium\ImageBoard\Service\Image
  */
-class Model extends ModelExtended {
-
+class Model extends ModelExtended
+{
     /**
      * Insert data of the images
      *
@@ -25,7 +25,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function insert(array $images) {
+    public function insert(array $images)
+    {
         $statement = "INSERT INTO `" . $this->tableName . "` (`board`, `thread`, `post`, `name`, `ext`, `width`, `height`, `size`) VALUES ";
         foreach ($images as $image) {
             $statement .= "("
@@ -51,7 +52,8 @@ class Model extends ModelExtended {
      * @throws InvalidArgumentException
      * @return array
      */
-    public function getImages($id, $by = 'thread') {
+    public function getImages($id, $by = 'thread')
+    {
         if (!is_int($id) && !is_array($id)) {
             throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
@@ -61,6 +63,7 @@ class Model extends ModelExtended {
         } else {
             $id = " = '" . $id . "'";
         }
+
         return $this->getList([], "`" . $by . "` " . $id);
     }
 
@@ -72,7 +75,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function remove($key, $value) {
+    public function remove($key, $value)
+    {
         parent::remove($key, $value);
     }
 
@@ -84,7 +88,8 @@ class Model extends ModelExtended {
      *
      * @return array|null
      */
-    public function get($id) {
+    public function get($id)
+    {
         return $this->findItem('id', $id);
     }
 
@@ -97,8 +102,9 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function update(array $data, $key, $value) {
+    public function update(array $data, $key, $value)
+    {
         parent::update($data, $key, $value);
     }
 
-} 
+}

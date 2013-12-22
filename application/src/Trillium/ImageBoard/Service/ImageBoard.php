@@ -19,8 +19,8 @@ use Trillium\ImageBoard\Service\Thread\Thread;
  *
  * @package Trillium\ImageBoard\Service
  */
-class ImageBoard {
-
+class ImageBoard
+{
     /**
      * @var Board Board service
      */
@@ -64,7 +64,8 @@ class ImageBoard {
      * @throws \RuntimeException
      * @return ImageBoard
      */
-    public function __construct(Board $board, Thread $thread, Post $post, Image $image, Markup $markup, $resourcesDir) {
+    public function __construct(Board $board, Thread $thread, Post $post, Image $image, Markup $markup, $resourcesDir)
+    {
         $this->board  = $board;
         $this->thread = $thread;
         $this->post   = $post;
@@ -82,7 +83,8 @@ class ImageBoard {
      *
      * @return Board
      */
-    public function board() {
+    public function board()
+    {
         return $this->board;
     }
 
@@ -91,7 +93,8 @@ class ImageBoard {
      *
      * @return Thread
      */
-    public function thread() {
+    public function thread()
+    {
         return $this->thread;
     }
 
@@ -100,7 +103,8 @@ class ImageBoard {
      *
      * @return Post
      */
-    public function post() {
+    public function post()
+    {
         return $this->post;
     }
 
@@ -109,7 +113,8 @@ class ImageBoard {
      *
      * @return Image
      */
-    public function image() {
+    public function image()
+    {
         return $this->image;
     }
 
@@ -118,7 +123,8 @@ class ImageBoard {
      *
      * @return Markup
      */
-    public function markup() {
+    public function markup()
+    {
         return $this->markup;
     }
 
@@ -129,7 +135,8 @@ class ImageBoard {
      *
      * @return void
      */
-    public function removeBoard($name) {
+    public function removeBoard($name)
+    {
         $this->board()->remove($name);
         $this->thread()->remove($name, Thread::BOARD);
         $this->post()->remove($name, Post::BOARD);
@@ -145,7 +152,8 @@ class ImageBoard {
      * @return void
      * @throws InvalidArgumentException
      */
-    public function removeThread($id) {
+    public function removeThread($id)
+    {
         if (!is_int($id) && !is_array($id)) {
             throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
@@ -167,7 +175,8 @@ class ImageBoard {
      * @throws InvalidArgumentException
      * @return void
      */
-    public function removePost($id) {
+    public function removePost($id)
+    {
         if (!is_int($id) && !is_array($id)) {
             throw new InvalidArgumentException('id', 'integer, array', gettype($id));
         }
@@ -187,7 +196,8 @@ class ImageBoard {
      *
      * @return void
      */
-    public function removeRedundantThreads($board, $max) {
+    public function removeRedundantThreads($board, $max)
+    {
         $totalThreads = $this->thread()->total($board);
         $redundantThreads = $totalThreads - $max;
         if ($redundantThreads > 0) {

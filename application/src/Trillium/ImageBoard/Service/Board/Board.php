@@ -13,8 +13,8 @@ namespace Trillium\ImageBoard\Service\Board;
  *
  * @package Trillium\ImageBoard\Service\Board
  */
-class Board {
-
+class Board
+{
     /**
      * @var Model Model
      */
@@ -31,10 +31,11 @@ class Board {
     private $resourcesDir;
 
     /**
-     * @param Model  $model         Model
+     * @param Model  $model        Model
      * @param string $resourcesDir Path to the resources drectory
      */
-    public function __construct(Model $model, $resourcesDir) {
+    public function __construct(Model $model, $resourcesDir)
+    {
         $this->model = $model;
         $this->stored = [];
         $this->resourcesDir = realpath($resourcesDir) . DS;
@@ -48,7 +49,8 @@ class Board {
      *
      * @return array|null
      */
-    public function get($name) {
+    public function get($name)
+    {
         return $this->model->get($name);
     }
 
@@ -59,7 +61,8 @@ class Board {
      *
      * @return array
      */
-    public function getList($includeHidden = true) {
+    public function getList($includeHidden = true)
+    {
         if (!array_key_exists('list', $this->stored)) {
             $this->stored['list']['all'] = $this->model->getBoards();
         }
@@ -72,6 +75,7 @@ class Board {
                 $this->stored['list']['non_hidden'][] = $board;
             }
         }
+
         return $includeHidden ? $this->stored['list']['all'] : $this->stored['list']['non_hidden'];
     }
 
@@ -82,7 +86,8 @@ class Board {
      *
      * @return boolean
      */
-    public function isExists($name) {
+    public function isExists($name)
+    {
         return $this->model->isExists($name);
     }
 
@@ -93,7 +98,8 @@ class Board {
      *
      * @return void
      */
-    public function remove($name) {
+    public function remove($name)
+    {
         $this->model->removeBoard($name);
         $directory = $this->resourcesDir . $name;
         $entries = array_diff(scandir($directory), ['.', '..']);
@@ -110,12 +116,13 @@ class Board {
      * Perform check and save data of the board
      * Returns array width errors, if occured, else returns true
      *
-     * @param array    $data      Data
-     * @param array    $defaults  Defaults
+     * @param array $data     Data
+     * @param array $defaults Defaults
      *
      * @return array|boolean
      */
-    public function manage(array $data, array $defaults = []) {
+    public function manage(array $data, array $defaults = [])
+    {
         $new = empty($defaults);
         $save = [];
         $error = [];
@@ -191,8 +198,10 @@ class Board {
             if ($new) {
                 mkdir($this->resourcesDir . $save['name']);
             }
+
             return true;
         }
+
         return ['error' => $error, 'data' => $data];
     }
 

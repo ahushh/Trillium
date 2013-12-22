@@ -13,8 +13,8 @@ namespace Trillium\Exception;
  *
  * @package Trillium\Exception
  */
-class InvalidArgumentException extends \InvalidArgumentException {
-
+class InvalidArgumentException extends \InvalidArgumentException
+{
     /**
      * Construct the exception
      *
@@ -27,9 +27,10 @@ class InvalidArgumentException extends \InvalidArgumentException {
      * @internal param string $message The Exception message to throw.
      * @return InvalidArgumentException
      */
-    public function __construct($argument, $expected, $given, $code = 0, \Exception $previous = null) {
+    public function __construct($argument, $expected, $given, $code = 0, \Exception $previous = null)
+    {
         $message = 'Expects argument ' . $argument . ' to be ' . $expected . ', ' . $given . ' given';
         parent::__construct($message, $code, $previous);
     }
 
-} 
+}

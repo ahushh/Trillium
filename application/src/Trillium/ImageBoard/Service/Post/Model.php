@@ -16,8 +16,8 @@ use Trillium\Model\ModelExtended;
  *
  * @package Trillium\ImageBoard\Service\Post
  */
-class Model extends ModelExtended {
-
+class Model extends ModelExtended
+{
     /**
      * Create the post
      *
@@ -25,7 +25,8 @@ class Model extends ModelExtended {
      *
      * @return int
      */
-    public function create(array $data) {
+    public function create(array $data)
+    {
         return $this->save($data);
     }
 
@@ -37,10 +38,12 @@ class Model extends ModelExtended {
      * @throws InvalidArgumentException
      * @return array
      */
-    public function getPosts($id) {
+    public function getPosts($id)
+    {
         if (!is_int($id)) {
             throw new InvalidArgumentException('id', 'integer', gettype($id));
         }
+
         return $this->getList(['by' => 'id', 'direction' => 'ASC'], "`thread` = '" . $id . "'");
     }
 
@@ -52,7 +55,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function remove($key, $value) {
+    public function remove($key, $value)
+    {
         parent::remove($key, $value);
     }
 
@@ -63,7 +67,8 @@ class Model extends ModelExtended {
      *
      * @return array|null
      */
-    public function get($id) {
+    public function get($id)
+    {
         return $this->findItem('id', $id);
     }
 
@@ -75,7 +80,8 @@ class Model extends ModelExtended {
      * @throws InvalidArgumentException
      * @return int|null
      */
-    public function timeOfLastIP($ip) {
+    public function timeOfLastIP($ip)
+    {
         if (!is_int($ip)) {
             throw new InvalidArgumentException('ip', 'integer', gettype($ip));
         }
@@ -85,6 +91,7 @@ class Model extends ModelExtended {
             $time = (int) $time[0];
         }
         $result->free();
+
         return $time;
     }
 
@@ -97,7 +104,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function update(array $data, $key, $value) {
+    public function update(array $data, $key, $value)
+    {
         parent::update($data, $key, $value);
     }
 

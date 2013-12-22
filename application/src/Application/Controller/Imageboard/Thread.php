@@ -15,8 +15,8 @@ use Application\Controller\ImageBoard;
  *
  * @package Application\Controller\Imageboard
  */
-class Thread extends ImageBoard {
-
+class Thread extends ImageBoard
+{
     /**
      * Display thread
      *
@@ -24,7 +24,8 @@ class Thread extends ImageBoard {
      *
      * @return mixed
      */
-    public function view($id) {
+    public function view($id)
+    {
         $id = (int) $id;
         $thread = $this->app->aib()->thread()->get($id);
         if ($thread === null) {
@@ -83,6 +84,7 @@ class Thread extends ImageBoard {
                 ];
             }
         }
+
 
         return $this->app->view('imageboard/threadView', [
             'manageMenu'      => isset($manageMenu) ? $manageMenu : null,

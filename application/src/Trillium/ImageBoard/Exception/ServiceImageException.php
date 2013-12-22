@@ -13,5 +13,6 @@ namespace Trillium\ImageBoard\Exception;
  *
  * @package Trillium\ImageBoard\Exception
  */
-class ServiceImageException extends ArrayMessageException {
+class ServiceImageException extends ArrayMessageException
+{
 }

@@ -15,8 +15,8 @@ use Trillium\Model\ModelExtended;
  *
  * @package Trillium\ImageBoard\Service\Board
  */
-class Model extends ModelExtended {
-
+class Model extends ModelExtended
+{
     /**
      * Get data of the board
      * Returns null, if board is not exists
@@ -25,7 +25,8 @@ class Model extends ModelExtended {
      *
      * @return array|null
      */
-    public function get($name) {
+    public function get($name)
+    {
         return $this->findItem('name', $name);
     }
 
@@ -34,7 +35,8 @@ class Model extends ModelExtended {
      *
      * @return array
      */
-    public function getBoards() {
+    public function getBoards()
+    {
         return parent::getList(['by' => 'name', 'direction' => 'ASC']);
     }
 
@@ -45,11 +47,13 @@ class Model extends ModelExtended {
      *
      * @return boolean
      */
-    public function isExists($name) {
+    public function isExists($name)
+    {
         $name = $this->db->real_escape_string($name);
         $result = $this->db->query("SELECT COUNT(*) FROM `" . $this->tableName . "` WHERE `name` = '" . $name . "'");
         $isExists = (bool) $result->fetch_row()[0];
         $result->free();
+
         return $isExists;
     }
 
@@ -60,7 +64,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function saveBoard(array $data) {
+    public function saveBoard(array $data)
+    {
         parent::save($data, true);
     }
 
@@ -71,7 +76,8 @@ class Model extends ModelExtended {
      *
      * @return void
      */
-    public function removeBoard($name) {
+    public function removeBoard($name)
+    {
         parent::remove('name', $name);
     }
 

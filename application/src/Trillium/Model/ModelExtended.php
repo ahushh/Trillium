@@ -18,8 +18,8 @@ use Trillium\MySQLi\MySQLi;
  *
  * @package Trillium\Model
  */
-class ModelExtended extends Model {
-
+class ModelExtended extends Model
+{
     /**
      * @var string Name of the table in database
      */
@@ -33,7 +33,8 @@ class ModelExtended extends Model {
      *
      * @return ModelExtended
      */
-    public function __construct(MySQLi $db, $tableName) {
+    public function __construct(MySQLi $db, $tableName)
+    {
         parent::__construct($db);
         $this->tableName = $tableName;
     }
@@ -48,7 +49,8 @@ class ModelExtended extends Model {
      * @throws InvalidArgumentException
      * @return array|null
      */
-    protected function findItem($key, $value) {
+    protected function findItem($key, $value)
+    {
         $value = is_string($value) ? $this->db->real_escape_string($value) : (is_int($value) ? $value : null);
         if ($value === null) {
             throw new InvalidArgumentException('value', 'integer, string', gettype($value));
@@ -56,6 +58,7 @@ class ModelExtended extends Model {
         $result = $this->db->query("SELECT * FROM `" . $this->tableName . "` WHERE `" . $key . "` = '" . $value . "'");
         $data = $result->fetch_assoc();
         $result->free();
+
         return is_array($data) ? $data : null;
     }
 
@@ -68,7 +71,8 @@ class ModelExtended extends Model {
      *
      * @return array
      */
-    protected function getList(array $order = [], $where = '', $limit = []) {
+    protected function getList(array $order = [], $where = '', $limit = [])
+    {
         $statement = "SELECT * FROM `" . $this->tableName . "`";
         if (!empty($where)) {
             $statement .= "WHERE " . $where;
@@ -85,19 +89,21 @@ class ModelExtended extends Model {
             $list[] = $item;
         }
         $result->free();
+
         return $list;
     }
 
     /**
      * Save data
      *
-     * @param array   $data          Data
-     * @param boolean $updateExists  Update if exists
+     * @param array   $data         Data
+     * @param boolean $updateExists Update if exists
      *
      * @throws \LogicException Empty Data or unexpected type of item
      * @return mixed
      */
-    protected function save(array $data, $updateExists = false) {
+    protected function save(array $data, $updateExists = false)
+    {
         if (empty($data)) {
             throw new \LogicException('Empty data');
         }
@@ -115,6 +121,7 @@ class ModelExtended extends Model {
             $statement .= " ON DUPLICATE KEY UPDATE " . $statement;
         }
         $this->db->query("INSERT INTO `" . $this->tableName . "` SET " . $statement);
+
         return !$updateExists ? $this->db->insert_id : $this;
     }
 
@@ -127,10 +134,12 @@ class ModelExtended extends Model {
      * @return int
      * @throws InvalidArgumentException
      */
-    protected function remove($key, $value) {
+    protected function remove($key, $value)
+    {
         if (is_array($value)) {
             $value = array_map(
                 function ($id) {
+
                     return is_string($id) ? $this->db->real_escape_string($id) : (int) $id;
                 },
                 $value
@@ -142,6 +151,7 @@ class ModelExtended extends Model {
             throw new InvalidArgumentException('value', 'array, integer, string', gettype($value));
         }
         $this->db->query("DELETE FROM `" . $this->tableName . "` WHERE `" . $key . "` " . $value);
+
         return $this->db->affected_rows;
     }
 
@@ -152,11 +162,13 @@ class ModelExtended extends Model {
      *
      * @return int
      */
-    public function count($where = '') {
+    public function count($where = '')
+    {
         $where = !empty($where) ? "WHERE " . $where : '';
         $result = $this->db->query("SELECT COUNT(*) FROM `" . $this->tableName . "`" . $where);
         $count = (int) $result->fetch_row()[0];
         $result->free();
+
         return $count;
     }
 
@@ -171,7 +183,8 @@ class ModelExtended extends Model {
      * @throws InvalidArgumentException
      * @return void
      */
-    protected function update(array $data, $key, $value) {
+    protected function update(array $data, $key, $value)
+    {
         if (empty($data)) {
             throw new \LogicException('Empty data');
         }

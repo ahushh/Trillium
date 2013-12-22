@@ -19,8 +19,8 @@ use Silex\ControllerProviderInterface;
  *
  * @package Trillium\Controller
  */
-class ControllerProvider implements ControllerProviderInterface {
-
+class ControllerProvider implements ControllerProviderInterface
+{
     /**
      * Returns routes to connect to the given application.
      *
@@ -28,13 +28,15 @@ class ControllerProvider implements ControllerProviderInterface {
      *
      * @return ControllerCollection A ControllerCollection instance
      */
-    public function connect(Application $app) {
+    public function connect(Application $app)
+    {
         $controllerFactory = function ($className) use ($app) {
             $className = '\Application\Controller\\' . $className;
             $controller = new $className($app);
             if (!($controller instanceof Controller)) {
                 throw new \RuntimeException(sprintf('Controller %s should have instance of \trillium\Controller', $className));
             }
+
             return $controller;
         };
 
@@ -49,6 +51,7 @@ class ControllerProvider implements ControllerProviderInterface {
         ];
         foreach ($controllers as $key => $className) {
             $app[$key] = $app->share(function () use ($controllerFactory, $className) {
+
                 return $controllerFactory($className);
             });
         }
@@ -116,6 +119,7 @@ class ControllerProvider implements ControllerProviderInterface {
         $collection->get('ajax/post/{id}', 'controllers.imageboard.ajax:post')
             ->bind('imageboard.ajax.post')
             ->assert('id', '[\d]+');
+
 
         return $collection;
     }

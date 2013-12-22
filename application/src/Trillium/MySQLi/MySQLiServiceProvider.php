@@ -18,8 +18,8 @@ use Silex\ServiceProviderInterface;
  *
  * @package Trillium\MySQLi
  */
-class MySQLiServiceProvider implements ServiceProviderInterface {
-
+class MySQLiServiceProvider implements ServiceProviderInterface
+{
     /**
      * Registers services on the given app.
      *
@@ -28,10 +28,12 @@ class MySQLiServiceProvider implements ServiceProviderInterface {
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app) {
+    public function register(Application $app)
+    {
         $app['mysqli'] = $app->share(function () use ($app) {
             $mysqli = new MySQLi($app['mysqli.host'], $app['mysqli.user'], $app['mysqli.password'], $app['mysqli.database']);
             $mysqli->set_charset($app['mysqli.charset']);
+
             return $mysqli;
         });
     }
@@ -43,7 +45,8 @@ class MySQLiServiceProvider implements ServiceProviderInterface {
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
      */
-    public function boot(Application $app) {
+    public function boot(Application $app)
+    {
     }
 
 }
