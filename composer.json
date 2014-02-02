@@ -10,7 +10,26 @@
             "email": "nwotnbm@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-0": {
+            "Trillium": "application/source"
+        }
+    },
     "require": {
-        "php": ">=5.4"
-    }
+        "php": ">=5.4",
+        "pimple/pimple": "~1.1",
+        "symfony/event-dispatcher": "~2.4",
+        "symfony/http-foundation": "~2.4",
+        "symfony/http-kernel": "~2.4",
+        "symfony/routing": "~2.4"
+    },
+    "repositories": [
+        {
+            "packagist": false
+        },
+        {
+            "type": "composer",
+            "url": "https://packagist.org/"
+        }
+    ]
 }
