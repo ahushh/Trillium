@@ -1,40 +1,16 @@
 {
     "name": "kilte/trillium",
-    "require": {
-        "php": ">=5.4.0",
-        "silex/silex": "~1.1",
-        "igorw/config-service-provider": "1.2.*",
-        "symfony/translation": "~2.3",
-        "symfony/config": "~2.3",
-        "symfony/yaml": "~2.3",
-        "symfony/monolog-bridge": "~2.3",
-        "symfony/security": "~2.3",
-        "mobiledetect/mobiledetectlib": "2.*",
-        "mheap/Silex-Assetic": "1.0.*",
-        "kilte/silex-view": "dev-master",
-        "mheap/silex-markdown": "dev-master",
-        "kilte/silex-pagination": "dev-master",
-        "kukulich/fshl": "2.*",
-        "kilte/silex-captcha": "dev-master"
-    },
-    "repositories":[
+    "type": "project",
+    "keywords": ["imageboard", "engine", "imageboard engine"],
+    "description": "Imageboard engine based on the Symfony2 components",
+    "license": "MIT",
+    "authors": [
         {
-            "type":"git",
-            "url":"http://github.com/Kilte/silex-view"
-        },
-        {
-            "type": "git",
-            "url": "http://github.com/Kilte/SilexPagination"
-        },
-        {
-            "type": "git",
-            "url":  "http://github.com/Kilte/silex-captcha"
+            "name": "Kilte Leichnam",
+            "email": "nwotnbm@gmail.com"
         }
     ],
-    "autoload": {
-        "psr-0": {
-            "Application": "application/src",
-            "Trillium": "application/src"
-        }
+    "require": {
+        "php": ">=5.4"
     }
 }
