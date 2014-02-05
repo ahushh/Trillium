@@ -17,11 +17,17 @@
     },
     "require": {
         "php": ">=5.4",
+        "monolog/monolog": "~1.4",
         "pimple/pimple": "~1.1",
+        "psr/log": "~1.0",
+        "symfony/class-loader": "~2.4",
+        "symfony/config": "~2.4",
+        "symfony/debug": "~2.4",
         "symfony/event-dispatcher": "~2.4",
         "symfony/http-foundation": "~2.4",
         "symfony/http-kernel": "~2.4",
-        "symfony/routing": "~2.4"
+        "symfony/routing": "~2.4",
+        "Symfony/yaml": "~2.4"
     },
     "repositories": [
         {
