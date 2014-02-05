@@ -41,8 +41,8 @@ class Configuration
         $this->configuration = [];
         $confDir = __DIR__ . self::DIRECTORY;
         $loader = new PhpFileLoader(new FileLocator([
-            $confDir . 'default/',
             $confDir . $environment . '/',
+            $confDir . 'default/',
         ]));
         $this->configuration = $loader->load('application');
     }
