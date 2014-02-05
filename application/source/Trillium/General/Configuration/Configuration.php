@@ -30,6 +30,11 @@ class Configuration
     private $configuration;
 
     /**
+     * @var array Paths to the configuration files
+     */
+    private $paths;
+
+    /**
      * Creates instance
      *
      * @param string $environment Application environment
@@ -40,10 +45,11 @@ class Configuration
     {
         $this->configuration = [];
         $confDir = __DIR__ . self::DIRECTORY;
-        $loader = new PhpFileLoader(new FileLocator([
+        $this->paths = [
             $confDir . $environment . '/',
             $confDir . 'default/',
-        ]));
+        ];
+        $loader = new PhpFileLoader(new FileLocator($this->paths));
         $this->configuration = $loader->load('application');
     }
 
@@ -70,6 +76,17 @@ class Configuration
     public function has($key)
     {
         return array_key_exists($key, $this->configuration);
+    }
+
+    /**
+     * Returns list of paths to the configuration files
+     * You can to use it as paths for a file locator
+     *
+     * @return array
+     */
+    public function getPaths()
+    {
+        return $this->paths;
     }
 
 }
