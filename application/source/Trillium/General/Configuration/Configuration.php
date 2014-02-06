@@ -35,7 +35,7 @@ class Configuration
     private $paths;
 
     /**
-     * Creates instance
+     * Constructor
      *
      * @param string $environment Application environment
      *
