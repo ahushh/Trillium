@@ -28,10 +28,15 @@ class ExceptionController
      * @param \Exception  $exception An exception instance
      * @param int         $code      A HTTP status code
      *
+     * @throws \Exception If debug mode enabled
      * @return Response
      */
     public function __invoke(Application $app, \Exception $exception, $code)
     {
+        if ($app->isDebug()) {
+            throw $exception;
+        }
+
         return new Response($exception->getMessage(), $code);
     }
 
