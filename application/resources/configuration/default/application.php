@@ -10,6 +10,7 @@
 return [
     'charset'            => 'UTF-8',
     'locale'             => 'en',
+    'locale_fallback'    => 'en',
     'request.http_port'  => 80,
     'request.https_port' => 443,
 ];

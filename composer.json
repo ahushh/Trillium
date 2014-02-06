@@ -27,6 +27,7 @@
         "symfony/http-foundation": "~2.4",
         "symfony/http-kernel": "~2.4",
         "symfony/routing": "~2.4",
+        "symfony/translation": "~2.4",
         "Symfony/yaml": "~2.4"
     },
     "repositories": [

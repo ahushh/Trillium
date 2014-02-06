@@ -31,7 +31,11 @@ class Hello extends Controller
      */
     public function say($name)
     {
-        return new Response('Hello, ' . htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset')) . '!');
+        $message = 'hello.%name%';
+        $name = htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset'));
+        $message = $this->app->translator->trans($message, ['%name%' => $name]);
+
+        return new Response($message);
     }
 
 }

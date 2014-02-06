@@ -25,6 +25,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\TerminableInterface;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Translation\Loader\JsonFileLoader;
+use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
 use Trillium\General\EventListener\ExceptionListener;
 use Trillium\General\EventListener\LocaleListener;
@@ -39,6 +41,7 @@ use Trillium\General\EventListener\LocaleListener;
  * @property-read HttpKernel         $kernel
  * @property-read Configuration      $configuration
  * @property-read Router             $router
+ * @property-read Translator         $translator
  *
  * @package Trillium\General
  */
@@ -74,6 +77,11 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
      * @var string Path to the logs directory
      */
     private $logsDir = null;
+
+    /**
+     * @var string Path to the locales directory
+     */
+    private $localesDir = null;
 
     /**
      * Constructor
@@ -120,8 +128,13 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
         $this->dispatcher->addSubscriber(new LocaleListener($this, $this->requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
-        $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionController(), $this, $this->logger)
-        );
+        $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionController(), $this, $this->logger));
+
+        $this['translator'] = new Translator($this->getLocale());
+        $localeFallback = $this->configuration->get('locale_fallback', 'en');
+        $this->translator->setFallbackLocales([$localeFallback]);
+        $this->translator->addLoader('json', new JsonFileLoader());
+        $this->translator->addResource('json', $this->getLocalesDir() . $localeFallback . '.json', $localeFallback);
     }
 
     /**
@@ -251,7 +264,7 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     public function getCacheDir()
     {
         if ($this->cacheDir === null) {
-            $this->cacheDir = $this->getApplicationDir() . '/resources/cache/';
+            $this->cacheDir = $this->getApplicationDir() . 'resources/cache/';
         }
 
         return $this->cacheDir;
@@ -265,10 +278,24 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     public function getLogsDir()
     {
         if ($this->logsDir === null) {
-            $this->logsDir = $this->getApplicationDir() . '/resources/logs/';
+            $this->logsDir = $this->getApplicationDir() . 'resources/logs/';
         }
 
         return $this->logsDir;
+    }
+
+    /**
+     * Returns path to the locales directory
+     *
+     * @return string
+     */
+    public function getLocalesDir()
+    {
+        if ($this->localesDir === null) {
+            $this->localesDir = $this->getApplicationDir() . 'resources/locales/';
+        }
+
+        return $this->localesDir;
     }
 
 }

@@ -9,9 +9,12 @@
 
 namespace Trillium\General\EventListener;
 
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use \Symfony\Component\HttpKernel\EventListener\LocaleListener as SymfonyLocaleListener;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RequestContextAwareInterface;
 use Trillium\General\Application;
 
@@ -26,7 +29,12 @@ class LocaleListener extends SymfonyLocaleListener
     /**
      * Path to the locale cookie
      */
-    const COOKIE_PATH = 'trillium_locale';
+    const COOKIE_NAME = 'trillium_locale';
+
+    /**
+     * The time the cookie expires (1 year)
+     */
+    const COOKIE_EXPIRE = 31536000;
 
     /**
      * @var Application An application instance
@@ -59,7 +67,62 @@ class LocaleListener extends SymfonyLocaleListener
     {
         parent::onKernelRequest($event);
         $request = $event->getRequest();
-        $this->app->setLocale($request->cookies->get(self::COOKIE_PATH, $request->getLocale()));
+        $locale = $request->cookies->get(self::COOKIE_NAME, null);
+        if ($locale === null) {
+            $languages = $request->getLanguages();
+            foreach ($languages as $l) {
+                $resource = $this->app->getLocalesDir() . $l . '.json';
+                if (is_file($resource)) {
+                    $locale = $l;
+                    break;
+                }
+            }
+            if ($locale === null) {
+                $resource = null;
+            }
+        } else {
+            $resource = $this->app->getLocalesDir() . $locale . '.json';
+            if (!is_file($resource)) {
+                $locale = null;
+                $resource = null;
+            }
+        }
+        if (isset($resource) && $resource !== null) {
+            $this->app->setLocale($locale);
+            $this->app->translator->setLocale($locale);
+            $this->app->translator->addResource('json', $resource, $locale);
+        }
+    }
+
+    /**
+     * Sets cookie to a response
+     *
+     * @param FilterResponseEvent $event
+     *
+     * @return void
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        $request = $event->getRequest();
+        if ($request->cookies->get(self::COOKIE_NAME, null) === null) {
+            $response = $event->getResponse();
+            $response->headers->setCookie(new Cookie(self::COOKIE_NAME, $this->app->getLocale(), time() + self::COOKIE_EXPIRE));
+        }
+    }
+
+    /**
+     * Returns the list of the subscribed events
+     *
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return array_merge(
+            parent::getSubscribedEvents(),
+            [
+                KernelEvents::RESPONSE => [['onKernelResponse']],
+            ]
+        );
     }
 
 }
