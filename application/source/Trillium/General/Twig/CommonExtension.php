@@ -7,16 +7,16 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Twig;
 
 use Twig_Extension;
 
 /**
- * TwigExtension Class
+ * CommonExtension Class
  *
- * @package Trillium\General
+ * @package Trillium\General\Twig
  */
-class TwigExtension extends Twig_Extension
+class CommonExtension extends Twig_Extension
 {
 
     /**
