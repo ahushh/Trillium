@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Part of the Trillium
+ *
+ * @author  Kilte Leichnam <nwotnbm@gmail.com>
+ * @package Trillium
+ */
+
+set_time_limit(0);
+require __DIR__ . '/../application/autoload.php';
+$app = new \Trillium\General\Console\Application();
+$app->run();
