@@ -26,5 +26,8 @@ $classMap = require __DIR__ . '/../vendor/composer/autoload_classmap.php';
 if ($classMap) {
     $loader->addClassMap($classMap);
 }
-$loader = new ApcClassLoader('trillium', $loader);
+if (php_sapi_name() !== 'cli') {
+    $loader = new ApcClassLoader('trillium', $loader);
+}
+
 $loader->register();
