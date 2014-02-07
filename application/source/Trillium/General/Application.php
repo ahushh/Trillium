@@ -12,6 +12,7 @@ namespace Trillium\General;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pimple;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\Config\FileLocator;
@@ -177,7 +178,8 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         );
         $this->twigEnvironment->setExtensions([
             new Twig_Extension_Core(),
-            new TranslationExtension($this->translator)
+            new TranslationExtension($this->translator),
+            new RoutingExtension($this->router->getGenerator())
         ]);
         $this['view'] = new TwigEngine($this->twigEnvironment, new TemplateNameParser());
     }
