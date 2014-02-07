@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Controller;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolver as SymfonyControl
 /**
  * ControllerResolver Class
  *
- * @package Trillium\General
+ * @package Trillium\General\Controller
  */
 class ControllerResolver extends SymfonyControllerResolver
 {

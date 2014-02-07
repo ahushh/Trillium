@@ -10,7 +10,7 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Trillium\General\Controller;
+use Trillium\General\Controller\Controller;
 
 /**
  * Hello Class

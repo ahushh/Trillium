@@ -7,14 +7,16 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Controller;
+
+use Trillium\General\Application;
 
 /**
  * Controller Class
  *
  * Base controller class
  *
- * @package Trillium\General
+ * @package Trillium\General\Controller
  */
 abstract class Controller
 {

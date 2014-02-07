@@ -34,6 +34,8 @@ use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
+use Trillium\General\Controller\ControllerFactory;
+use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
 use Trillium\General\EventListener\RequestListener;
 use Twig_Environment;
@@ -170,9 +172,9 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $this['twigEnvironment'] = new Twig_Environment(
             new Twig_Loader_Filesystem($this->getViewsDir()),
             [
-                'debug' => $this->isDebug(),
-                'charset' => $this->configuration->get('charset', 'UTF-8'),
-                'cache' => $this->getCacheDir() . 'twig',
+                'debug'            => $this->isDebug(),
+                'charset'          => $this->configuration->get('charset', 'UTF-8'),
+                'cache'            => $this->getCacheDir() . 'twig',
                 'strict_variables' => true,
             ]
         );

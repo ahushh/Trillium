@@ -7,12 +7,14 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Controller;
+
+use Trillium\General\Application;
 
 /**
  * ControllerFactory Class
  *
- * @package Trillium\General
+ * @package Trillium\General\Controller
  */
 class ControllerFactory
 {
@@ -56,7 +58,7 @@ class ControllerFactory
         $instance = new $controller($this->app);
         if (!$instance instanceof Controller) {
             throw new \InvalidArgumentException(sprintf(
-                'Controller "%s" must be instance of \Trillium\General\Controller',
+                'Controller "%s" must be instance of \Trillium\General\Controller\Controller',
                 $controller
             ));
         }
