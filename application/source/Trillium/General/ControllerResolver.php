@@ -48,7 +48,9 @@ class ControllerResolver extends SymfonyControllerResolver
         $route = $request->attributes->get('_route');
         $controller = $request->attributes->get('_controller');
         $action = $request->attributes->get('_action');
-        if (!is_string($route) || !is_string($controller) || !is_string($action)) {
+        if (is_callable($controller)) {
+            return $controller;
+        } elseif (!is_string($route) || !is_string($controller) || !is_string($action)) {
             return false;
         }
 
