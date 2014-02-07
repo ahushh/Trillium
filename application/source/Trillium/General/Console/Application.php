@@ -22,10 +22,17 @@ class Application extends SymfonyApplication
 {
 
     /**
-     * {@inheritdoc}
+     * @var Trillium A general application instance
      */
-    public function __construct()
+    protected $app;
+
+    /**
+     * {@inheritdoc}
+     * @param Trillium $app A general application instance
+     */
+    public function __construct(Trillium $app)
     {
+        $this->app = $app;
         parent::__construct('Trillium', Trillium::VERSION);
     }
 
@@ -35,7 +42,7 @@ class Application extends SymfonyApplication
     protected function getDefaultCommands()
     {
         $commands = parent::getDefaultCommands();
-        $commands[] = new Environment();
+        $commands[] = new Environment($this->app);
 
         return $commands;
     }

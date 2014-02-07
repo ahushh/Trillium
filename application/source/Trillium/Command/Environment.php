@@ -13,6 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Trillium\General\Application;
 
 /**
  * Environment Class
@@ -23,17 +24,33 @@ class Environment extends Command
 {
 
     /**
+     * @var Application An application instance
+     */
+    private $app;
+
+    /**
+     * {@inheritdoc}
+     * @param Application $app An application instance
+     */
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+        parent::__construct('env');
+        $this->setDescription('Change or display environment');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
-            ->setName('env')
-            ->setDescription('Change environment')
             ->addArgument(
                 'environment',
-                InputArgument::REQUIRED,
-                'Change environment. Available environments: development, testing, production'
+                InputArgument::OPTIONAL,
+                'Change or display environment. ' . "\n"
+                . 'Available environments: development, testing, production. ' . "\n"
+                . 'Leave empty to see the current environment.'
             )
         ;
     }
@@ -44,6 +61,46 @@ class Environment extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $env = $input->getArgument('environment');
+        if (empty($env)) {
+            return $this->displayEnvironment($output);
+        } else {
+            return $this->changeEnvironment($env, $output);
+        }
+    }
+
+    /**
+     * Returns the path to the configuration file
+     *
+     * @return boolean|string
+     */
+    private function getEnvironment()
+    {
+        return $this->app->getApplicationDir() . '.environment';
+    }
+
+    /**
+     * Displays the current environment
+     *
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    private function displayEnvironment(OutputInterface $output)
+    {
+        $output->writeln('<info>' . $this->app->getEnvironment() . '</info>');
+        return 0;
+    }
+
+    /**
+     * Changes the environment
+     *
+     * @param                 $env
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    private function changeEnvironment($env, OutputInterface $output)
+    {
         if (!in_array($env, ['development', 'testing', 'production'])) {
             $output->writeln('<error>Wrong environment "' . $env . '" given</error>');
             return 1;
@@ -58,16 +115,6 @@ class Environment extends Command
                 return 0;
             }
         }
-    }
-
-    /**
-     * Returns the path to the configuration file
-     *
-     * @return boolean|string
-     */
-    private function getEnvironment()
-    {
-        return realpath(__DIR__ . '/../../../.environment');
     }
 
 }

@@ -9,6 +9,6 @@
  */
 
 set_time_limit(0);
-require __DIR__ . '/../application/autoload.php';
-$app = new \Trillium\General\Console\Application();
-$app->run();
+$app = require __DIR__ . '/../application/application.php';
+$console = new \Trillium\General\Console\Application($app);
+$console->run();
