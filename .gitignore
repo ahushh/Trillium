@@ -1,2 +1,4 @@
 /vendor
 /composer.lock
+/public/assets/styles.css
+/public/assets/scripts.js

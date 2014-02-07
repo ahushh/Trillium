@@ -109,6 +109,16 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     private $viewsDir = null;
 
     /**
+     * @var string Path to the source assets directory
+     */
+    private $sourceAssetsDir = null;
+
+    /**
+     * @var string Path to the public assets directory
+     */
+    private $publicAssetsDir = null;
+
+    /**
      * @var boolean Is application booted?
      */
     private $booted = false;
@@ -383,6 +393,34 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         }
 
         return $this->viewsDir;
+    }
+
+    /**
+     * Returns path to the source assets directory
+     *
+     * @return string
+     */
+    public function getSourceAssetsDir()
+    {
+        if ($this->sourceAssetsDir === null) {
+            $this->sourceAssetsDir = $this->getApplicationDir() . 'resources/assets/';
+        }
+
+        return $this->sourceAssetsDir;
+    }
+
+    /**
+     * Returns path to the public assets directory
+     *
+     * @return string
+     */
+    public function getPublicAssetsDir()
+    {
+        if ($this->publicAssetsDir === null) {
+            $this->publicAssetsDir = $this->getApplicationDir() . '../public/assets/';
+        }
+
+        return $this->publicAssetsDir;
     }
 
 }
