@@ -120,7 +120,7 @@ class LocaleListener extends SymfonyLocaleListener
         return array_merge(
             parent::getSubscribedEvents(),
             [
-                KernelEvents::RESPONSE => [['onKernelResponse']],
+                KernelEvents::RESPONSE => 'onKernelResponse',
             ]
         );
     }
