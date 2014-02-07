@@ -64,6 +64,11 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
 {
 
     /**
+     * Version
+     */
+    const VERSION = 'dev';
+
+    /**
      * @var string An application environment
      */
     private $environment = null;
