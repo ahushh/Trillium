@@ -88,6 +88,7 @@ class Environment extends Command
     private function displayEnvironment(OutputInterface $output)
     {
         $output->writeln('<info>' . $this->app->getEnvironment() . '</info>');
+
         return 0;
     }
 
@@ -108,10 +109,12 @@ class Environment extends Command
             $path = $this->getEnvironment();
             if ($path === false) {
                 $output->writeln('<error>Configuration file ".environment" does not exists</error>');
+
                 return 1;
             } else {
                 file_put_contents($path, $env);
                 $output->writeln('<info>Environment changed to "' . $env . '"</info>');
+
                 return 0;
             }
         }
