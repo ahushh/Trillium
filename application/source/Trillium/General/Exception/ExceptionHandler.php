@@ -7,16 +7,17 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Exception;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Trillium\General\Application;
 
 /**
  * ExceptionHandler Class
  *
- * @package Trillium\General
+ * @package Trillium\General\Exception
  */
 class ExceptionHandler
 {

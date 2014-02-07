@@ -38,6 +38,8 @@ use Trillium\General\Controller\ControllerFactory;
 use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
 use Trillium\General\EventListener\RequestListener;
+use Trillium\General\Exception\DebugExceptionHandler;
+use Trillium\General\Exception\ExceptionHandler;
 use Twig_Environment;
 use Twig_Extension_Core;
 use Twig_Loader_Filesystem;

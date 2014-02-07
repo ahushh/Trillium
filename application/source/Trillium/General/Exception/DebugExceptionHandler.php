@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\General;
+namespace Trillium\General\Exception;
 
 use Symfony\Component\Debug\ExceptionHandler;
 
@@ -17,7 +17,7 @@ use Symfony\Component\Debug\ExceptionHandler;
  * Overrides the handle() method
  * Clear output buffer before handle exception
  *
- * @package Trillium\General
+ * @package Trillium\General\Exception
  */
 class DebugExceptionHandler extends ExceptionHandler
 {
