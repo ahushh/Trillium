@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="{{ assets('/vendor/bootstrap/bootstrap.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ assets('/vendor/bootstrap/bootstrap-theme.css') }}" />
+        <title>Trillium{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="navbar-header"><a class="navbar-brand" href="{{ homepage_url }}">Trillium</a></div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Temporary Link</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+        {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

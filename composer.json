@@ -29,7 +29,9 @@
         "symfony/routing": "~2.4",
         "symfony/templating": "~2.4",
         "symfony/translation": "~2.4",
-        "Symfony/yaml": "~2.4"
+        "symfony/twig-bridge": "~2.4",
+        "symfony/yaml": "~2.4",
+        "twig/twig": "~1.15"
     },
     "repositories": [
         {

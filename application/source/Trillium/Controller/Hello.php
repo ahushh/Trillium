@@ -34,6 +34,7 @@ class Hello extends Controller
         $message = 'hello.%name%';
         $name = htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset'));
         $message = $this->app->translator->trans($message, ['%name%' => $name]);
+        $message = $this->app->view->render('sayHello.twig', ['message' => $message]);
 
         return new Response($message);
     }

@@ -12,6 +12,8 @@ namespace Trillium\General;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pimple;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\Debug\ErrorHandler;
@@ -27,10 +29,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\TerminableInterface;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
 use Trillium\General\EventListener\LocaleListener;
+use Trillium\General\EventListener\RequestListener;
+use Twig_Environment;
+use Twig_Extension_Core;
+use Twig_Loader_Filesystem;
 
 /**
  * Application Class
@@ -43,6 +50,8 @@ use Trillium\General\EventListener\LocaleListener;
  * @property-read Configuration      $configuration
  * @property-read Router             $router
  * @property-read Translator         $translator
+ * @property-read Twig_Environment   $twigEnvironment
+ * @property-read TwigEngine         $view
  *
  * @package Trillium\General
  */
@@ -85,6 +94,16 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     private $localesDir = null;
 
     /**
+     * @var string Path to the views directory
+     */
+    private $viewsDir = null;
+
+    /**
+     * @var boolean Is application booted?
+     */
+    private $booted = false;
+
+    /**
      * Constructor
      *
      * @return self
@@ -102,7 +121,6 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
             } elseif ((!ini_get('log_errors') || ini_get('error_log'))) {
                 ini_set('display_errors', 1);
             }
-
             DebugClassLoader::enable();
         }
 
@@ -147,6 +165,21 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $this->translator->setFallbackLocales([$localeFallback]);
         $this->translator->addLoader('json', new JsonFileLoader());
         $this->translator->addResource('json', $this->getLocalesDir() . $localeFallback . '.json', $localeFallback);
+
+        $this['twigEnvironment'] = new Twig_Environment(
+            new Twig_Loader_Filesystem($this->getViewsDir()),
+            [
+                'debug' => $this->isDebug(),
+                'charset' => $this->configuration->get('charset', 'UTF-8'),
+                'cache' => $this->getCacheDir() . 'twig',
+                'strict_variables' => true,
+            ]
+        );
+        $this->twigEnvironment->setExtensions([
+            new Twig_Extension_Core(),
+            new TranslationExtension($this->translator)
+        ]);
+        $this['view'] = new TwigEngine($this->twigEnvironment, new TemplateNameParser());
     }
 
     /**
@@ -181,6 +214,22 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     }
 
     /**
+     * Boot application
+     *
+     * @return boolean
+     */
+    public function boot()
+    {
+        if ($this->booted) {
+            return true;
+        }
+        // Only for HttpKernelInterface::MASTER_REQUEST
+        $this->dispatcher->addSubscriber(new RequestListener($this));
+
+        return true;
+    }
+
+    /**
      * Run application
      *
      * Handles a request to convert it to a response
@@ -192,6 +241,7 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
      */
     public function run(Request $request)
     {
+        $this->boot();
         $response = $this->handle($request);
         $this->terminate($request, $response);
     }
@@ -308,6 +358,20 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         }
 
         return $this->localesDir;
+    }
+
+    /**
+     * Returns path to the views directory
+     *
+     * @return string
+     */
+    public function getViewsDir()
+    {
+        if ($this->viewsDir === null) {
+            $this->viewsDir = $this->getApplicationDir() . 'resources/views/';
+        }
+
+        return $this->viewsDir;
     }
 
 }
