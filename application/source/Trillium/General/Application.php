@@ -3,7 +3,7 @@
 /**
  * Part of the Trillium
  *
- * @author Kilte Leichnam <nwotnbm@gmail.com>
+ * @author  Kilte Leichnam <nwotnbm@gmail.com>
  * @package Trillium
  */
 
@@ -13,11 +13,13 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pimple;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\Debug\DebugClassLoader;
+use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\EventListener\ResponseListener;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -28,7 +30,6 @@ use Symfony\Component\Routing\Router;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
-use Trillium\General\EventListener\ExceptionListener;
 use Trillium\General\EventListener\LocaleListener;
 
 /**
@@ -92,8 +93,17 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     {
         parent::__construct();
 
+        error_reporting(-1);
         if ($this->isDebug()) {
-            Debug::enable(-1, true);
+            ErrorHandler::register(-1, 1);
+            if ('cli' !== php_sapi_name()) {
+                DebugExceptionHandler::register();
+                // CLI - display errors only if they're not already logged to STDERR
+            } elseif ((!ini_get('log_errors') || ini_get('error_log'))) {
+                ini_set('display_errors', 1);
+            }
+
+            DebugClassLoader::enable();
         }
 
         $this['dispatcher']    = new EventDispatcher();
@@ -128,7 +138,9 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
         $this->dispatcher->addSubscriber(new LocaleListener($this, $this->requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
-        $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionController(), $this, $this->logger));
+        if (!$this->isDebug()) {
+            $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionHandler($this), $this->logger));
+        }
 
         $this['translator'] = new Translator($this->getLocale());
         $localeFallback = $this->configuration->get('locale_fallback', 'en');
