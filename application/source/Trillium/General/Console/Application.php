@@ -12,6 +12,7 @@ namespace Trillium\General\Console;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Trillium\Command\Assets;
 use Trillium\Command\Environment;
+use Trillium\Command\JsUrlGenerator;
 use Trillium\General\Application as Trillium;
 
 /**
@@ -45,6 +46,7 @@ class Application extends SymfonyApplication
         $commands = parent::getDefaultCommands();
         $commands[] = new Environment($this->app);
         $commands[] = new Assets($this->app);
+        $commands[] = new JsUrlGenerator($this->app);
 
         return $commands;
     }

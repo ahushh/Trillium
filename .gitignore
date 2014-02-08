@@ -2,3 +2,4 @@
 /composer.lock
 /public/assets/styles.css
 /public/assets/scripts.js
+/application/resources/assets/application/url-generator.js

@@ -6,3 +6,7 @@ vendor/bootstrap/bootstrap.css:
   filters: yui-css-compressor
 vendor/bootstrap/bootstrap-theme.css:
   filters: yui-css-compressor
+application/trillium.js:
+  priority: 0
+application/url-generator.js:
+  priority: 1
