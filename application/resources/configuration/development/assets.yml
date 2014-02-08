@@ -1,0 +1,8 @@
+filters:
+  yui-css-compressor:
+    path: '/usr/share/yui-compressor/yui-compressor.jar'
+    java: '/usr/bin/java'
+vendor/bootstrap/bootstrap.css:
+  filters: yui-css-compressor
+vendor/bootstrap/bootstrap-theme.css:
+  filters: yui-css-compressor
