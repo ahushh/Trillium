@@ -10,13 +10,14 @@
 namespace Trillium\General\Configuration;
 
 use Symfony\Component\Config\Loader\FileLoader;
+use Symfony\Component\Yaml\Parser;
 
 /**
- * PhpFileLoader Class
+ * YamlFileLoader Class
  *
  * @package Trillium\General\Configuration
  */
-class PhpFileLoader extends FileLoader
+class YamlFileLoader extends FileLoader
 {
 
     /**
@@ -24,9 +25,8 @@ class PhpFileLoader extends FileLoader
      */
     public function load($resource, $type = null)
     {
-        $path = $this->locator->locate($resource . '.php');
-
-        return include $path;
+        $path = $this->locator->locate($resource . '.yml');
+        return (new Parser())->parse(file_get_contents($path));
     }
 
     /**
@@ -34,7 +34,7 @@ class PhpFileLoader extends FileLoader
      */
     public function supports($resource, $type = null)
     {
-        return is_string($resource) && (!$type || 'php' === $type);
+        return is_string($resource) && (!$type || 'yml' === $type);
     }
 
 }

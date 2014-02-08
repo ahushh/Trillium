@@ -36,6 +36,7 @@ use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
 use Trillium\General\Configuration\PhpFileLoader;
+use Trillium\General\Configuration\YamlFileLoader as ConfigYamlFileLoader;
 use Trillium\General\Controller\ControllerFactory;
 use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
@@ -152,6 +153,7 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $configResolver        = $this->configuration->getResolver();
         $configFileLocator     = new FileLocator($this->configuration->getPaths());
         $configResolver->addLoader(new PhpFileLoader($configFileLocator));
+        $configResolver->addLoader(new ConfigYamlFileLoader($configFileLocator));
         $this->configuration->setDefault('application', 'php');
         $this->setLocale($this->configuration->get('locale', $this->getLocale()));
 
