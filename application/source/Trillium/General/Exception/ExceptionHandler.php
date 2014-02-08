@@ -59,6 +59,7 @@ class ExceptionHandler
             $message = 'Internal Server Error';
             $code = 500;
         }
+
         return new Response($message, $code);
     }
 

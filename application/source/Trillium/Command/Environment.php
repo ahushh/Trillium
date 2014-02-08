@@ -89,6 +89,7 @@ class Environment extends Command
     {
         if (!in_array($env, ['development', 'testing', 'production'])) {
             $output->writeln('<error>Wrong environment "' . $env . '" given</error>');
+
             return 1;
         } else {
             $path = $this->getEnvironment();

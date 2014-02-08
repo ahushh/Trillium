@@ -26,6 +26,7 @@ class YamlFileLoader extends FileLoader
     public function load($resource, $type = null)
     {
         $path = $this->locator->locate($resource . '.yml');
+
         return (new Parser())->parse(file_get_contents($path));
     }
 

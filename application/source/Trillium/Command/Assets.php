@@ -274,8 +274,8 @@ class Assets extends Command
      *
      * @param string $alias An alias
      *
-     * @throws \RuntimeException Wrong configuration given
-     * @throws \LogicException   Filter does not exists
+     * @throws \RuntimeException   Wrong configuration given
+     * @throws \LogicException     Filter does not exists
      * @return CssCompressorFilter
      */
     private function getFilterByAlias($alias)
