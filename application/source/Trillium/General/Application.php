@@ -154,7 +154,7 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
         $configFileLocator     = new FileLocator($this->configuration->getPaths());
         $configResolver->addLoader(new PhpFileLoader($configFileLocator));
         $configResolver->addLoader(new ConfigYamlFileLoader($configFileLocator));
-        $this->configuration->setDefault('application', 'php');
+        $this->configuration->setDefault('application', 'yml');
         $this->setLocale($this->configuration->get('locale', $this->getLocale()));
 
         $this['logger']        = new Logger('Trillium');
