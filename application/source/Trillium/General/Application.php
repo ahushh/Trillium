@@ -16,6 +16,7 @@ use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -34,6 +35,7 @@ use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
 use Trillium\General\Configuration\Configuration;
+use Trillium\General\Configuration\PhpFileLoader;
 use Trillium\General\Controller\ControllerFactory;
 use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
@@ -146,7 +148,11 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
 
         $this['dispatcher']    = new EventDispatcher();
 
-        $this['configuration'] = new Configuration($this->getEnvironment());
+        $this['configuration'] = new Configuration($this->getEnvironment(), new LoaderResolver());
+        $configResolver        = $this->configuration->getResolver();
+        $configFileLocator     = new FileLocator($this->configuration->getPaths());
+        $configResolver->addLoader(new PhpFileLoader($configFileLocator));
+        $this->configuration->setDefault('application', 'php');
         $this->setLocale($this->configuration->get('locale', $this->getLocale()));
 
         $this['logger']        = new Logger('Trillium');

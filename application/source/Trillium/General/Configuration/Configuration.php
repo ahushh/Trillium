@@ -9,10 +9,13 @@
 
 namespace Trillium\General\Configuration;
 
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\LoaderResolver;
 
 /**
  * Configuration Class
+ *
+ * @method Configuration get(\string $key = null, \string $default = null)
+ * @method Configuration has(\string $key)
  *
  * @package Trillium\General\Configuration
  */
@@ -25,9 +28,9 @@ class Configuration
     const DIRECTORY = '/../../../../resources/configuration/';
 
     /**
-     * @var array Configuration values
+     * @var array Resources collection
      */
-    private $configuration;
+    private $resourceCollection;
 
     /**
      * @var array Paths to the configuration files
@@ -35,47 +38,65 @@ class Configuration
     private $paths;
 
     /**
+     * @var string Environment
+     */
+    private $environment;
+
+    /**
+     * @var LoaderResolver Resolver
+     */
+    private $resolver;
+
+    /**
+     * @var Resource Default resource
+     */
+    private $defaultResource;
+
+    /**
      * Constructor
      *
-     * @param string $environment Application environment
+     * @param string         $environment Application environment
+     * @param LoaderResolver $resolver    Resolver
      *
      * @return self
      */
-    public function __construct($environment)
+    public function __construct($environment, LoaderResolver $resolver)
     {
-        $this->configuration = [];
-        $confDir = __DIR__ . self::DIRECTORY;
-        $this->paths = [
-            $confDir . $environment . '/',
-            $confDir . 'default/',
+        $this->resourceCollection = [];
+        $this->environment        = $environment;
+        $this->resolver           = $resolver;
+        $this->paths              = [
+            __DIR__ . self::DIRECTORY . $this->environment . '/',
+            __DIR__ . self::DIRECTORY . 'default/',
         ];
-        $loader = new PhpFileLoader(new FileLocator($this->paths));
-        $this->configuration = $loader->load('application');
     }
 
     /**
-     * Gets value by key
+     * Enables access to the default resource methods
      *
-     * @param string|null $key     Key
-     * @param mixed|null  $default Default value, if key is not exists
+     * @param string $name Method name
+     * @param array  $args Arguments
      *
-     * @return null
+     * @throws \BadMethodCallException
+     * @return mixed
      */
-    public function get($key = null, $default = null)
+    public function __call($name, array $args = [])
     {
-        return $this->has($key) ? $this->configuration[$key] : $default;
+        if (!method_exists($this->defaultResource, $name)) {
+            throw new \BadMethodCallException(sprintf('Method "%s" does not exists', $name));
+        }
+
+        return call_user_func_array([$this->defaultResource, $name], $args);
     }
 
     /**
-     * Checks, whether value exists
+     * Returns a resolver instance
      *
-     * @param string $key Key
-     *
-     * @return boolean
+     * @return LoaderResolver
      */
-    public function has($key)
+    public function getResolver()
     {
-        return array_key_exists($key, $this->configuration);
+        return $this->resolver;
     }
 
     /**
@@ -87,6 +108,41 @@ class Configuration
     public function getPaths()
     {
         return $this->paths;
+    }
+
+    /**
+     * Loads and sets resource as default
+     *
+     * @param string      $resource Resource
+     * @param string|null $type     Resource type
+     *
+     * @return void
+     */
+    public function setDefault($resource, $type = null)
+    {
+        $this->defaultResource = $this->load($resource, $type);
+    }
+
+    /**
+     * Loads a resource
+     *
+     * @param string      $resource Resource
+     * @param string|null $type     Resource type
+     *
+     * @throws \LogicException
+     * @return Resource
+     */
+    public function load($resource, $type = null)
+    {
+        if (!array_key_exists($resource, $this->resourceCollection)) {
+            $loader = $this->resolver->resolve($resource, $type);
+            if ($loader === false) {
+                throw new \LogicException('Can not to find a loader for the given resource');
+            }
+            $this->resourceCollection[$resource] = new Resource($loader->load($resource, $type));
+        }
+
+        return $this->resourceCollection[$resource];
     }
 
 }
