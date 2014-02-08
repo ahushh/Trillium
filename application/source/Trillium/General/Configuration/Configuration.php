@@ -130,7 +130,7 @@ class Configuration
      * @param string|null $type     Resource type
      *
      * @throws \LogicException
-     * @return Resource
+     * @return \Trillium\General\Configuration\Resource
      */
     public function load($resource, $type = null)
     {
