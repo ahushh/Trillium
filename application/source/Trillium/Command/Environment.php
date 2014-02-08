@@ -9,11 +9,10 @@
 
 namespace Trillium\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Trillium\General\Application;
+use Trillium\General\Console\Command;
 
 /**
  * Environment Class
@@ -24,27 +23,13 @@ class Environment extends Command
 {
 
     /**
-     * @var Application An application instance
-     */
-    private $app;
-
-    /**
-     * {@inheritdoc}
-     * @param Application $app An application instance
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        parent::__construct('env');
-        $this->setDescription('Change or display environment');
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
+            ->setName('env')
+            ->setDescription('Change or display environment')
             ->addArgument(
                 'environment',
                 InputArgument::OPTIONAL,

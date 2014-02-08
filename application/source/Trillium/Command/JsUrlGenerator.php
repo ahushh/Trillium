@@ -9,12 +9,11 @@
 
 namespace Trillium\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Trillium\General\Application;
+use Trillium\General\Console\Command;
 
 /**
  * JsUrlGenerator Class
@@ -23,11 +22,6 @@ use Trillium\General\Application;
  */
 class JsUrlGenerator extends Command
 {
-
-    /**
-     * @var Application An application instance
-     */
-    private $app;
 
     /**
      * @var array Output messages
@@ -43,21 +37,12 @@ class JsUrlGenerator extends Command
 
     /**
      * {@inheritdoc}
-     * @param Application $app An application instance
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        parent::__construct('jug');
-        $this->setDescription('Generate the javascript url generator');
-    }
-
-    /**
-     * {@inheritdoc}
      */
     protected function configure()
     {
         $this
+            ->setName('jug')
+            ->setDescription('Generate the javascript url generator')
             ->addOption(
                 'path',
                 'p',

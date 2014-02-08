@@ -13,13 +13,12 @@ use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\Yui\CssCompressorFilter;
 use Assetic\Filter\Yui\JsCompressorFilter;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Trillium\General\Application;
+use Trillium\General\Console\Command;
 
 /**
  * Assets Class
@@ -28,11 +27,6 @@ use Trillium\General\Application;
  */
 class Assets extends Command
 {
-
-    /**
-     * @var Application An application instance
-     */
-    private $app;
 
     /**
      * @var array Assets configuration
@@ -97,44 +91,12 @@ class Assets extends Command
 
     /**
      * {@inheritdoc}
-     * @param Application $app An application instance
-     */
-    public function __construct(Application $app)
-    {
-        $this->app  = $app;
-        $this->conf = $this->app->configuration->load('assets', 'yml')->get();
-        // Load filters configuration
-        if (isset($this->conf['filters'])) {
-            $this->confFilters = $this->conf['filters'];
-            foreach ($this->filtersConf as $key => $item) {
-                // Configuration for a filter is missing
-                if (!array_key_exists($key, $this->confFilters)) {
-                    $this->confFilters[$key] = $item;
-                } elseif (is_array($this->confFilters[$key])) {
-                    foreach ($this->filtersConf[$key] as $name => $value) {
-                        // Option for a filter configuration is missing
-                        if (!array_key_exists($name, $this->confFilters[$key])) {
-                            $this->confFilters[$key][$name] = $value;
-                        }
-                    }
-                } else {
-                    throw new \LogicException('Unable to read the configuration file');
-                }
-            }
-            unset($this->conf['filters']);
-        } else {
-            $this->confFilters = $this->filtersConf;
-        }
-        parent::__construct('assets');
-        $this->setDescription('Build assets via assetic');
-    }
-
-    /**
-     * {@inheritdoc}
      */
     protected function configure()
     {
         $this
+            ->setName('assets')
+            ->setDescription('Build assets via assetic')
             ->addOption(
                 'ignore',
                 'i',
@@ -158,6 +120,29 @@ class Assets extends Command
                 'styles.css'
             )
         ;
+        // Load filters configuration
+        $this->conf = $this->app->configuration->load('assets', 'yml')->get();
+        if (isset($this->conf['filters'])) {
+            $this->confFilters = $this->conf['filters'];
+            foreach ($this->filtersConf as $key => $item) {
+                // Configuration for a filter is missing
+                if (!array_key_exists($key, $this->confFilters)) {
+                    $this->confFilters[$key] = $item;
+                } elseif (is_array($this->confFilters[$key])) {
+                    foreach ($this->filtersConf[$key] as $name => $value) {
+                        // Option for a filter configuration is missing
+                        if (!array_key_exists($name, $this->confFilters[$key])) {
+                            $this->confFilters[$key][$name] = $value;
+                        }
+                    }
+                } else {
+                    throw new \LogicException('Unable to read the configuration file');
+                }
+            }
+            unset($this->conf['filters']);
+        } else {
+            $this->confFilters = $this->filtersConf;
+        }
     }
 
     /**
