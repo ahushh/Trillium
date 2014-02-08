@@ -12,6 +12,7 @@ namespace Trillium\Command;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\Yui\CssCompressorFilter;
+use Assetic\Filter\Yui\JsCompressorFilter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,9 +40,37 @@ class Assets extends Command
     private $conf;
 
     /**
-     * @var array Filters configuration
+     * @var array Filters configuration (from file)
      */
     private $confFilters;
+
+    /**
+     * @var array Loaded filters
+     */
+    private $filters = [];
+
+    /**
+     * @var array Default filters configuration
+     */
+    private $filtersConf = [
+        'global'             => [
+            'yui-path'  => null,
+            'java-path' => '/usr/bin/java',
+        ],
+        'yui-js-compressor'  => [
+            'charset'              => null,
+            'linebreak'            => null,
+            'stack-size'           => null,
+            'nomunge'              => null,
+            'disable-optimization' => null,
+            'preserve-semi'        => null,
+        ],
+        'yui-css-compressor' => [
+            'charset'    => null,
+            'linebreak'  => null,
+            'stack-size' => null,
+        ],
+    ];
 
     /**
      * @var array Output messages
@@ -74,11 +103,27 @@ class Assets extends Command
     {
         $this->app  = $app;
         $this->conf = $this->app->configuration->load('assets', 'yml')->get();
+        // Load filters configuration
         if (isset($this->conf['filters'])) {
             $this->confFilters = $this->conf['filters'];
+            foreach ($this->filtersConf as $key => $item) {
+                // Configuration for a filter is missing
+                if (!array_key_exists($key, $this->confFilters)) {
+                    $this->confFilters[$key] = $item;
+                } elseif (is_array($this->confFilters[$key])) {
+                    foreach ($this->filtersConf[$key] as $name => $value) {
+                        // Option for a filter configuration is missing
+                        if (!array_key_exists($name, $this->confFilters[$key])) {
+                            $this->confFilters[$key][$name] = $value;
+                        }
+                    }
+                } else {
+                    throw new \LogicException('Unable to read the configuration file');
+                }
+            }
             unset($this->conf['filters']);
         } else {
-            $this->confFilters = [];
+            $this->confFilters = $this->filtersConf;
         }
         parent::__construct('assets');
         $this->setDescription('Build assets via assetic');
@@ -189,7 +234,7 @@ class Assets extends Command
                         $this->messages['found_asset'],
                         $a . '/' . $total,
                         $key,
-                        $priority !== null ? : 'unspecified'
+                        $priority !== null ? $priority : 'unspecified'
                     ));
                 }
                 if ($priority !== null) {
@@ -250,21 +295,39 @@ class Assets extends Command
      */
     private function getFilterByAlias($alias)
     {
+        if (isset($this->filters[$alias])) {
+            return $this->filters[$alias];
+        }
+        $conf = $this->confFilters[$alias];
         switch ($alias) {
+            case 'yui-js-compressor':
+                $compressor = new JsCompressorFilter(
+                    $this->confFilters['global']['yui-path'],
+                    $this->confFilters['global']['java-path']
+                );
+                $compressor->setCharset($conf['charset']);
+                $compressor->setLineBreak($conf['linebreak']);
+                $compressor->setStackSize($conf['stack-size']);
+                $compressor->setNomunge($conf['nomunge']);
+                $compressor->setDisableOptimizations($conf['disable-optimization']);
+                $compressor->setPreserveSemi($conf['preserve-semi']);
+                $this->filters[$alias] = $compressor;
+                break;
             case 'yui-css-compressor':
-                if (!isset($this->confFilters[$alias])) {
-                    throw new \RuntimeException(sprintf('Unable to load configuration for %s', $alias));
-                }
-                $config = $this->confFilters[$alias];
-                if (!is_array($config) || (!isset($config['path']) || !isset($config['java']))) {
-                    throw new \RuntimeException(sprintf('Wrong configuration for %s given', $alias));
-                }
-
-                return new CssCompressorFilter($config['path'], $config['java']);
+                $compressor = new CssCompressorFilter(
+                    $this->confFilters['global']['yui-path'],
+                    $this->confFilters['global']['java-path']
+                );
+                $compressor->setCharset($conf['charset']);
+                $compressor->setLineBreak($conf['linebreak']);
+                $compressor->setStackSize($conf['stack-size']);
+                $this->filters[$alias] = $compressor;
                 break;
             default:
                 throw new \LogicException(sprintf('Filter "%s" does not exists', $alias));
         }
+
+        return $this->filters[$alias];
     }
 
 }
