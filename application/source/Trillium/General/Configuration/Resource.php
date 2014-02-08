@@ -42,7 +42,7 @@ class Resource
      * @param string|null $key     Key or null to get all values
      * @param mixed|null  $default Default value, if key is not exists
      *
-     * @return null
+     * @return mixed|null
      */
     public function get($key = null, $default = null)
     {
