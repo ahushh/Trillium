@@ -12,6 +12,7 @@ namespace Trillium\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Trillium\General\Console\Command;
 
 /**
@@ -21,6 +22,16 @@ use Trillium\General\Console\Command;
  */
 class Environment extends Command
 {
+
+    /**
+     * @var array Output messages
+     */
+    private $messages = [
+        'wrong_env'  => '<fg=red>Wrong environment "%s" given</fg=red>',
+        'wrong_file' => '<fg=red>Configuration file ".environment" does not exists</fg=red>',
+        'success'    => '<info>Environment changed to "%s"</info>',
+        'failed'     => '<fg=red>Failed to change environment to "%s"</fg=red>'
+    ];
 
     /**
      * {@inheritdoc}
@@ -72,7 +83,7 @@ class Environment extends Command
      */
     private function displayEnvironment(OutputInterface $output)
     {
-        $output->writeln('<info>' . $this->app->getEnvironment() . '</info>');
+        $output->writeln(sprintf('<info>%s</info>', $this->app->getEnvironment()));
 
         return 0;
     }
@@ -88,18 +99,19 @@ class Environment extends Command
     private function changeEnvironment($env, OutputInterface $output)
     {
         if (!in_array($env, ['development', 'testing', 'production'])) {
-            $output->writeln('<error>Wrong environment "' . $env . '" given</error>');
+            $output->writeln(sprintf($this->messages['wrong_env'], $env));
 
             return 1;
         } else {
             $path = $this->getEnvironment();
             if ($path === false) {
-                $output->writeln('<error>Configuration file ".environment" does not exists</error>');
+                $output->writeln($this->messages['wrong_file']);
 
                 return 1;
             } else {
-                file_put_contents($path, $env);
-                $output->writeln('<info>Environment changed to "' . $env . '"</info>');
+                $filesystem = new Filesystem();
+                $filesystem->dumpFile($path, $env);
+                $output->writeln(sprintf($this->messages[is_file($path) ? 'success' : 'failed'], $env));
 
                 return 0;
             }

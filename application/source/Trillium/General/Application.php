@@ -288,7 +288,10 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
             if (!is_file($this->environment)) {
                 throw new \RuntimeException('Environment is not defined');
             }
-            $this->environment = file_get_contents($this->environment);
+            $this->environment = @file_get_contents($this->environment);
+            if ($this->environment === false) {
+                throw new \RuntimeException(sprintf('Unable to get environment: %s', error_get_last()['message']));
+            }
             if (!in_array($this->environment, ['development', 'testing', 'production'])) {
                 throw new \RuntimeException(sprintf('Environment "%s" is not available'));
             }
