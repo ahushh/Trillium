@@ -8,5 +8,4 @@
  */
 
 require __DIR__ . '/autoload.php';
-$app = new \Trillium\General\Application();
-return $app;
+return new \Trillium\General\Application();

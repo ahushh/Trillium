@@ -39,7 +39,7 @@ class ControllerFactory
     public function __construct(Application $app)
     {
         $this->controllers = [];
-        $this->app = $app;
+        $this->app         = $app;
     }
 
     /**

@@ -43,7 +43,7 @@ class CsFix extends Command
         $status = $process->run(
             function ($status, $data) use ($output) {
                 $output->write($data);
-                if ($output->getVerbosity() ===OutputInterface::VERBOSITY_VERBOSE) {
+                if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
                     $output->write($status);
                 }
             }

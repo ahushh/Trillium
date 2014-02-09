@@ -3,7 +3,7 @@
 /**
  * Part of the Trillium
  *
- * @author Kilte Leichnam <nwotnbm@gmail.com>
+ * @author  Kilte Leichnam <nwotnbm@gmail.com>
  * @package Trillium
  */
 

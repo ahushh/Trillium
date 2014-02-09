@@ -1,11 +1,10 @@
 <?php
 
 $finder = \Symfony\CS\Finder\DefaultFinder::create()
-    ->ignoreDotFiles(true)
-    ->ignoreVCS(true)
-    ->notName('composer.*')
+    ->files()
+    ->name('*.php')
     ->exclude('vendor')
-    ->exclude(glob('application/resources/*', GLOB_ONLYDIR))
+    ->exclude('application/resources')
     ->in(__DIR__)
 ;
 
