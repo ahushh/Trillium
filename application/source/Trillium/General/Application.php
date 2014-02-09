@@ -43,6 +43,7 @@ use Trillium\General\EventListener\LocaleListener;
 use Trillium\General\EventListener\RequestListener;
 use Trillium\General\Exception\DebugExceptionHandler;
 use Trillium\General\Exception\ExceptionHandler;
+use Trillium\General\MySQLi\MySQLi;
 use Twig_Environment;
 use Twig_Extension_Core;
 use Twig_Loader_Filesystem;
@@ -60,6 +61,7 @@ use Twig_Loader_Filesystem;
  * @property-read Translator         $translator
  * @property-read Twig_Environment   $twigEnvironment
  * @property-read TwigEngine         $view
+ * @property-read MySQLi             $mysqli
  *
  * @package Trillium\General
  */
@@ -209,6 +211,8 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
             new RoutingExtension($this->router->getGenerator())
         ]);
         $this['view'] = new TwigEngine($this->twigEnvironment, new TemplateNameParser());
+
+        $this['mysqli'] = new MySQLi($this->configuration->load('mysqli', 'yml')->get());
     }
 
     /**
