@@ -9,14 +9,7 @@
 
 namespace Trillium\General;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Pimple;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Bridge\Twig\TwigEngine;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -29,39 +22,30 @@ use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\TerminableInterface;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Routing\Router;
-use Symfony\Component\Templating\TemplateNameParser;
-use Symfony\Component\Translation\Loader\JsonFileLoader;
-use Symfony\Component\Translation\Translator;
-use Trillium\General\Configuration\Configuration;
-use Trillium\General\Configuration\PhpFileLoader;
-use Trillium\General\Configuration\YamlFileLoader as ConfigYamlFileLoader;
 use Trillium\General\Controller\ControllerFactory;
 use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
 use Trillium\General\EventListener\RequestListener;
 use Trillium\General\Exception\DebugExceptionHandler;
 use Trillium\General\Exception\ExceptionHandler;
-use Trillium\General\MySQLi\MySQLi;
-use Twig_Environment;
-use Twig_Extension_Core;
-use Twig_Loader_Filesystem;
+use Trillium\Provider\ConfigurationProvider;
+use Trillium\Provider\LoggerProvider;
+use Trillium\Provider\MySQLiProvider;
+use Trillium\Provider\RouterProvider;
+use Trillium\Provider\TranslatorProvider;
+use Trillium\Provider\TwigProvider;
 
 /**
  * Application Class
  *
- * @property-read EventDispatcher    $dispatcher
- * @property-read Logger             $logger
- * @property-read ControllerResolver $resolver
- * @property-read RequestStack       $requestStack
- * @property-read HttpKernel         $kernel
- * @property-read Configuration      $configuration
- * @property-read Router             $router
- * @property-read Translator         $translator
- * @property-read Twig_Environment   $twigEnvironment
- * @property-read TwigEngine         $view
- * @property-read MySQLi             $mysqli
+ * @property-read \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher
+ * @property-read \Monolog\Logger                                    $logger
+ * @property-read \Symfony\Component\HttpKernel\HttpKernel           $kernel
+ * @property-read \Trillium\Service\Configuration\Configuration      $configuration
+ * @property-read \Symfony\Component\Routing\Router                  $router
+ * @property-read \Symfony\Component\Translation\Translator          $translator
+ * @property-read \Trillium\Service\Twig\TwigEngine                  $view
+ * @property-read \Trillium\Service\MySQLi\MySQLi                    $mysqli
  *
  * @package Trillium\General
  */
@@ -136,7 +120,6 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
     public function __construct()
     {
         parent::__construct();
-
         error_reporting(-1);
         if ($this->isDebug()) {
             ErrorHandler::register(-1, 1);
@@ -148,71 +131,22 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
             }
             DebugClassLoader::enable();
         }
-
         $this['dispatcher']    = new EventDispatcher();
-
-        $this['configuration'] = new Configuration($this->getEnvironment(), new LoaderResolver());
-        $configResolver        = $this->configuration->getResolver();
-        $configFileLocator     = new FileLocator($this->configuration->getPaths());
-        $configResolver->addLoader(new PhpFileLoader($configFileLocator));
-        $configResolver->addLoader(new ConfigYamlFileLoader($configFileLocator));
-        $this->configuration->setDefault('application', 'yml');
-        $this->setLocale($this->configuration->get('locale', $this->getLocale()));
-
-        $this['logger']        = new Logger('Trillium');
-        $this['logger.stream'] = $this->getLogsDir() . $this->getEnvironment() . '.log';
-        $this['logger.level']  = $this->isDebug() ? Logger::DEBUG : Logger::ERROR;
-        $this->logger->pushHandler(new StreamHandler($this['logger.stream'], $this['logger.level']));
-
-        $this['resolver']      = new ControllerResolver($this->logger, new ControllerFactory($this));
-        $this['requestStack']  = new RequestStack();
-        $this['kernel']        = new HttpKernel($this->dispatcher, $this->resolver, $this->requestStack);
-
-        $this['router']        = new Router(
-            new YamlFileLoader(new FileLocator($this->configuration->getPaths())),
-            'routes.yml',
-            [
-                'cache_dir'             => $this->getCacheDir(),
-                'debug'                 => $this->isDebug(),
-                'generator_cache_class' => 'CachedUrlGenerator',
-                'matcher_cache_class'   => 'CachedUrlMatcher',
-            ],
-            null,
-            $this->logger
-        );
-        $this->router->getContext()->setHttpPort($this->configuration->get('request.http_port', 80));
-        $this->router->getContext()->setHttpsPort($this->configuration->get('request.https_port', 443));
-
+        $this['configuration'] = (new ConfigurationProvider())->register($this);
+        $this['logger']        = (new LoggerProvider())->register($this);
+        $resolver              = new ControllerResolver($this->logger, new ControllerFactory($this));
+        $requestStack          = new RequestStack();
+        $this['kernel']        = new HttpKernel($this->dispatcher, $resolver, $requestStack);
+        $this['router']        = (new RouterProvider())->register($this);
+        $this['translator']    = (new TranslatorProvider())->register($this);
+        $this['view']          = (new TwigProvider())->register($this);
+        $this['mysqli']        = (new MySQLiProvider())->register($this);
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
-        $this->dispatcher->addSubscriber(new LocaleListener($this, $this->requestStack, $this->router->getMatcher()));
+        $this->dispatcher->addSubscriber(new LocaleListener($this, $requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
         if (!$this->isDebug()) {
             $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionHandler($this), $this->logger));
         }
-
-        $this['translator'] = new Translator($this->getLocale());
-        $localeFallback = $this->configuration->get('locale_fallback', 'en');
-        $this->translator->setFallbackLocales([$localeFallback]);
-        $this->translator->addLoader('json', new JsonFileLoader());
-        $this->translator->addResource('json', $this->getLocalesDir() . $localeFallback . '.json', $localeFallback);
-
-        $this['twigEnvironment'] = new Twig_Environment(
-            new Twig_Loader_Filesystem($this->getViewsDir()),
-            [
-                'debug'            => $this->isDebug(),
-                'charset'          => $this->configuration->get('charset', 'UTF-8'),
-                'cache'            => $this->getCacheDir() . 'twig',
-                'strict_variables' => true,
-            ]
-        );
-        $this->twigEnvironment->setExtensions([
-            new Twig_Extension_Core(),
-            new TranslationExtension($this->translator),
-            new RoutingExtension($this->router->getGenerator())
-        ]);
-        $this['view'] = new TwigEngine($this->twigEnvironment, new TemplateNameParser());
-
-        $this['mysqli'] = new MySQLi($this->configuration->load('mysqli', 'yml')->get());
     }
 
     /**

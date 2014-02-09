@@ -7,14 +7,14 @@
  * @package Trillium
  */
 
-namespace Trillium\General\Configuration;
+namespace Trillium\Service\Configuration;
 
 /**
  * Resource Class
  *
  * Wraps a resource
  *
- * @package Trillium\General\Configuration
+ * @package Trillium\Service\Configuration
  */
 class Resource
 {

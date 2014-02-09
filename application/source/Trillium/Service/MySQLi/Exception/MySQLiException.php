@@ -7,12 +7,12 @@
  * @package Trillium
  */
 
-namespace Trillium\General\MySQLi\Exception;
+namespace Trillium\Service\MySQLi\Exception;
 
 /**
  * MySQLiException Class
  *
- * @package Trillium\General\MySQLi\Exception
+ * @package Trillium\Service\MySQLi\Exception
  */
 class MySQLiException extends \Exception
 {

@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\General\Configuration;
+namespace Trillium\Service\Configuration;
 
 use Symfony\Component\Config\Loader\LoaderResolver;
 
@@ -17,7 +17,7 @@ use Symfony\Component\Config\Loader\LoaderResolver;
  * @method Configuration get(\string $key = null, \string $default = null)
  * @method Configuration has(\string $key)
  *
- * @package Trillium\General\Configuration
+ * @package Trillium\Service\Configuration
  */
 class Configuration
 {
@@ -130,7 +130,7 @@ class Configuration
      * @param string|null $type     Resource type
      *
      * @throws \LogicException
-     * @return \Trillium\General\Configuration\Resource
+     * @return \Trillium\Service\Configuration\Resource
      */
     public function load($resource, $type = null)
     {

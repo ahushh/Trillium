@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Trillium\General\Application;
-use Trillium\General\Twig\CommonExtension;
+use Trillium\Service\Twig\CommonExtension;
 
 /**
  * RequestListener Class
@@ -50,7 +50,7 @@ class RequestListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $this->app->twigEnvironment->addExtension(new CommonExtension($request->getSchemeAndHttpHost()));
+        $this->app->view->getEnvironment()->addExtension(new CommonExtension($request->getSchemeAndHttpHost()));
     }
 
     /**

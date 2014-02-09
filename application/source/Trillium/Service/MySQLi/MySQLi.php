@@ -7,15 +7,15 @@
  * @package Trillium
  */
 
-namespace Trillium\General\MySQLi;
+namespace Trillium\Service\MySQLi;
 
-use Trillium\General\MySQLi\Exception\ConnectionException;
-use Trillium\General\MySQLi\Exception\QueryException;
+use Trillium\Service\MySQLi\Exception\ConnectionException;
+use Trillium\Service\MySQLi\Exception\QueryException;
 
 /**
  * MySQLi Class
  *
- * @package Trillium\General\MySQLi
+ * @package Trillium\Service\MySQLi
  */
 class MySQLi extends \mysqli
 {
@@ -23,32 +23,29 @@ class MySQLi extends \mysqli
     /**
      * Constructor
      *
+     * Configuration parameters:
+     * <pre>
+     * $conf = [
+     *     host   => 'localhost'
+     *     user   => 'root'
+     *     pass   => 'password'
+     *     db     => 'database'
+     *     port   => ini_get("mysqli.default_port")
+     *     socket => ini_get("mysqli.default_socket")
+     * ];
+     * </pre>
+     *
      * @param array $conf Configuration
      *
      * @throws ConnectionException
      * @return self
      */
-    public function __construct(array $conf = [])
+    public function __construct(array $conf)
     {
-        $defaults = [
-            'host'    => ini_get("mysqli.default_host"),
-            'user'    => ini_get("mysqli.default_user"),
-            'pass'    => ini_get("mysqli.default_pw"),
-            'db'      => '',
-            'port'    => ini_get("mysqli.default_port"),
-            'socket'  => ini_get("mysqli.default_socket"),
-            'charset' => 'utf8',
-        ];
-        foreach ($defaults as $key => $value) {
-            if (!array_key_exists($key, $conf)) {
-                $conf[$key] = $value;
-            }
-        }
         @parent::__construct($conf['host'], $conf['user'], $conf['pass'], $conf['db'], (int) $conf['port'], $conf['socket']);
         if ($this->connect_errno !== 0) {
             throw new ConnectionException($this->connect_error, $this->connect_errno);
         }
-        $this->set_charset($conf['charset']);
     }
 
     /**
@@ -64,7 +61,7 @@ class MySQLi extends \mysqli
     {
         $result = parent::query($statement, $type);
         if (!empty($this->error)) {
-            throw new QueryException($this->error, $statement, $this->error);
+            throw new QueryException($this->error, $statement, $this->errno);
         }
 
         return $result;
