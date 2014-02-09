@@ -17,6 +17,7 @@
     },
     "require": {
         "php": ">=5.4",
+        "fabpot/php-cs-fixer": "~0.4",
         "kriswallsmith/assetic": "~1.1",
         "monolog/monolog": "~1.4",
         "pimple/pimple": "~1.1",
@@ -32,6 +33,7 @@
         "symfony/http-kernel": "~2.4",
         "symfony/process": "~2.4",
         "symfony/routing": "~2.4",
+        "symfony/security": "~2.4",
         "symfony/templating": "~2.4",
         "symfony/translation": "~2.4",
         "symfony/twig-bridge": "~2.4",
