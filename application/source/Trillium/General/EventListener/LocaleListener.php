@@ -71,7 +71,7 @@ class LocaleListener extends SymfonyLocaleListener
         if ($locale === null) {
             $languages = $request->getLanguages();
             foreach ($languages as $l) {
-                $resource = $this->app->getLocalesDir() . $l . '.json';
+                $resource = $this->app->getDirectory('locales') . $l . '.json';
                 if (is_file($resource)) {
                     $locale = $l;
                     break;
@@ -81,7 +81,7 @@ class LocaleListener extends SymfonyLocaleListener
                 $resource = null;
             }
         } else {
-            $resource = $this->app->getLocalesDir() . $locale . '.json';
+            $resource = $this->app->getDirectory('locales') . $locale . '.json';
             if (!is_file($resource)) {
                 $locale = null;
                 $resource = null;

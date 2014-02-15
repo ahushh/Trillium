@@ -71,7 +71,7 @@ class Environment extends Command
      */
     private function getEnvironment()
     {
-        return $this->app->getApplicationDir() . '.environment';
+        return $this->app->getDirectory('application') . '.environment';
     }
 
     /**

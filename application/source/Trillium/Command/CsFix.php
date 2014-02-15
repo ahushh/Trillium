@@ -38,7 +38,7 @@ class CsFix extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $rootDir = realpath($this->app->getApplicationDir() . '../') . '/';
+        $rootDir = realpath($this->app->getDirectory('application') . '../') . '/';
         $process = new Process($rootDir . 'vendor/bin/php-cs-fixer fix ' . $rootDir);
         $status = $process->run(
             function ($status, $data) use ($output) {

@@ -11,6 +11,7 @@ namespace Trillium\General\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Trillium\General\Application;
 use Trillium\Service\Twig\CommonExtension;
@@ -50,7 +51,9 @@ class RequestListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $this->app->view->getEnvironment()->addExtension(new CommonExtension($request->getSchemeAndHttpHost()));
+        if ($event->getRequestType() === HttpKernelInterface::MASTER_REQUEST) {
+            $this->app->view->getEnvironment()->addExtension(new CommonExtension($request->getSchemeAndHttpHost()));
+        }
     }
 
     /**

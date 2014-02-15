@@ -155,8 +155,8 @@ class Assets extends Command
             'css' => $input->getOption('stylesheet'),
             'js'  => $input->getOption('javascript'),
         ];
-        $source = realpath($this->app->getSourceAssetsDir()) . '/';
-        $public = realpath($this->app->getPublicAssetsDir()) . '/';
+        $source = realpath($this->app->getDirectory('assets.source')) . '/';
+        $public = realpath($this->app->getDirectory('assets.public')) . '/';
         $errors = [];
         if ($ignore !== null && !in_array($ignore, ['css', 'js'])) {
             $errors[] = $this->messages['wrong_ignore_value'];

@@ -48,7 +48,7 @@ class JsUrlGenerator extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->app->getSourceAssetsDir() . 'application/url-generator.js'
+                $this->app->getDirectory('assets.source') . 'application/url-generator.js'
             )
             ->addOption(
                 'base-path',
@@ -79,7 +79,7 @@ class JsUrlGenerator extends Command
 
             return 1;
         }
-        $outputPath = str_replace($this->app->getSourceAssetsDir(), '', $path);
+        $outputPath = str_replace($this->app->getDirectory('assets.source'), '', $path);
         $output->write(sprintf($this->messages[is_file($path) ? 'overwrite' : 'create'], $outputPath));
         $routes = $this->app->router->getRouteCollection()->all();
         $result = [];
