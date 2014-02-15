@@ -45,14 +45,14 @@ class SecurityProvider
     /**
      * Constructor
      *
-     * @param array                    $config      Configuration
-     * @param int                      $httpPort    HTTP port
-     * @param int                      $httpsPort   HTTPS port
-     * @param HttpKernelInterface      $kernel      Http kernel interface
-     * @param EventDispatcherInterface $dispatcher  Event dispatcher interface
-     * @param UrlGeneratorInterface    $generator   Url generator interface
-     * @param UrlMatcherInterface      $matcher     Url matcher interface
-     * @param LoggerInterface|null     $logger      Logger interface
+     * @param array                    $config     Configuration
+     * @param int                      $httpPort   HTTP port
+     * @param int                      $httpsPort  HTTPS port
+     * @param HttpKernelInterface      $kernel     Http kernel interface
+     * @param EventDispatcherInterface $dispatcher Event dispatcher interface
+     * @param UrlGeneratorInterface    $generator  Url generator interface
+     * @param UrlMatcherInterface      $matcher    Url matcher interface
+     * @param LoggerInterface|null     $logger     Logger interface
      *
      * @return self
      */
