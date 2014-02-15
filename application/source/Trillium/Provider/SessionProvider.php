@@ -23,16 +23,6 @@ class SessionProvider
 {
 
     /**
-     * @var array Storage options
-     */
-    private $options;
-
-    /**
-     * @var string|null Session save path
-     */
-    private $savePath;
-
-    /**
      * @var Session Session
      */
     private $session;
@@ -52,8 +42,13 @@ class SessionProvider
      */
     public function __construct(array $options = [], $savePath = null)
     {
-        $this->options  = $options;
-        $this->savePath = $savePath;
+        $this->session = new Session(
+            new NativeSessionStorage(
+                $options,
+                new NativeFileSessionHandler($savePath)
+            )
+        );
+        $this->subscriber = new SessionSubscriber($this->session);
     }
 
     /**
@@ -63,15 +58,6 @@ class SessionProvider
      */
     public function session()
     {
-        if ($this->session === null) {
-            $this->session = new Session(
-                new NativeSessionStorage(
-                    $this->options,
-                    new NativeFileSessionHandler($this->savePath)
-                )
-            );
-        }
-
         return $this->session;
     }
 
@@ -82,10 +68,6 @@ class SessionProvider
      */
     public function subscriber()
     {
-        if ($this->subscriber === null) {
-            $this->subscriber = new SessionSubscriber($this->session());
-        }
-
         return $this->subscriber;
     }
 
