@@ -11,7 +11,6 @@ namespace Trillium\Provider;
 
 use Symfony\Component\Translation\Loader\JsonFileLoader;
 use Symfony\Component\Translation\Translator;
-use Trillium\General\Application;
 
 /**
  * TranslatorProvider Class
@@ -22,21 +21,60 @@ class TranslatorProvider
 {
 
     /**
-     * Create the translator instance
+     * @var string Current locale
+     */
+    private $locale;
+
+    /**
+     * @var string Fallback locale
+     */
+    private $localeFallback;
+
+    /**
+     * @var string Path to the locales directory
+     */
+    private $localesDirectory;
+
+    /**
+     * @var Translator Instance of translator
+     */
+    private $translator;
+
+    /**
+     * Constructor
      *
-     * @param Application $app An application instance
+     * @param string $locale           Current locale
+     * @param string $localeFallback   Fallback locale
+     * @param string $localesDirectory Path to the locales directory
+     *
+     * @return self
+     */
+    public function __construct($locale, $localeFallback, $localesDirectory)
+    {
+        $this->locale           = $locale;
+        $this->localeFallback   = $localeFallback;
+        $this->localesDirectory = $localesDirectory;
+    }
+
+    /**
+     * Returns translator instance
      *
      * @return Translator
      */
-    public function register(Application $app)
+    public function translator()
     {
-        $translator = new Translator($app->getLocale());
-        $localeFallback = $app->configuration->get('locale_fallback', 'en');
-        $translator->setFallbackLocales([$localeFallback]);
-        $translator->addLoader('json', new JsonFileLoader());
-        $translator->addResource('json', $app->getLocalesDir() . $localeFallback . '.json', $localeFallback);
+        if ($this->translator === null) {
+            $this->translator = new Translator($this->locale);
+            $this->translator->setFallbackLocales([$this->localeFallback]);
+            $this->translator->addLoader('json', new JsonFileLoader());
+            $this->translator->addResource(
+                'json',
+                $this->localesDirectory . $this->localeFallback . '.json',
+                $this->localeFallback
+            );
+        }
 
-        return $translator;
+        return $this->translator;
     }
 
 }

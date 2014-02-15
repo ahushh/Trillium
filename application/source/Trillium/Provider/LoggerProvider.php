@@ -11,7 +11,6 @@ namespace Trillium\Provider;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Trillium\General\Application;
 
 /**
  * LoggerProvider Class
@@ -22,20 +21,55 @@ class LoggerProvider
 {
 
     /**
-     * Creates the logger instance
+     * @var string Name
+     */
+    private $name;
+
+    /**
+     * @var string Path to the stream
+     */
+    private $stream;
+
+    /**
+     * @var boolean Is debug
+     */
+    private $debug;
+
+    /**
+     * @var Logger Logger service
+     */
+    private $logger;
+
+    /**
+     * Constructor
      *
-     * @param Application $app An application instance
+     * @param string  $name   Name
+     * @param string  $stream Path to the stream
+     * @param boolean $debug  Is debug
+     *
+     * @return self
+     */
+    public function __construct($name, $stream, $debug)
+    {
+        $this->name   = $name;
+        $this->stream = $stream;
+        $this->debug  = $debug;
+    }
+
+    /**
+     * Returns logger service
      *
      * @return Logger
      */
-    public function register(Application $app)
+    public function logger()
     {
-        $logger = new Logger('Trillium');
-        $stream = $app->getLogsDir() . $app->getEnvironment() . '.log';
-        $level  = $app->isDebug() ? Logger::DEBUG : Logger::ERROR;
-        $logger->pushHandler(new StreamHandler($stream, $level));
+        if ($this->logger === null) {
+            $this->logger = new Logger($this->name);
+            $level = $this->debug ? Logger::DEBUG : Logger::ERROR;
+            $this->logger->pushHandler(new StreamHandler($this->stream, $level));
+        }
 
-        return $logger;
+        return $this->logger;
     }
 
 }

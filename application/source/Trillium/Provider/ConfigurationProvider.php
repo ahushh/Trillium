@@ -11,7 +11,6 @@ namespace Trillium\Provider;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderResolver;
-use Trillium\General\Application;
 use Trillium\Service\Configuration\Configuration;
 use Trillium\Service\Configuration\PhpFileLoader;
 use Trillium\Service\Configuration\YamlFileLoader;
@@ -25,23 +24,45 @@ class ConfigurationProvider
 {
 
     /**
-     * Creates the Configuration instance
+     * @var string Environment
+     */
+    private $environment;
+
+    /**
+     * @var Configuration Configuration service
+     */
+    private $configuration;
+
+    /**
+     * Constructor
      *
-     * @param Application $app An application instance
+     * @param string $environment Environment
+     *
+     * @return self
+     */
+    public function __construct($environment)
+    {
+        $this->environment   = $environment;
+        $this->configuration = null;
+    }
+
+    /**
+     * Returns configuration service
      *
      * @return Configuration
      */
-    public function register(Application $app)
+    public function configuration()
     {
-        $configuration     = new Configuration($app->getEnvironment(), new LoaderResolver());
-        $configResolver    = $configuration->getResolver();
-        $configFileLocator = new FileLocator($configuration->getPaths());
-        $configResolver->addLoader(new PhpFileLoader($configFileLocator));
-        $configResolver->addLoader(new YamlFileLoader($configFileLocator));
-        $configuration->setDefault('application', 'yml');
-        $app->setLocale($configuration->get('locale', $app->getLocale()));
+        if ($this->configuration === null) {
+            $this->configuration = new Configuration($this->environment, new LoaderResolver());
+            $configResolver      = $this->configuration->getResolver();
+            $configFileLocator = new FileLocator($this->configuration->getPaths());
+            $configResolver->addLoader(new PhpFileLoader($configFileLocator));
+            $configResolver->addLoader(new YamlFileLoader($configFileLocator));
+            $this->configuration->setDefault('application', 'yml');
+        }
 
-        return $configuration;
+        return $this->configuration;
     }
 
 }
