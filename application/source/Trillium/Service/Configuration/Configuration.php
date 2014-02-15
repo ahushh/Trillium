@@ -14,8 +14,8 @@ use Symfony\Component\Config\Loader\LoaderResolver;
 /**
  * Configuration Class
  *
- * @method Configuration get(\string $key = null, \string $default = null)
- * @method Configuration has(\string $key)
+ * @method mixed get(\string $key = null, \string $default = null)
+ * @method mixed has(\string $key)
  *
  * @package Trillium\Service\Configuration
  */
