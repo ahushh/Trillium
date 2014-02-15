@@ -13,12 +13,12 @@ use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\Yui\CssCompressorFilter;
 use Assetic\Filter\Yui\JsCompressorFilter;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Trillium\General\Console\Command;
 
 /**
  * Assets Class
@@ -27,6 +27,16 @@ use Trillium\General\Console\Command;
  */
 class Assets extends Command
 {
+
+    /**
+     * @var string Source directory
+     */
+    private $source;
+
+    /**
+     * @var string Public directory
+     */
+    private $public;
 
     /**
      * @var array Assets configuration
@@ -90,12 +100,51 @@ class Assets extends Command
     ];
 
     /**
+     * Constructor
+     *
+     * @param string $source Source directory
+     * @param string $public Public directory
+     * @param array  $conf   Configuration
+     *
+     * @throws \LogicException
+     * @return self
+     */
+    public function __construct($source, $public, array $conf)
+    {
+        $this->source = $source;
+        $this->public = $public;
+        // Load filters configuration
+        $this->conf = $conf;
+        if (isset($this->conf['filters'])) {
+            $this->confFilters = $this->conf['filters'];
+            foreach ($this->filtersConf as $key => $item) {
+                // Configuration for a filter is missing
+                if (!array_key_exists($key, $this->confFilters)) {
+                    $this->confFilters[$key] = $item;
+                } elseif (is_array($this->confFilters[$key])) {
+                    foreach ($this->filtersConf[$key] as $name => $value) {
+                        // Option for a filter configuration is missing
+                        if (!array_key_exists($name, $this->confFilters[$key])) {
+                            $this->confFilters[$key][$name] = $value;
+                        }
+                    }
+                } else {
+                    throw new \LogicException('Unable to read the configuration file');
+                }
+            }
+            unset($this->conf['filters']);
+        } else {
+            $this->confFilters = $this->filtersConf;
+        }
+        parent::__construct('assets');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
-            ->setName('assets')
             ->setDescription('Build assets via assetic')
             ->addOption(
                 'ignore',
@@ -120,29 +169,6 @@ class Assets extends Command
                 'styles.css'
             )
         ;
-        // Load filters configuration
-        $this->conf = $this->app->configuration->load('assets', 'yml')->get();
-        if (isset($this->conf['filters'])) {
-            $this->confFilters = $this->conf['filters'];
-            foreach ($this->filtersConf as $key => $item) {
-                // Configuration for a filter is missing
-                if (!array_key_exists($key, $this->confFilters)) {
-                    $this->confFilters[$key] = $item;
-                } elseif (is_array($this->confFilters[$key])) {
-                    foreach ($this->filtersConf[$key] as $name => $value) {
-                        // Option for a filter configuration is missing
-                        if (!array_key_exists($name, $this->confFilters[$key])) {
-                            $this->confFilters[$key][$name] = $value;
-                        }
-                    }
-                } else {
-                    throw new \LogicException('Unable to read the configuration file');
-                }
-            }
-            unset($this->conf['filters']);
-        } else {
-            $this->confFilters = $this->filtersConf;
-        }
     }
 
     /**
@@ -155,16 +181,14 @@ class Assets extends Command
             'css' => $input->getOption('stylesheet'),
             'js'  => $input->getOption('javascript'),
         ];
-        $source = realpath($this->app->getDirectory('assets.source')) . '/';
-        $public = realpath($this->app->getDirectory('assets.public')) . '/';
         $errors = [];
         if ($ignore !== null && !in_array($ignore, ['css', 'js'])) {
             $errors[] = $this->messages['wrong_ignore_value'];
         }
-        if ($source === false) {
+        if ($this->source === false) {
             $errors[] = $this->messages['invalid_src_dir'];
         }
-        if ($public === false) {
+        if ($this->public === false) {
             $errors[] = $this->messages['invalid_pub_dir'];
         }
         if (!empty($errors)) {
@@ -172,12 +196,14 @@ class Assets extends Command
 
             return 1;
         }
+        $this->source = rtrim($this->source, '\/') . '/';
+        $this->public = rtrim($this->public, '\/') . '/';
         if ($ignore !== null) {
             $output->writeln(sprintf($this->messages['ignore'], $ignore));
         }
         $output->writeln([
-            sprintf($this->messages['src_dir'], $source),
-            sprintf($this->messages['pub_dir'], $public),
+            sprintf($this->messages['src_dir'], $this->source),
+            sprintf($this->messages['pub_dir'], $this->public),
             $this->messages['build']
         ]);
         $assets     = $ignore === null ? ['js', 'css'] : ($ignore === 'css' ? ['js'] : ['css']);
@@ -191,7 +217,7 @@ class Assets extends Command
             $output->writeln(sprintf($this->messages['assets_type'], $type));
             $collection = [];
             $sorted     = [];
-            $iterator   = $this->getIterator('*.' . $type, $source);
+            $iterator   = $this->getIterator('*.' . $type, $this->source);
             $total      = iterator_count($iterator);
             if ($total === 0) {
                 $output->writeln($this->messages['not_found']);
@@ -201,7 +227,7 @@ class Assets extends Command
             $a = 1;
             foreach ($iterator as $file) {
                 $path               = $file->getRealPath();
-                $key                = str_replace($source, '', $path);
+                $key                = str_replace($this->source, '', $path);
                 $options            = isset($this->conf[$key])    ? $this->conf[$key]          : [];
                 $priority           = isset($options['priority']) ? (int) $options['priority'] : null;
                 $options['filters'] = isset($options['filters'])  ? $options['filters']        : [];
@@ -224,7 +250,7 @@ class Assets extends Command
                 }
                 if ($priority !== null) {
                     if (isset($sorted[$priority])) {
-                        $sourceKey = str_replace($source, '', $sorted[$priority]->getSourceRoot())
+                        $sourceKey = str_replace($this->source, '', $sorted[$priority]->getSourceRoot())
                                    . '/'. $sorted[$priority]->getSourcePath();
                         $output->writeln(sprintf(
                             $this->messages['overwrite_asset'],
@@ -241,7 +267,7 @@ class Assets extends Command
             ksort($sorted);
             $collection     = array_merge($sorted, $collection);
             $collection     = new AssetCollection($collection);
-            $collectionPath = $public . $names[$type];
+            $collectionPath = $this->public . $names[$type];
             $output->write(sprintf($this->messages['dump_assets'], $type, $collectionPath));
             $filesystem->dumpFile($collectionPath, $collection->dump());
             if (is_file($collectionPath)) {

@@ -44,9 +44,13 @@ class Application extends SymfonyApplication
      */
     protected function getDefaultCommands()
     {
-        $commands = parent::getDefaultCommands();
+        $commands   = parent::getDefaultCommands();
         $commands[] = new Environment($this->app);
-        $commands[] = new Assets($this->app);
+        $commands[] = new Assets(
+            $this->app->getDirectory('assets.source'),
+            $this->app->getDirectory('assets.public'),
+            $this->app->configuration->load('assets', 'yml')->get()
+        );
         $commands[] = new JsUrlGenerator($this->app);
         $commands[] = new CsFix($this->app);
 
