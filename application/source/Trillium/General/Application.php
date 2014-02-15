@@ -180,8 +180,8 @@ class Application
         $this->router        = (new RouterProvider(
                                     $configurationDirectories,
                                     'routes',
-                                    $this->configuration->get('request.http_port', 80),
-                                    $this->configuration->get('request.https_port', 443),
+                                    $this->configuration->get('request.http_port'),
+                                    $this->configuration->get('request.https_port'),
                                     $this->getDirectory('cache'),
                                     $this->isDebug(),
                                     $this->logger
@@ -211,8 +211,8 @@ class Application
         $session             = new SessionProvider();
         $security            = new SecurityProvider(
                                     $this->configuration->load('security', 'yml')->get(),
-                                    $this->configuration->get('request.http_port', 80),
-                                    $this->configuration->get('request.https_port', 443),
+                                    $this->configuration->get('request.http_port'),
+                                    $this->configuration->get('request.https_port'),
                                     $this->kernel,
                                     $this->dispatcher,
                                     $this->router->getGenerator(),
@@ -226,7 +226,7 @@ class Application
         $this->dispatcher->addSubscriber($security->firewall());
         $this->dispatcher->addSubscriber($security->rememberMeListener());
         $this->dispatcher->addSubscriber(new LocaleListener($this, $requestStack, $this->router->getMatcher()));
-        $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
+        $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset')));
         $this->dispatcher->addSubscriber($twig->requestListener());
         if (!$this->isDebug()) {
             $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionHandler($this), $this->logger));
