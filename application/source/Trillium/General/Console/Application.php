@@ -45,7 +45,10 @@ class Application extends SymfonyApplication
     protected function getDefaultCommands()
     {
         $commands   = parent::getDefaultCommands();
-        $commands[] = new Environment($this->app);
+        $commands[] = new Environment(
+            $this->app->getDirectory('application') . '.environment',
+            $this->app->getEnvironment()
+        );
         $commands[] = new Assets(
             $this->app->getDirectory('assets.source'),
             $this->app->getDirectory('assets.public'),
