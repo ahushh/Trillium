@@ -54,7 +54,10 @@ class Application extends SymfonyApplication
             $this->app->getDirectory('assets.public'),
             $this->app->configuration->load('assets', 'yml')->get()
         );
-        $commands[] = new JsUrlGenerator($this->app);
+        $commands[] = new JsUrlGenerator(
+            $this->app->getDirectory('assets.source'),
+            $this->app->router->getRouteCollection()->all()
+        );
         $commands[] = new CsFix(realpath($this->app->getDirectory('application') . '../') . '/');
 
         return $commands;

@@ -9,11 +9,12 @@
 
 namespace Trillium\Command;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Trillium\General\Console\Command;
+use Symfony\Component\Routing\Route;
 
 /**
  * JsUrlGenerator Class
@@ -36,6 +37,31 @@ class JsUrlGenerator extends Command
     ];
 
     /**
+     * @var string A destination directory for a generated script
+     */
+    private $directory;
+
+    /**
+     * @var Route[]
+     */
+    private $routes;
+
+    /**
+     * Constructor
+     *
+     * @param string  $directory A destination directory for a generated script
+     * @param Route[] $routes    Routes
+     *
+     * @return self
+     */
+    public function __construct($directory, array $routes)
+    {
+        $this->directory = $directory;
+        $this->routes    = $routes;
+        parent::__construct('jug');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -48,7 +74,7 @@ class JsUrlGenerator extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->app->getDirectory('assets.source') . 'application/url-generator.js'
+                $this->directory . 'application/url-generator.js'
             )
             ->addOption(
                 'base-path',
@@ -79,11 +105,10 @@ class JsUrlGenerator extends Command
 
             return 1;
         }
-        $outputPath = str_replace($this->app->getDirectory('assets.source'), '', $path);
+        $outputPath = str_replace($this->directory, '', $path);
         $output->write(sprintf($this->messages[is_file($path) ? 'overwrite' : 'create'], $outputPath));
-        $routes = $this->app->router->getRouteCollection()->all();
         $result = [];
-        foreach ($routes as $name => $route) {
+        foreach ($this->routes as $name => $route) {
             $result[$name] = [
                 'path'         => $route->getPath(),
                 'requirements' => $route->getRequirements(),
