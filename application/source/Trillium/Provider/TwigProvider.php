@@ -14,6 +14,7 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Translation\TranslatorInterface;
+use Trillium\Service\Twig\RequestListener;
 use Trillium\Service\Twig\TwigEngine;
 use Twig_Environment;
 use Twig_Extension_Core;
@@ -26,35 +27,16 @@ use Twig_Loader_Filesystem;
  */
 class TwigProvider
 {
-    /**
-     * @var string Path to the views directory
-     */
-    private $directory;
-    /**
-     * @var boolean Is debug
-     */
-    private $debug;
-    /**
-     * @var string Character set
-     */
-    private $charset;
-    /**
-     * @var string Path to the cache directory
-     */
-    private $cache;
-    /**
-     * @var TranslatorInterface Translator interface
-     */
-    private $translator;
-    /**
-     * @var UrlGeneratorInterface Url generator interface
-     */
-    private $generator;
 
     /**
      * @var TwigEngine
      */
     private $twig;
+
+    /**
+     * @var RequestListener
+     */
+    private $requestListener;
 
     /**
      * Constructor
@@ -77,12 +59,24 @@ class TwigProvider
         UrlGeneratorInterface $generator
     )
     {
-        $this->directory  = $directory;
-        $this->debug      = $debug;
-        $this->charset    = $charset;
-        $this->cache      = $cache;
-        $this->translator = $translator;
-        $this->generator  = $generator;
+        $twig = new Twig_Environment(
+            new Twig_Loader_Filesystem($directory),
+            [
+                'debug'            => $debug,
+                'charset'          => $charset,
+                'cache'            => $cache,
+                'strict_variables' => true,
+            ]
+        );
+        $twig->setExtensions(
+            [
+                new Twig_Extension_Core(),
+                new TranslationExtension($translator),
+                new RoutingExtension($generator)
+            ]
+        );
+        $this->twig = new TwigEngine($twig, new TemplateNameParser());
+        $this->requestListener = new RequestListener($twig);
     }
 
     /**
@@ -92,26 +86,17 @@ class TwigProvider
      */
     public function twig()
     {
-        if ($this->twig === null) {
-            $loader = new Twig_Loader_Filesystem($this->directory);
-            $options = [
-                'debug'            => $this->debug,
-                'charset'          => $this->charset,
-                'cache'            => $this->cache,
-                'strict_variables' => true,
-            ];
-            $extensions = [
-                new Twig_Extension_Core(),
-                new TranslationExtension($this->translator),
-                new RoutingExtension($this->generator)
-            ];
-            $twig = new Twig_Environment($loader, $options);
-            $twig->setExtensions($extensions);
-
-            $this->twig = new TwigEngine($twig, new TemplateNameParser());
-        }
-
         return $this->twig;
+    }
+
+    /**
+     * Returns the RequestListener instance
+     *
+     * @return RequestListener
+     */
+    public function requestListener()
+    {
+        return $this->requestListener;
     }
 
 }

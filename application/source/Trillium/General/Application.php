@@ -21,7 +21,6 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Trillium\General\Controller\ControllerFactory;
 use Trillium\General\Controller\ControllerResolver;
 use Trillium\General\EventListener\LocaleListener;
-use Trillium\General\EventListener\RequestListener;
 use Trillium\General\Exception\DebugExceptionHandler;
 use Trillium\General\Exception\ExceptionHandler;
 use Trillium\Provider\ConfigurationProvider;
@@ -199,14 +198,15 @@ class Application
                                     $this->configuration->get('locale_fallback', 'en'),
                                     $this->getDirectory('locales')
                                 ))->translator();
-        $this->view          = (new TwigProvider(
+        $twig                = (new TwigProvider(
                                     $this->getDirectory('views'),
                                     $this->isDebug(),
                                     $this->configuration->get('charset', 'UTF-8'),
                                     $this->getDirectory('cache') . 'twig',
                                     $this->translator,
                                     $this->router->getGenerator()
-                                ))->twig();
+                                ));
+        $this->view          = $twig->twig();
         $this->mysqli        = (new MySQLiProvider($this->configuration->load('mysqli', 'yml')->get()))->mysqli();
         $session             = new SessionProvider();
         $security            = new SecurityProvider(
@@ -227,7 +227,7 @@ class Application
         $this->dispatcher->addSubscriber($security->rememberMeListener());
         $this->dispatcher->addSubscriber(new LocaleListener($this, $requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
-        $this->dispatcher->addSubscriber(new RequestListener($this));
+        $this->dispatcher->addSubscriber($twig->requestListener());
         if (!$this->isDebug()) {
             $this->dispatcher->addSubscriber(new ExceptionListener(new ExceptionHandler($this), $this->logger));
         }
