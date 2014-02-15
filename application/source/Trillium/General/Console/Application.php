@@ -52,7 +52,7 @@ class Application extends SymfonyApplication
             $this->app->configuration->load('assets', 'yml')->get()
         );
         $commands[] = new JsUrlGenerator($this->app);
-        $commands[] = new CsFix($this->app);
+        $commands[] = new CsFix(realpath($this->app->getDirectory('application') . '../') . '/');
 
         return $commands;
     }
