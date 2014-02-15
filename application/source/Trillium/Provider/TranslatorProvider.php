@@ -21,21 +21,6 @@ class TranslatorProvider
 {
 
     /**
-     * @var string Current locale
-     */
-    private $locale;
-
-    /**
-     * @var string Fallback locale
-     */
-    private $localeFallback;
-
-    /**
-     * @var string Path to the locales directory
-     */
-    private $localesDirectory;
-
-    /**
      * @var Translator Instance of translator
      */
     private $translator;
@@ -51,9 +36,14 @@ class TranslatorProvider
      */
     public function __construct($locale, $localeFallback, $localesDirectory)
     {
-        $this->locale           = $locale;
-        $this->localeFallback   = $localeFallback;
-        $this->localesDirectory = $localesDirectory;
+        $this->translator = new Translator($locale);
+        $this->translator->setFallbackLocales([$localeFallback]);
+        $this->translator->addLoader('json', new JsonFileLoader());
+        $this->translator->addResource(
+            'json',
+            $localesDirectory . $localeFallback . '.json',
+            $localeFallback
+        );
     }
 
     /**
@@ -63,17 +53,6 @@ class TranslatorProvider
      */
     public function translator()
     {
-        if ($this->translator === null) {
-            $this->translator = new Translator($this->locale);
-            $this->translator->setFallbackLocales([$this->localeFallback]);
-            $this->translator->addLoader('json', new JsonFileLoader());
-            $this->translator->addResource(
-                'json',
-                $this->localesDirectory . $this->localeFallback . '.json',
-                $this->localeFallback
-            );
-        }
-
         return $this->translator;
     }
 
