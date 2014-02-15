@@ -21,21 +21,6 @@ class LoggerProvider
 {
 
     /**
-     * @var string Name
-     */
-    private $name;
-
-    /**
-     * @var string Path to the stream
-     */
-    private $stream;
-
-    /**
-     * @var boolean Is debug
-     */
-    private $debug;
-
-    /**
      * @var Logger Logger service
      */
     private $logger;
@@ -51,9 +36,8 @@ class LoggerProvider
      */
     public function __construct($name, $stream, $debug)
     {
-        $this->name   = $name;
-        $this->stream = $stream;
-        $this->debug  = $debug;
+        $this->logger = new Logger($name);
+        $this->logger->pushHandler(new StreamHandler($stream, $debug ? Logger::DEBUG : Logger::ERROR));
     }
 
     /**
@@ -63,12 +47,6 @@ class LoggerProvider
      */
     public function logger()
     {
-        if ($this->logger === null) {
-            $this->logger = new Logger($this->name);
-            $level = $this->debug ? Logger::DEBUG : Logger::ERROR;
-            $this->logger->pushHandler(new StreamHandler($this->stream, $level));
-        }
-
         return $this->logger;
     }
 
