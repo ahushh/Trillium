@@ -1,0 +1,33 @@
+hide_user_not_found: false
+firewalls:
+  secured_area:
+    pattern: ^/
+    users:
+      admin:
+        - ROLE_ADMIN
+        - 5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg== #foo
+    form:
+      login_path: /login
+      check_path: /login/check
+    logout:
+      logout_path: /logout
+    anonymous: true
+    remember_me:
+      key: Choose_A_Unique_Random_Key
+      always_remember_me: true
+      name: REMEBER_ME
+      lifetime: 31536000
+      path: /
+      remember_me_parameter: remember_me # to use in the login form
+role_hierarchy:
+  ROLE_ROOT: [ROLE_ADMIN, ROLE_USER]
+access_rules:
+  ^/admin:
+    roles: [ROLE_ADMIN, ROLE_MOD]
+    channel: http
+  ^/admin1:
+    roles: [ROLE_ADMIN, ROLE_MOD]
+    channel: https
+  ^/admin2:
+      roles: [ROLE_ADMIN, ROLE_MOD]
+      channel: null
