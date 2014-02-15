@@ -23,41 +23,6 @@ class RouterProvider
 {
 
     /**
-     * @var array Paths to the configuration files
-     */
-    private $paths;
-
-    /**
-     * @var string Name of the configuration file
-     */
-    private $config;
-
-    /**
-     * @var int HTTP port
-     */
-    private $httpPort;
-
-    /**
-     * @var int HTTPS port
-     */
-    private $httpsPort;
-
-    /**
-     * @var string Path to the cache directory
-     */
-    private $cache;
-
-    /**
-     * @var boolean Is debug
-     */
-    private $debug;
-
-    /**
-     * @var LoggerInterface|null Logger instance
-     */
-    private $logger;
-
-    /**
      * @var Router Router
      */
     private $router;
@@ -77,13 +42,16 @@ class RouterProvider
      */
     public function __construct(array $paths, $config, $httpPort, $httpsPort, $cache, $debug, LoggerInterface $logger = null)
     {
-        $this->paths     = $paths;
-        $this->config    = $config;
-        $this->httpPort  = $httpPort;
-        $this->httpsPort = $httpsPort;
-        $this->cache     = $cache;
-        $this->debug     = $debug;
-        $this->logger    = $logger;
+        $loader = new YamlFileLoader(new FileLocator($paths));
+        $options = [
+            'cache_dir'             => $cache,
+            'debug'                 => $debug,
+            'generator_cache_class' => 'CachedUrlGenerator',
+            'matcher_cache_class'   => 'CachedUrlMatcher',
+        ];
+        $this->router = new Router($loader, $config . '.yml', $options, null, $logger);
+        $this->router->getContext()->setHttpPort($httpPort);
+        $this->router->getContext()->setHttpsPort($httpsPort);
     }
 
     /**
@@ -93,19 +61,6 @@ class RouterProvider
      */
     public function router()
     {
-        if ($this->router === null) {
-            $loader = new YamlFileLoader(new FileLocator($this->paths));
-            $options = [
-                'cache_dir'             => $this->cache,
-                'debug'                 => $this->debug,
-                'generator_cache_class' => 'CachedUrlGenerator',
-                'matcher_cache_class'   => 'CachedUrlMatcher',
-            ];
-            $this->router = new Router($loader, $this->config . '.yml', $options, null, $this->logger);
-            $this->router->getContext()->setHttpPort($this->httpPort);
-            $this->router->getContext()->setHttpsPort($this->httpsPort);
-        }
-
         return $this->router;
     }
 
