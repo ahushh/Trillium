@@ -23,24 +23,9 @@ class Configuration
 {
 
     /**
-     * Path to the configuration directory
-     */
-    const DIRECTORY = '/../../../../resources/configuration/';
-
-    /**
-     * @var array Resources collection
+     * @var Resource[] Resources collection
      */
     private $resourceCollection;
-
-    /**
-     * @var array Paths to the configuration files
-     */
-    private $paths;
-
-    /**
-     * @var string Environment
-     */
-    private $environment;
 
     /**
      * @var LoaderResolver Resolver
@@ -55,20 +40,14 @@ class Configuration
     /**
      * Constructor
      *
-     * @param string         $environment Application environment
-     * @param LoaderResolver $resolver    Resolver
+     * @param LoaderResolver $resolver Resolver
      *
      * @return self
      */
-    public function __construct($environment, LoaderResolver $resolver)
+    public function __construct(LoaderResolver $resolver)
     {
         $this->resourceCollection = [];
-        $this->environment        = $environment;
         $this->resolver           = $resolver;
-        $this->paths              = [
-            __DIR__ . self::DIRECTORY . $this->environment . '/',
-            __DIR__ . self::DIRECTORY . 'default/',
-        ];
     }
 
     /**
@@ -87,27 +66,6 @@ class Configuration
         }
 
         return call_user_func_array([$this->defaultResource, $name], $args);
-    }
-
-    /**
-     * Returns a resolver instance
-     *
-     * @return LoaderResolver
-     */
-    public function getResolver()
-    {
-        return $this->resolver;
-    }
-
-    /**
-     * Returns list of paths to the configuration files
-     * You can to use it as paths for a file locator
-     *
-     * @return array
-     */
-    public function getPaths()
-    {
-        return $this->paths;
     }
 
     /**

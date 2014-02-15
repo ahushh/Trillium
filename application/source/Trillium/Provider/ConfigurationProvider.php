@@ -24,11 +24,6 @@ class ConfigurationProvider
 {
 
     /**
-     * @var string Environment
-     */
-    private $environment;
-
-    /**
      * @var Configuration Configuration service
      */
     private $configuration;
@@ -36,14 +31,22 @@ class ConfigurationProvider
     /**
      * Constructor
      *
-     * @param string $environment Environment
+     * @param array       $paths           List of directories
+     * @param string|null $defaultResource Default resource
+     * @param string|null $defaultType     Type of the default resource
      *
      * @return self
      */
-    public function __construct($environment)
+    public function __construct(array $paths, $defaultResource = null, $defaultType = null)
     {
-        $this->environment   = $environment;
-        $this->configuration = null;
+        $fileLocator         = new FileLocator($paths);
+        $resolver            = new LoaderResolver();
+        $resolver->addLoader(new PhpFileLoader($fileLocator));
+        $resolver->addLoader(new YamlFileLoader($fileLocator));
+        $this->configuration = new Configuration($resolver);
+        if ($defaultResource !== null && $defaultType !== null) {
+            $this->configuration->setDefault($defaultResource, $defaultType);
+        }
     }
 
     /**
@@ -53,15 +56,6 @@ class ConfigurationProvider
      */
     public function configuration()
     {
-        if ($this->configuration === null) {
-            $this->configuration = new Configuration($this->environment, new LoaderResolver());
-            $configResolver      = $this->configuration->getResolver();
-            $configFileLocator = new FileLocator($this->configuration->getPaths());
-            $configResolver->addLoader(new PhpFileLoader($configFileLocator));
-            $configResolver->addLoader(new YamlFileLoader($configFileLocator));
-            $this->configuration->setDefault('application', 'yml');
-        }
-
         return $this->configuration;
     }
 

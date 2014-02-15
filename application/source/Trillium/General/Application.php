@@ -66,6 +66,7 @@ class Application
      */
     private $directories = [
         'application'   => '/application',
+        'configuration' => '/application/resources/configuration',
         'cache'         => '/application/resources/cache',
         'logs'          => '/application/resources/logs',
         'locales'       => '/application/resources/locales',
@@ -133,6 +134,10 @@ class Application
     public function __construct()
     {
         error_reporting(-1);
+        // Define directories
+        foreach ($this->directories as $key => $directory) {
+            $this->directories[$key] = realpath(__DIR__ . '/../../../../' . $directory) . '/';
+        }
         // Define environment
         $this->environment = $this->getDirectory('application') . '.environment';
         if (!is_file($this->environment)) {
@@ -157,12 +162,16 @@ class Application
             }
             DebugClassLoader::enable();
         }
-        // Define directories
-        foreach ($this->directories as $key => $directory) {
-            $this->directories[$key] = realpath(__DIR__ . '/../../../../' . $directory) . '/';
-        }
         // Register services
-        $this->configuration = (new ConfigurationProvider($this->getEnvironment()))->configuration();
+        $configurationDirectories = [
+            $this->getDirectory('configuration') . $this->environment . '/',
+            $this->getDirectory('configuration') . 'default/',
+        ];
+        $this->configuration = (new ConfigurationProvider(
+                                    $configurationDirectories,
+                                    'application',
+                                    'yml'
+                                ))->configuration();
         $this->setLocale($this->configuration->get('locale', $this->getLocale()));
         $this->logger        = (new LoggerProvider(
                                     'Trillium',
@@ -170,7 +179,7 @@ class Application
                                     $this->isDebug()
                                 ))->logger();
         $this->router        = (new RouterProvider(
-                                    $this->configuration->getPaths(),
+                                    $configurationDirectories,
                                     'routes',
                                     $this->configuration->get('request.http_port', 80),
                                     $this->configuration->get('request.https_port', 443),
