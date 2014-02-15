@@ -32,6 +32,8 @@ use Trillium\Provider\ConfigurationProvider;
 use Trillium\Provider\LoggerProvider;
 use Trillium\Provider\MySQLiProvider;
 use Trillium\Provider\RouterProvider;
+use Trillium\Provider\SecurityProvider;
+use Trillium\Provider\SessionProvider;
 use Trillium\Provider\TranslatorProvider;
 use Trillium\Provider\TwigProvider;
 
@@ -131,17 +133,60 @@ class Application extends Pimple implements HttpKernelInterface, TerminableInter
             }
             DebugClassLoader::enable();
         }
+        $this['configuration'] = (new ConfigurationProvider($this->getEnvironment()))->configuration();
+        $this->setLocale($this['configuration']->get('locale', $this->getLocale()));
+        $this['logger']        = (new LoggerProvider(
+                                    'Trillium',
+                                    $this->getLogsDir() . $this->getEnvironment() . '.log',
+                                    $this->isDebug()
+                                ))->logger();
+        $this['router']        = (new RouterProvider(
+                                    $this->configuration->getPaths(),
+                                    'routes',
+                                    $this->configuration->get('request.http_port', 80),
+                                    $this->configuration->get('request.https_port', 443),
+                                    $this->getCacheDir(),
+                                    $this->isDebug(),
+                                    $this->logger
+                                ))->router();
         $this['dispatcher']    = new EventDispatcher();
-        $this['configuration'] = (new ConfigurationProvider())->register($this);
-        $this['logger']        = (new LoggerProvider())->register($this);
-        $resolver              = new ControllerResolver($this->logger, new ControllerFactory($this));
         $requestStack          = new RequestStack();
-        $this['kernel']        = new HttpKernel($this->dispatcher, $resolver, $requestStack);
-        $this['router']        = (new RouterProvider())->register($this);
-        $this['translator']    = (new TranslatorProvider())->register($this);
-        $this['view']          = (new TwigProvider())->register($this);
-        $this['mysqli']        = (new MySQLiProvider())->register($this);
+        $this['kernel']        = new HttpKernel(
+                                    $this->dispatcher,
+                                    new ControllerResolver($this->logger, new ControllerFactory($this)),
+                                    $requestStack
+                                );
+        $this['translator']    = (new TranslatorProvider(
+                                    $this->getLocale(),
+                                    $this->configuration->get('locale_fallback', 'en'),
+                                    $this->getLocalesDir()
+                                ))->translator();
+        $this['view']          = (new TwigProvider(
+                                    $this->getViewsDir(),
+                                    $this->isDebug(),
+                                    $this->configuration->get('charset', 'UTF-8'),
+                                    $this->getCacheDir() . 'twig',
+                                    $this->translator,
+                                    $this->router->getGenerator()
+                                ))->twig();
+        $this['mysqli']        = (new MySQLiProvider($this->configuration->load('mysqli', 'yml')->get()))->mysqli();
+        $session               = new SessionProvider();
+        $security              = new SecurityProvider(
+                                    $this->configuration->load('security', 'yml')->get(),
+                                    $this->configuration->get('request.http_port', 80),
+                                    $this->configuration->get('request.https_port', 443),
+                                    $this->kernel,
+                                    $this->dispatcher,
+                                    $this->router->getGenerator(),
+                                    $this->router->getMatcher(),
+                                    $this->logger
+                                );
+        $this['session']       = $session->session();
+        $this['security']      = $security->securityContext();
+        $this->dispatcher->addSubscriber($session->subscriber());
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
+        $this->dispatcher->addSubscriber($security->firewall());
+        $this->dispatcher->addSubscriber($security->rememberMeListener());
         $this->dispatcher->addSubscriber(new LocaleListener($this, $requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset', 'UTF-8')));
         if (!$this->isDebug()) {
