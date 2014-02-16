@@ -125,6 +125,11 @@ class Application
     public $security;
 
     /**
+     * @var \Trillium\Service\Security\Provider\AdvancedUserProviderInterface
+     */
+    public $userProvider;
+
+    /**
      * Constructor
      *
      * @throws \RuntimeException
@@ -217,10 +222,12 @@ class Application
                                     $this->dispatcher,
                                     $this->router->getGenerator(),
                                     $this->router->getMatcher(),
+                                    $this->mysqli,
                                     $this->logger
                                 );
         $this->session       = $session->session();
         $this->security      = $security->securityContext();
+        $this->userProvider  = $security->userProvider('secured_area');
         $this->dispatcher->addSubscriber($session->subscriber());
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
         $this->dispatcher->addSubscriber($security->firewall());

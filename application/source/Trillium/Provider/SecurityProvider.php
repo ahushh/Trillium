@@ -9,6 +9,7 @@
 
 namespace Trillium\Provider;
 
+use mysqli;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Http\Firewall;
 use Symfony\Component\Security\Http\RememberMe\ResponseListener;
 use Trillium\Service\Security\Container;
+use Trillium\Service\Security\Provider\AdvancedUserProviderInterface;
 
 /**
  * SecurityProvider Class
@@ -26,6 +28,11 @@ use Trillium\Service\Security\Container;
  */
 class SecurityProvider
 {
+
+    /**
+     * @var Container Container
+     */
+    private $container;
 
     /**
      * @var SecurityContext Security context
@@ -52,6 +59,7 @@ class SecurityProvider
      * @param EventDispatcherInterface $dispatcher Event dispatcher interface
      * @param UrlGeneratorInterface    $generator  Url generator interface
      * @param UrlMatcherInterface      $matcher    Url matcher interface
+     * @param mysqli                   $mysqli     MySQLi instance
      * @param LoggerInterface|null     $logger     Logger interface
      *
      * @return self
@@ -64,6 +72,7 @@ class SecurityProvider
         EventDispatcherInterface $dispatcher,
         UrlGeneratorInterface    $generator,
         UrlMatcherInterface      $matcher,
+        mysqli                   $mysqli,
         LoggerInterface          $logger = null
     )
     {
@@ -75,14 +84,15 @@ class SecurityProvider
                 'logger'        => $logger,
                 'dispatcher'    => $dispatcher,
                 'url_generator' => $generator,
-                'url_matcher'   => $matcher
+                'url_matcher'   => $matcher,
+                'mysqli'        => $mysqli,
             ],
             $config
         );
-        $container                = new Container($values);
-        $this->firewall           = $container->getFirewall();
-        $this->rememberMeListener = $container->getRememberMeResponseListener();
-        $this->securityContext    = $container->getSecurityContext();
+        $this->container          = new Container($values);
+        $this->firewall           = $this->container->getFirewall();
+        $this->rememberMeListener = $this->container->getRememberMeResponseListener();
+        $this->securityContext    = $this->container->getSecurityContext();
     }
 
     /**
@@ -113,6 +123,18 @@ class SecurityProvider
     public function rememberMeListener()
     {
         return $this->rememberMeListener;
+    }
+
+    /**
+     * Returns a user provider for firewall
+     *
+     * @param string $name Firewall name
+     *
+     * @return AdvancedUserProviderInterface
+     */
+    public function userProvider($name)
+    {
+        return $this->container->getUserProvider($name);
     }
 
 }

@@ -2,10 +2,7 @@ hide_user_not_found: false
 firewalls:
   secured_area:
     pattern: ^/
-    users:
-      admin:
-        - ROLE_ADMIN
-        - 5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg== #foo
+    users: mysqli
     form:
       login_path: /login
       check_path: /login/check

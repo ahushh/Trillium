@@ -50,6 +50,8 @@ use Symfony\Component\Security\Http\Logout\SessionLogoutHandler;
 use Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler;
 use Symfony\Component\Security\Http\AccessMap;
 use Symfony\Component\Security\Http\HttpUtils;
+use Trillium\Service\Security\Provider\AdvancedUserProviderInterface;
+use Trillium\Service\Security\Provider\MySQLiUserProvider;
 
 /**
  * Container class
@@ -69,17 +71,18 @@ class Container extends \Pimple
      * Constructor
      *
      * <pre>
-     * Required values:
-     * --------------------------------------
-     * Type                     Key
-     * --------------------------------------
-     * int                      http_port
-     * int                      https_port
-     * EventDispatcherInterface dispatcher
-     * LoggerInterface          logger
-     * UrlGeneratorInterface    url_generator
-     * UrlMatcherInterface      url_matcher
-     * HttpKernelInterface      http_kernel
+     * Values:
+     * -----------------------------------------------------------------------------------------------------------------
+     * Type                     Key            Description                                            Is required?
+     * -----------------------------------------------------------------------------------------------------------------
+     * HttpKernelInterface      http_kernel    Symfony Http Kernel                                    yes
+     * EventDispatcherInterface dispatcher     Event dispatcher                                       yes
+     * LoggerInterface          logger         Logger                                                 no
+     * UrlGeneratorInterface    url_generator  Symfony Routing Url Generator                          no
+     * UrlMatcherInterface      url_matcher    Symfony Routing Url Matcher                            no
+     * mysqli                   mysqli         MySQLi instance. If you want to use MySQLiUserProvider no
+     * int                      http_port      HTTP port                                              no
+     * int                      https_port     HTTPS port                                             no
      * </pre>
      *
      * Note:
@@ -90,11 +93,14 @@ class Container extends \Pimple
      *
      * For form: value of "form[check_path]" option (with "GET" and/or "POST" request method)
      *
+     * To use MySQLiUserProvider you need to specify "mysqli" in users section of the your configuration
+     *
      * @see \Symfony\Component\EventDispatcher\EventDispatcherInterface
      * @see \Psr\Log\LoggerInterface
      * @see \Symfony\Component\Routing\Generator\UrlGeneratorInterface
      * @see \Symfony\Component\Routing\Matcher\UrlMatcherInterface
      * @see \Symfony\Component\HttpKernel\HttpKernelInterface
+     * @see \mysqli
      *
      * @param array $values Values
      *
@@ -102,11 +108,15 @@ class Container extends \Pimple
      */
     public function __construct(array $values)
     {
-        // used to register routes for login_check and logout
-        $this->fakeRoutes            = [];
         $this['role_hierarchy']      = [];
         $this['access_rules']        = [];
         $this['hide_user_not_found'] = true;
+        $this['url_generator']       = null;
+        $this['url_matcher']         = null;
+        $this['logger']              = null;
+        $this['mysqli']              = null;
+        $this['http_port']           = 80;
+        $this['https_port']          = 443;
         $this['security'] = $this->share(
             function ($c) {
                 return new SecurityContext($c['authentication_manager'], $c['access_manager']);
@@ -217,6 +227,8 @@ class Container extends \Pimple
                             if (!isset($this['user_provider.' . $name])) {
                                 if (is_array($users)) {
                                     $this['user_provider.' . $name] = $this['user_provider.inmemory._proto']($users);
+                                } elseif ($users === 'mysqli') {
+                                    $this['user_provider.' . $name] = $this['user_provider.mysqli._proto']();
                                 } else {
                                     $this['user_provider.' . $name] = $users;
                                 }
@@ -355,7 +367,7 @@ class Container extends \Pimple
         $this['http_utils'] = $this->share(
             function ($c) {
                 return new HttpUtils(
-                    isset($c['url_generator']) ? $c['url_generator'] : null,
+                    $c['url_generator'],
                     $c['url_matcher']
                 );
             }
@@ -402,6 +414,21 @@ class Container extends \Pimple
                         }
 
                         return new InMemoryUserProvider($users);
+                    }
+                );
+            }
+        );
+        $this['user_provider.mysqli._proto'] = $this->protect(
+            function () {
+                return $this->share(
+                    function ($c) {
+                        $provider = new MySQLiUserProvider($c['mysqli']);
+                        if (!isset($c['user_provider.mysqli.supports_class'])) {
+                            $c['user_provider.mysqli.supports_class'] = 'Trillium\Service\Security\User\User';
+                        }
+                        $provider->setSupportsClass($c['user_provider.mysqli.supports_class']);
+
+                        return $provider;
                     }
                 );
             }
@@ -743,6 +770,22 @@ class Container extends \Pimple
     public function getRememberMeResponseListener()
     {
         return $this['remember_me.response_listener'];
+    }
+
+    /**
+     * Returns a user provider for firewall
+     *
+     * @param string $name Firewall name
+     *
+     * @throws \InvalidArgumentException
+     * @return AdvancedUserProviderInterface
+     */
+    public function getUserProvider($name)
+    {
+        if (!$this->offsetExists('user_provider.' . $name)) {
+            throw new \InvalidArgumentException(sprintf('User provider for "%s" firewall does not exists', $name));
+        }
+        return $this['user_provider.' . $name];
     }
 
 }
