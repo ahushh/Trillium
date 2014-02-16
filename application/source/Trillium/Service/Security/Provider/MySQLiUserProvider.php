@@ -225,7 +225,7 @@ class MySQLiUserProvider extends AdvancedUserProvider
             "SELECT COUNT(*) FROM `" . self::TABLE_NAME . "` "
             . (!empty($key) && !empty($value) && !empty($op) ? "WHERE `" . $key . "` " . $op . " '" . $value . "'" : "")
         );
-        $total = (int)$result->fetch_row()[0];
+        $total = (int) $result->fetch_row()[0];
         $result->free();
 
         return $total;

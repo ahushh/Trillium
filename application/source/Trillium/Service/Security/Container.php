@@ -785,6 +785,7 @@ class Container extends \Pimple
         if (!$this->offsetExists('user_provider.' . $name)) {
             throw new \InvalidArgumentException(sprintf('User provider for "%s" firewall does not exists', $name));
         }
+
         return $this['user_provider.' . $name];
     }
 

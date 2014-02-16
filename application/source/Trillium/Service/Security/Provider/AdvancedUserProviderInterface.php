@@ -32,6 +32,7 @@ interface AdvancedUserProviderInterface extends UserProviderInterface
      * @param string $className
      *
      * @throws \InvalidArgumentException Class does not exists
+     *
      * @return $this
      */
     public function setSupportsClass($className);
