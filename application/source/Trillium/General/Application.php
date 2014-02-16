@@ -231,6 +231,7 @@ class Application
         $this->dispatcher->addSubscriber($session->subscriber());
         $this->dispatcher->addSubscriber(new RouterListener($this->router->getMatcher(), null, $this->logger));
         $this->dispatcher->addSubscriber($security->firewall());
+        $this->dispatcher->addSubscriber($security->activityListener($this->userProvider));
         $this->dispatcher->addSubscriber($security->rememberMeListener());
         $this->dispatcher->addSubscriber(new LocaleListener($this, $requestStack, $this->router->getMatcher()));
         $this->dispatcher->addSubscriber(new ResponseListener($this->configuration->get('charset')));

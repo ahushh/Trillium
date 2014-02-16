@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Http\Firewall;
 use Symfony\Component\Security\Http\RememberMe\ResponseListener;
 use Trillium\Service\Security\Container;
+use Trillium\Service\Security\EventListener\ActivityListener;
 use Trillium\Service\Security\Provider\AdvancedUserProviderInterface;
 
 /**
@@ -135,6 +136,20 @@ class SecurityProvider
     public function userProvider($name)
     {
         return $this->container->getUserProvider($name);
+    }
+
+    /**
+     * Returns new ActivityListener instance
+     *
+     * @param AdvancedUserProviderInterface $userProvider
+     *
+     * @see ActivityListener
+     *
+     * @return ActivityListener
+     */
+    public function activityListener(AdvancedUserProviderInterface $userProvider)
+    {
+        return new ActivityListener($this->securityContext, $userProvider);
     }
 
 }
