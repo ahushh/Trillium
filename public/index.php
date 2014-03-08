@@ -9,5 +9,5 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-$app = require __DIR__ . '/../application/application.php';
+$app = require __DIR__ . '/../application.php';
 $app->run(Request::createFromGlobals());

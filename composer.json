@@ -12,8 +12,8 @@
     ],
     "autoload": {
         "psr-0": {
-            "Trillium": "application/source",
-            "Vermillion": "application/source"
+            "Trillium": "source",
+            "Vermillion": "source"
         }
     },
     "require": {

@@ -10,7 +10,7 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Trillium\General\Controller\Controller;
+use Vermillion\Controller\Controller;
 
 /**
  * Hello Class
@@ -32,9 +32,9 @@ class Hello extends Controller
     public function say($name)
     {
         $message = 'hello.%name%';
-        $name = htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset'));
+        /*$name = htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset'));
         $message = $this->app->translator->trans($message, ['%name%' => $name]);
-        $message = $this->app->view->render('sayHello.twig', ['message' => $message]);
+        $message = $this->app->view->render('sayHello.twig', ['message' => $message]);*/
 
         return new Response($message);
     }
