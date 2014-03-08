@@ -14,6 +14,7 @@ use Kilte\View\Loader;
 use Kilte\View\Macros;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 
@@ -71,8 +72,11 @@ class View implements ServiceProviderInterface
                                 /** @var $security \Symfony\Component\Security\Core\SecurityContextInterface */
                                 $security = $container['security'];
                             }
-
-                            return $security->isGranted($attributes, $object);
+                            try {
+                                return $security->isGranted($attributes, $object);
+                            } catch (AuthenticationCredentialsNotFoundException $e) {
+                                return false;
+                            }
                         },
                 ]
             );
