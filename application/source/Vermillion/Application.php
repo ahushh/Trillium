@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * Part of the Vermillion
+ *
+ * @author  Kilte Leichnam <nwotnbm@gmail.com>
+ * @package Vermillion
+ */
+
+namespace Vermillion;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernel;
+use Vermillion\Controller\Factory;
+use Vermillion\Controller\Resolver;
+use Vermillion\Provider\ServiceProviderInterface;
+use Vermillion\Provider\SubscriberProviderInterface;
+
+/**
+ * Application Class
+ *
+ * @package Vermillion
+ */
+class Application extends \Pimple
+{
+
+    /**
+     * @var Container A container instance
+     */
+    private $container;
+
+    /**
+     * Constructor
+     *
+     * @param Container $container A container instance
+     *
+     * @return self
+     */
+    public function __construct(Container $container = null)
+    {
+        $this->container = $container ? : new Container();
+    }
+
+    /**
+     * Registers services and event listeners
+     *
+     * @throws \RuntimeException
+     * @return void
+     */
+    private function register()
+    {
+        /**
+         * @var $configuration \Vermillion\Configuration\Configuration
+         * @var $dispatcher    \Symfony\Component\EventDispatcher\EventDispatcherInterface
+         */
+        $configuration = $this->container['configuration'];
+        $dispatcher    = $this->container['dispatcher'];
+        $providers     = $configuration->load('provider')->get();
+        foreach ($providers as $className) {
+            if (!class_exists($className)) {
+                throw new \RuntimeException(sprintf('Provider "%s" does not exists', $className));
+            }
+            $provider = new $className();
+            if ($provider instanceof ServiceProviderInterface) {
+                $provider->registerServices($this->container);
+            }
+            if ($provider instanceof SubscriberProviderInterface) {
+                foreach ($provider->getSubscribers($this->container) as $subscriber) {
+                    $dispatcher->addSubscriber($subscriber);
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles a request to convert it to response.
+     * Sends a response.
+     * Terminates a request/response cycle.
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
+    public function run(Request $request)
+    {
+        $this->register();
+        $kernel   = new HttpKernel(
+            $this->container['dispatcher'],
+            new Resolver(new Factory($this->container), $this->container['logger']),
+            $this->container['requestStack']
+        );
+        $response = $kernel->handle($request);
+        $response->send();
+        $kernel->terminate($request, $response);
+    }
+
+}
