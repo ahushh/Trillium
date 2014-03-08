@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Command;
+namespace Trillium\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Process\Process;
 /**
  * CsFix Class
  *
- * @package Trillium\Command
+ * @package Trillium\Console\Command
  */
 class CsFix extends Command
 {
@@ -45,9 +45,7 @@ class CsFix extends Command
      */
     protected function configure()
     {
-        $this
-            ->setDescription('Fix coding standards')
-        ;
+        $this->setDescription('Fix coding standards');
     }
 
     /**

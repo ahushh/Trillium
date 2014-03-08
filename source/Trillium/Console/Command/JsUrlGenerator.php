@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Command;
+namespace Trillium\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Route;
 /**
  * JsUrlGenerator Class
  *
- * @package Trillium\Command
+ * @package Trillium\Console\Command
  */
 class JsUrlGenerator extends Command
 {

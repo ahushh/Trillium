@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Command;
+namespace Trillium\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Environment Class
  *
- * @package Trillium\Command
+ * @package Trillium\Console\Command
  */
 class Environment extends Command
 {
@@ -47,7 +47,7 @@ class Environment extends Command
     /**
      * @var array List of available environments
      */
-    private $availableEnvironments = ['development', 'testing', 'production'];
+    private $availableEnvironments = ['development', 'production'];
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ class Environment extends Command
      */
     public function __construct($environmentPath, $currentEnvironment)
     {
-        $this->environmentPath = $environmentPath;
+        $this->environmentPath    = $environmentPath;
         $this->currentEnvironment = $currentEnvironment;
         parent::__construct('env');
     }
@@ -77,8 +77,7 @@ class Environment extends Command
                 'Change or display environment. ' . "\n"
                 . 'Available environments: ' . implode(', ', $this->availableEnvironments) . '. ' . "\n"
                 . 'Leave empty to see the current environment.'
-            )
-        ;
+            );
     }
 
     /**
@@ -89,11 +88,13 @@ class Environment extends Command
         $env    = $input->getArgument('environment');
         $status = 0;
         if (empty($env)) {
-            $output->writeln(sprintf(
-                $this->messages['info'],
-                $this->currentEnvironment,
-                implode(', ', $this->availableEnvironments)
-            ));
+            $output->writeln(
+                sprintf(
+                    $this->messages['info'],
+                    $this->currentEnvironment,
+                    implode(', ', $this->availableEnvironments)
+                )
+            );
         } else {
             if (!in_array($env, $this->availableEnvironments)) {
                 $output->writeln(sprintf($this->messages['wrong_env'], $env));

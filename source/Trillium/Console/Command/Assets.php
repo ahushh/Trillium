@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Command;
+namespace Trillium\Console\Command;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
@@ -23,7 +23,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * Assets Class
  *
- * @package Trillium\Command
+ * @package Trillium\Console\Command
  */
 class Assets extends Command
 {
