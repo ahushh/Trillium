@@ -45,6 +45,7 @@ class Application
      * Registers services and event listeners
      *
      * @throws \RuntimeException
+     *
      * @return $this
      */
     public function register()
