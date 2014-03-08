@@ -3,5 +3,6 @@
     "\\Vermillion\\Provider\\Session",
     "\\Vermillion\\Provider\\Router",
     "\\Trillium\\Provider\\KernelException",
-    "\\Trillium\\Provider\\MySQLi"
+    "\\Trillium\\Provider\\MySQLi",
+    "\\Trillium\\Provider\\Translator"
 ]

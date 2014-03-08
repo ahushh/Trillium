@@ -2,5 +2,6 @@
     "\\Vermillion\\Provider\\Logger",
     "\\Vermillion\\Provider\\Session",
     "\\Vermillion\\Provider\\Router",
-    "\\Trillium\\Provider\\MySQLi"
+    "\\Trillium\\Provider\\MySQLi",
+    "\\Trillium\\Provider\\Translator"
 ]
