@@ -10,7 +10,7 @@
 namespace Trillium\Provider;
 
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
-use Trillium\General\Exception\ExceptionHandler;
+use Trillium\Controller\ExceptionHandler;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -28,8 +28,8 @@ class KernelException implements ServiceProviderInterface, SubscriberProviderInt
      */
     public function registerServices(Container $container)
     {
-        $container['kernel.exception.handler']    = function () {
-            return new ExceptionHandler();
+        $container['kernel.exception.handler']    = function ($container) {
+            return new ExceptionHandler($container);
         };
         $container['kernel.exception.subscriber'] = function ($container) {
             return new ExceptionListener($container['kernel.exception.handler'], $container['logger']);

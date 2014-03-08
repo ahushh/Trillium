@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\General\Exception;
+namespace Trillium\Controller;
 
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * ExceptionHandler Class
  *
- * @package Trillium\General\Exception
+ * @package Trillium\Controller
  */
-class ExceptionHandler
+class ExceptionHandler extends Controller
 {
 
     /**
