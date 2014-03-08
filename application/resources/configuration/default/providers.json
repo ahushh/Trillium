@@ -1,0 +1,5 @@
+[
+    "\\Vermillion\\Provider\\Logger",
+    "\\Vermillion\\Provider\\Session",
+    "\\Vermillion\\Provider\\Router"
+]
