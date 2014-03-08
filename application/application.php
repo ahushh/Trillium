@@ -8,4 +8,4 @@
  */
 
 require __DIR__ . '/autoload.php';
-return new \Trillium\General\Application();
+return new \Vermillion\Application();
