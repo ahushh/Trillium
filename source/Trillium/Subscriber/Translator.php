@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Service\Translator;
+namespace Trillium\Subscriber;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -16,14 +16,14 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\EventListener\LocaleListener;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RequestContextAwareInterface;
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
 /**
- * Subscriber Class
+ * Translator Class
  *
- * @package Trillium\Service\Translator
+ * @package Trillium\Subscriber
  */
-class Subscriber extends LocaleListener
+class Translator extends LocaleListener
 {
 
     /**
@@ -55,7 +55,7 @@ class Subscriber extends LocaleListener
     /**
      * Constructor
      *
-     * @param Translator                   $translator       Translator instance
+     * @param SymfonyTranslator            $translator       Translator instance
      * @param string                       $localesDirectory Directory with locales
      * @param string                       $resourceType     The name of the loader (@see Translator::addLoader())
      * @param string                       $defaultLocale    An application instance
@@ -69,7 +69,7 @@ class Subscriber extends LocaleListener
      * @return self
      */
     public function __construct(
-        Translator $translator,
+        SymfonyTranslator $translator,
         $localesDirectory,
         $resourceType,
         $defaultLocale,

@@ -10,7 +10,7 @@
 namespace Trillium\Provider;
 
 use Symfony\Component\Translation\Loader\JsonFileLoader;
-use Trillium\Service\Translator\Subscriber;
+use Trillium\Subscriber\Translator as Subscriber;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
