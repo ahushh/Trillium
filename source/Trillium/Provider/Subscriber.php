@@ -9,16 +9,18 @@
 
 namespace Trillium\Provider;
 
+use Symfony\Component\HttpKernel\EventListener\ResponseListener;
+use Trillium\Subscriber\ControllerResponse;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
 
 /**
- * ControllerResponse Class
+ * Subscriber Class
  *
  * @package Trillium\Provider
  */
-class ControllerResponse implements ServiceProviderInterface, SubscriberProviderInterface
+class Subscriber implements ServiceProviderInterface, SubscriberProviderInterface
 {
 
     /**
@@ -31,7 +33,13 @@ class ControllerResponse implements ServiceProviderInterface, SubscriberProvider
             $conf   = $container['configuration'];
             $config = $conf->load('controller')->get();
 
-            return new \Trillium\Subscriber\ControllerResponse($config, $container['view']);
+            return new ControllerResponse($config, $container['view']);
+        };
+        $container['response.subscriber']            = function ($container) {
+            /** @var $conf \Vermillion\Configuration\Configuration */
+            $conf = $container['configuration'];
+
+            return new ResponseListener($conf->get('charset'));
         };
     }
 
@@ -40,7 +48,10 @@ class ControllerResponse implements ServiceProviderInterface, SubscriberProvider
      */
     public function getSubscribers(Container $container)
     {
-        return [$container['controller.response.subscriber']];
+        return [
+            $container['controller.response.subscriber'],
+            $container['response.subscriber']
+        ];
     }
 
 }
