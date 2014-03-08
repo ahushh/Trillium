@@ -1,5 +1,6 @@
 [
     "\\Vermillion\\Provider\\Logger",
     "\\Vermillion\\Provider\\Session",
-    "\\Vermillion\\Provider\\Router"
+    "\\Vermillion\\Provider\\Router",
+    "\\Trillium\\Provider\\MySQLi"
 ]
