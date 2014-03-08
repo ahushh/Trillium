@@ -21,7 +21,7 @@ use Vermillion\Provider\SubscriberProviderInterface;
  *
  * @package Vermillion
  */
-class Application extends \Pimple
+class Application
 {
 
     /**
@@ -45,9 +45,9 @@ class Application extends \Pimple
      * Registers services and event listeners
      *
      * @throws \RuntimeException
-     * @return void
+     *                           @return $this
      */
-    private function register()
+    public function register()
     {
         /**
          * @var $configuration \Vermillion\Configuration\Configuration
@@ -70,6 +70,8 @@ class Application extends \Pimple
                 }
             }
         }
+
+        return $this;
     }
 
     /**
@@ -92,6 +94,16 @@ class Application extends \Pimple
         $response = $kernel->handle($request);
         $response->send();
         $kernel->terminate($request, $response);
+    }
+
+    /**
+     * Returns a container instance
+     *
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 
 }
