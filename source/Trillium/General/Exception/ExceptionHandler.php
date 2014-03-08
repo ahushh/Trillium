@@ -9,10 +9,9 @@
 
 namespace Trillium\General\Exception;
 
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Trillium\General\Application;
 
 /**
  * ExceptionHandler Class
@@ -21,23 +20,6 @@ use Trillium\General\Application;
  */
 class ExceptionHandler
 {
-
-    /**
-     * @var Application An application instance
-     */
-    private $app;
-
-    /**
-     * Constructor
-     *
-     * @param Application $app An application instance
-     *
-     * @return self
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
 
     /**
      * Handles an exception
@@ -49,18 +31,11 @@ class ExceptionHandler
     public function __invoke(Request $request)
     {
         /**
-         * @var $exception \Exception|HttpExceptionInterface
+         * @var $exception FlattenException
          */
         $exception = $request->attributes->get('exception');
-        if ($exception instanceof HttpExceptionInterface) {
-            $message = $exception->getMessage();
-            $code = $exception->getStatusCode();
-        } else {
-            $message = 'Internal Server Error';
-            $code = 500;
-        }
 
-        return new Response($message, $code);
+        return new Response($exception->getMessage(), $exception->getStatusCode());
     }
 
 }

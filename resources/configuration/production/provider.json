@@ -1,0 +1,7 @@
+[
+    "\\Vermillion\\Provider\\Logger",
+    "\\Vermillion\\Provider\\Session",
+    "\\Vermillion\\Provider\\Router",
+    "\\Trillium\\Provider\\KernelException",
+    "\\Trillium\\Provider\\MySQLi"
+]
