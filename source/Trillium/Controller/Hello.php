@@ -10,7 +10,6 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Vermillion\Controller\Controller;
 
 /**
  * Hello Class
@@ -27,16 +26,14 @@ class Hello extends Controller
      *
      * @param string $name Name
      *
-     * @return Response
+     * @return array
      */
     public function say($name)
     {
         $message = 'hello.%name%';
-        /*$name = htmlspecialchars($name, ENT_QUOTES, $this->app->configuration->get('charset'));
-        $message = $this->app->translator->trans($message, ['%name%' => $name]);
-        $message = $this->app->view->render('sayHello.twig', ['message' => $message]);*/
+        $message = $this->container['translator']->trans($message, ['%name%' => $name]);
 
-        return new Response($message);
+        return ['message' => $message];
     }
 
 }
