@@ -1,5 +1,5 @@
 /vendor
 /composer.lock
-/public/assets/styles.css
-/public/assets/scripts.js
-/application/resources/assets/application/url-generator.js
+/public/static/scripts.js
+/public/static/styles.css
+/resources/static/application/url-generator.js
