@@ -36,7 +36,7 @@ class MySQLi implements ServiceProviderInterface
                 'charset' => 'utf8',
             ];
             /** @var $config \Vermillion\Configuration\Configuration */
-            $config = $container['configuration'];
+            $config        = $container['configuration'];
             $configuration = $config->load('mysqli')->get();
             foreach ($defaults as $key => $value) {
                 if (!array_key_exists($key, $configuration)) {

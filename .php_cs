@@ -4,7 +4,7 @@ $finder = \Symfony\CS\Finder\DefaultFinder::create()
     ->files()
     ->name('*.php')
     ->exclude('vendor')
-    ->exclude('application/resources')
+    ->exclude('resources')
     ->in(__DIR__)
 ;
 

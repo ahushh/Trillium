@@ -77,7 +77,7 @@ class ControllerResponse implements EventSubscriberInterface
             }
             $event->setResponse(new JsonResponse($result, $status));
         } elseif (is_array($type)) {
-            $title = isset($result['_title']) ? $result['_title'] : 'Trillium';
+            $title  = isset($result['_title']) ? $result['_title'] : 'Trillium';
             $status = isset($result['_status']) ? $result['_status'] : 200;
             if (isset($type['view'])) {
                 $result = $this->view->load($type['view'], $result);
@@ -86,7 +86,7 @@ class ControllerResponse implements EventSubscriberInterface
                 $result = $this->view->load(
                     'layout',
                     [
-                        'title' => $title,
+                        'title'   => $title,
                         'content' => $result
                     ]
                 );

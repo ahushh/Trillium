@@ -42,7 +42,14 @@ class MySQLi extends \mysqli
      */
     public function __construct(array $conf)
     {
-        @parent::__construct($conf['host'], $conf['user'], $conf['pass'], $conf['db'], (int) $conf['port'], $conf['socket']);
+        @parent::__construct(
+            $conf['host'],
+            $conf['user'],
+            $conf['pass'],
+            $conf['db'],
+            (int) $conf['port'],
+            $conf['socket']
+        );
         if ($this->connect_errno !== 0) {
             throw new ConnectionException($this->connect_error, $this->connect_errno);
         }

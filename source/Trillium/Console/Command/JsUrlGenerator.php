@@ -82,8 +82,7 @@ class JsUrlGenerator extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Base path to the public directory',
                 ''
-            )
-        ;
+            );
     }
 
     /**
@@ -132,7 +131,8 @@ class JsUrlGenerator extends Command
      * Returns the content of the JavaScript UrlGenerator
      *
      * Based on the JavascriptRoutingServiceProvider
-     * @link https://github.com/RafalFilipek/JavascriptRoutingServiceProvider
+     *
+     * @link   https://github.com/RafalFilipek/JavascriptRoutingServiceProvider
      * @author Rafał Filipek <rafal.filipek@gmail.com>
      *
      * @param string $routes   List of the routes

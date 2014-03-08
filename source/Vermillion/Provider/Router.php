@@ -29,7 +29,7 @@ class Router implements ServiceProviderInterface, SubscriberProviderInterface
      */
     public function registerServices(Container $container)
     {
-        $container['router'] = function ($container) {
+        $container['router']            = function ($container) {
             /**
              * @var $env  \Vermillion\Environment
              * @var $conf \Vermillion\Configuration\Configuration

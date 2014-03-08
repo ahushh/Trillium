@@ -54,7 +54,7 @@ class CsFix extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $process = new Process($this->directory . 'vendor/bin/php-cs-fixer fix ' . $this->directory);
-        $status = $process->run(
+        $status  = $process->run(
             function ($status, $data) use ($output) {
                 $output->write($data);
                 if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {

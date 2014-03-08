@@ -27,9 +27,9 @@ class Session implements ServiceProviderInterface, SubscriberProviderInterface
      */
     public function registerServices(Container $container)
     {
-        $container['session.options']   = [];
-        $container['session.save_path'] = null;
-        $container['session']           = function ($container) {
+        $container['session.options']    = [];
+        $container['session.save_path']  = null;
+        $container['session']            = function ($container) {
             return new \Symfony\Component\HttpFoundation\Session\Session(
                 new NativeSessionStorage(
                     $container['session.options'],

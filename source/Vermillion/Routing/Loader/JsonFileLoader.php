@@ -26,6 +26,7 @@ class JsonFileLoader extends Loader
         if (!is_array($config)) {
             throw new \RuntimeException(sprintf('Resource "%s" contains invalid json', $resource));
         }
+
         return $this->createCollection($config, $path);
     }
 

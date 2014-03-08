@@ -167,8 +167,7 @@ class Assets extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Styles result filename',
                 'styles.css'
-            )
-        ;
+            );
     }
 
     /**
@@ -201,11 +200,13 @@ class Assets extends Command
         if ($ignore !== null) {
             $output->writeln(sprintf($this->messages['ignore'], $ignore));
         }
-        $output->writeln([
-            sprintf($this->messages['src_dir'], $this->source),
-            sprintf($this->messages['pub_dir'], $this->public),
-            $this->messages['build']
-        ]);
+        $output->writeln(
+            [
+                sprintf($this->messages['src_dir'], $this->source),
+                sprintf($this->messages['pub_dir'], $this->public),
+                $this->messages['build']
+            ]
+        );
         $assets     = $ignore === null ? ['js', 'css'] : ($ignore === 'css' ? ['js'] : ['css']);
         $i          = 0;
         $filesystem = new Filesystem();
@@ -228,10 +229,10 @@ class Assets extends Command
             foreach ($iterator as $file) {
                 $path               = $file->getRealPath();
                 $key                = str_replace($this->source, '', $path);
-                $options            = isset($this->conf[$key])    ? $this->conf[$key]          : [];
+                $options            = isset($this->conf[$key]) ? $this->conf[$key] : [];
                 $priority           = isset($options['priority']) ? (int) $options['priority'] : null;
-                $options['filters'] = isset($options['filters'])  ? $options['filters']        : [];
-                $filters = [];
+                $options['filters'] = isset($options['filters']) ? $options['filters'] : [];
+                $filters            = [];
                 if (is_array($options['filters'])) {
                     foreach ($options['filters'] as $filter) {
                         $filters[] = $this->getFilterByAlias($filter);
@@ -241,22 +242,26 @@ class Assets extends Command
                 }
                 $asset = new FileAsset($path, $filters);
                 if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
-                    $output->writeln(sprintf(
-                        $this->messages['found_asset'],
-                        $a . '/' . $total,
-                        $key,
-                        $priority !== null ? $priority : 'unspecified'
-                    ));
+                    $output->writeln(
+                        sprintf(
+                            $this->messages['found_asset'],
+                            $a . '/' . $total,
+                            $key,
+                            $priority !== null ? $priority : 'unspecified'
+                        )
+                    );
                 }
                 if ($priority !== null) {
                     if (isset($sorted[$priority])) {
                         $sourceKey = str_replace($this->source, '', $sorted[$priority]->getSourceRoot())
-                                   . '/'. $sorted[$priority]->getSourcePath();
-                        $output->writeln(sprintf(
-                            $this->messages['overwrite_asset'],
-                            $sourceKey,
-                            $key
-                        ));
+                            . '/' . $sorted[$priority]->getSourcePath();
+                        $output->writeln(
+                            sprintf(
+                                $this->messages['overwrite_asset'],
+                                $sourceKey,
+                                $key
+                            )
+                        );
                     }
                     $sorted[$priority] = $asset;
                 } else {

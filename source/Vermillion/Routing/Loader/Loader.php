@@ -17,8 +17,9 @@ use Symfony\Component\Routing\RouteCollection;
  * Loader Class
  *
  * Based on the Symfony Routing YamlFileLoader
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Tobias Schultze <http://tobion.de>
+ *
+ * @author  Fabien Potencier <fabien@symfony.com>
+ * @author  Tobias Schultze <http://tobion.de>
  *
  * @package Vermillion\Routing\Loader
  */
