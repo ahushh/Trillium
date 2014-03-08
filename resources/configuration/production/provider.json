@@ -4,5 +4,7 @@
     "\\Vermillion\\Provider\\Router",
     "\\Trillium\\Provider\\KernelException",
     "\\Trillium\\Provider\\MySQLi",
-    "\\Trillium\\Provider\\Translator"
+    "\\Trillium\\Provider\\Translator",
+    "\\Trillium\\Provider\\View",
+    "\\Trillium\\Provider\\ControllerResponse"
 ]

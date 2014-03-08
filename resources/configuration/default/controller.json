@@ -1,0 +1,7 @@
+{
+    "\\Trillium\\Controller\\Hello": {
+        "say": {
+            "view": "sayHello"
+        }
+    }
+}

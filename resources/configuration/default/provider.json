@@ -3,5 +3,7 @@
     "\\Vermillion\\Provider\\Session",
     "\\Vermillion\\Provider\\Router",
     "\\Trillium\\Provider\\MySQLi",
-    "\\Trillium\\Provider\\Translator"
+    "\\Trillium\\Provider\\Translator",
+    "\\Trillium\\Provider\\View",
+    "\\Trillium\\Provider\\ControllerResponse"
 ]
