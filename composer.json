@@ -1,5 +1,5 @@
 {
-    "name": "kilte/trillium",
+    "name": "trillium/trillium",
     "type": "project",
     "keywords": ["imageboard", "engine", "imageboard engine"],
     "description": "Imageboard engine based on the Symfony2 components",
