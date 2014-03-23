@@ -13,6 +13,8 @@ Requires PHP &gt;= 5.4
 - `$ chmod +x bin/console`
 - Generate `javascript url generator`: `$ bin/console jug`
 - Generate assets: `$ bin/console assets`
+- Load SQL Dump: `$ mysql -u user -p < dump.sql`
+- Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
 
 ## TODO:
 
@@ -32,7 +34,7 @@ Too many things. Now almost is ready skeleton only.
 
 Do not forget merge upstream changes:
 
-    git remote add upstream https://github.com/Kilte/view
+    git remote add upstream https://github.com/Kilte/Trillium
     git checkout master
     git pull upstream
     git push origin master

@@ -19,6 +19,8 @@
     "require": {
         "php": ">=5.4",
         "fabpot/php-cs-fixer": "~0.4",
+        "kilte/account-manager": "1.0.*@dev",
+        "kilte/security-provider": "2.0.*@dev",
         "kilte/view": "~1.0",
         "kriswallsmith/assetic": "~1.1",
         "monolog/monolog": "~1.7",

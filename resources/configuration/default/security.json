@@ -1,0 +1,33 @@
+{
+    "firewalls": {
+        "secured_area": {
+            "pattern": "^/",
+            "form": {
+                "login_path": "/user/sign/in",
+                "check_path": "/user/sign/in/check"
+            },
+            "logout": {
+                "logout_path": "/user/sign/out"
+            },
+            "users": "security.mysqli_user_provider",
+            "anonymous": true,
+            "remember_me": {
+                "name": "keep_auth",
+                "key": "A_UNIQUE_RANDOM_KEY",
+                "always_remember_me": true,
+                "path": "/"
+            }
+        }
+    },
+    "access_rules": {
+        "^/user/remove": {"roles": ["ROLE_ROOT"]},
+        "^/user/password/.*$": {"roles": ["ROLE_ROOT"]},
+        "^/user/roles": {"roles": ["ROLE_ROOT"]},
+        "^/user/profile": {"roles": ["ROLE_ROOT"]},
+        "^/user/create": {"roles": ["ROLE_ROOT"]}
+    },
+    "role_hierarchy": {
+        "ROLE_ROOT": ["ROLE_USER", "ROLE_ADMIN"]
+    },
+    "hide_user_not_found": false
+}
