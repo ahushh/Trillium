@@ -32,7 +32,7 @@ class Translator extends LocaleListener
     private $localesDirectory;
 
     /**
-     * @var Translator Translator instance
+     * @var SymfonyTranslator Translator instance
      */
     private $translator;
 
