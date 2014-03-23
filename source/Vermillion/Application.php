@@ -11,8 +11,6 @@ namespace Vermillion;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernel;
-use Vermillion\Controller\Factory;
-use Vermillion\Controller\Resolver;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
 
@@ -87,11 +85,8 @@ class Application
     public function run(Request $request)
     {
         $this->register();
-        $kernel   = new HttpKernel(
-            $this->container['dispatcher'],
-            new Resolver(new Factory($this->container), $this->container['logger']),
-            $this->container['requestStack']
-        );
+        /** @var $kernel HttpKernel */
+        $kernel   = $this->container['http_kernel'];
         $response = $kernel->handle($request);
         $response->send();
         $kernel->terminate($request, $response);

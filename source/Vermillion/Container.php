@@ -13,11 +13,14 @@ use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Yaml\Parser;
 use Vermillion\Configuration\Configuration;
 use Vermillion\Configuration\Loader\JsonFileLoader;
 use Vermillion\Configuration\Loader\YamlFileLoader;
 use Vermillion\Configuration\Locator\FileLocator;
+use Vermillion\Controller\Factory;
+use Vermillion\Controller\Resolver;
 
 /**
  * Container Class
@@ -44,15 +47,17 @@ class Container extends \Pimple
         };
         $this['configuration.loader']  = function ($container) {
             return new DelegatingLoader(
-                new LoaderResolver([
-                    new YamlFileLoader(
-                        $container['configuration.locator'],
-                        $container['yaml']
-                    ),
-                    new JsonFileLoader(
-                        $container['configuration.locator']
-                    )
-                ])
+                new LoaderResolver(
+                    [
+                        new YamlFileLoader(
+                            $container['configuration.locator'],
+                            $container['yaml']
+                        ),
+                        new JsonFileLoader(
+                            $container['configuration.locator']
+                        )
+                    ]
+                )
             );
         };
         $this['configuration']         = function ($container) {
@@ -69,6 +74,13 @@ class Container extends \Pimple
         };
         $this['requestStack']          = function () {
             return new RequestStack();
+        };
+        $this['http_kernel']           = function ($c) {
+            return new HttpKernel(
+                $c['dispatcher'],
+                new Resolver(new Factory($c), $c['logger']),
+                $c['requestStack']
+            );
         };
     }
 
