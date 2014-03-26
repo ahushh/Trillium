@@ -5,18 +5,34 @@
         }
     },
     "java-path": "/usr/bin/java",
-    "vendor/bootstrap/bootstrap.css": {
+    "vendor/jquery-terminal/css/jquery.terminal.css": {
         "filters": ["yui-css-compressor"]
     },
-    "vendor/bootstrap/bootstrap-theme.css": {
+    "application/style.css": {
         "filters": ["yui-css-compressor"]
     },
-    "application/trillium.js": {
+    "vendor/jquery/jquery-1.11.0.js": {
         "priority": 0,
         "filters": ["yui-js-compressor"]
     },
-    "application/url-generator.js": {
+    "vendor/jquery-mousewheel/jquery.mousewheel.js": {
         "priority": 1,
+        "filters": ["yui-js-compressor"]
+    },
+    "vendor/jquery-terminal/dterm.js": {
+        "priority": 2,
+        "filters": ["yui-js-compressor"]
+    },
+    "vendor/jquery-terminal/jquery.terminal-0.8.7.js": {
+        "priority": 3,
+        "filters": ["yui-js-compressor"]
+    },
+    "application/trillium.js": {
+        "priority": 4,
+        "filters": ["yui-js-compressor"]
+    },
+    "application/url-generator.js": {
+        "priority": 5,
         "filters": ["yui-js-compressor"]
     }
 }
