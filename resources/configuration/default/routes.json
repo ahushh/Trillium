@@ -1,18 +1,17 @@
 {
+    "home": {
+        "path": "/",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Home",
+            "_action": "index"
+        }
+    },
     "login": {
       "path": "/login",
       "defaults": {
           "_controller": "\\Trillium\\Controller\\Hello",
           "_action": "login"
       }
-    },
-    "hello": {
-        "path": "/{name}",
-        "defaults": {
-            "_controller": "\\Trillium\\Controller\\Hello",
-            "_action": "say",
-            "name": "Kilte"
-        }
     },
     "login.check": {
         "path": "/login/check",

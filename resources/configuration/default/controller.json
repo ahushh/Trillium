@@ -1,7 +1,7 @@
 {
-    "\\Trillium\\Controller\\Hello": {
-        "say": {
-            "view": "sayHello"
+    "\\Trillium\\Controller\\Home": {
+        "index": {
+            "view": "home"
         }
     }
 }
