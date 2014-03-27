@@ -143,7 +143,7 @@ class JsUrlGenerator extends Command
     private function getContent($routes, $basePath)
     {
         return <<<JS
-Trillium.urlGenerator = {
+TrilliumUrlGenerator = {
     routes: {$routes},
     basePath: '{$basePath}',
     generate: function (name, params) {
