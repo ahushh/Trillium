@@ -29,7 +29,8 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
     public function registerServices(Container $container)
     {
         $container['security.mysqli_user_provider'] = function ($c) {
-            return new MySQLiUserProvider($c['mysqli'], 'users', 'username');
+            return (new MySQLiUserProvider($c['mysqli'], 'users', 'username'))
+                ->setSupportsClass('Kilte\AccountManager\User\User');
         };
         $container['security.provider']             = function ($c) {
             /**
