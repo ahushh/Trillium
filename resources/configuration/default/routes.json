@@ -6,21 +6,21 @@
             "_action": "index"
         }
     },
-    "login": {
-      "path": "/login",
+    "user.sign.in": {
+      "path": "/user/sign/in",
       "defaults": {
-          "_controller": "\\Trillium\\Controller\\Hello",
-          "_action": "login"
+          "_controller": "\\Trillium\\Controller\\User",
+          "_action": "signIn"
       }
     },
-    "login.check": {
-        "path": "/login/check",
+    "user.sign.in.check": {
+        "path": "/user/sign/in/check",
         "defaults": {
             "_controller": null
         }
     },
-    "logout": {
-        "path": "/logout",
+    "user.sign.out": {
+        "path": "/user/sign/out",
         "defaults": {
             "_controller": null
         }
