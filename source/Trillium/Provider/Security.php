@@ -11,6 +11,7 @@ namespace Trillium\Provider;
 
 use Kilte\AccountManager\Provider\MySQLiUserProvider;
 use Kilte\SecurityProvider\Provider;
+use Trillium\Subscriber\AuthenticationSuccessHandler;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -40,8 +41,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             $router        = $c['router'];
             $configuration = $c['configuration'];
             $config        = $configuration->load('security');
-
-            return new Provider(
+            $provider = new Provider(
                 [
                     'http_kernel'                   => $c['http_kernel'],
                     'dispatcher'                    => $c['dispatcher'],
@@ -56,6 +56,22 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
                     'security.mysqli_user_provider' => $c['security.mysqli_user_provider'],
                 ]
             );
+            // Override authentication success handler
+            $provider['authentication.success_handler._proto']      = $provider->protect(
+                function ($name, $options) use ($provider) {
+                    return function () use ($name, $options, $provider) {
+                        $handler = new AuthenticationSuccessHandler(
+                            $provider['http_utils'],
+                            $options
+                        );
+                        $handler->setProviderKey($name);
+
+                        return $handler;
+                    };
+                }
+            );
+
+            return $provider;
         };
         $container['security']                      = function ($c) {
             return $c['security.provider']['security']($c['security.provider']);
