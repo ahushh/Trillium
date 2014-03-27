@@ -90,7 +90,8 @@ class Translator extends LocaleListener
     }
 
     /**
-     * Sets locale to the application
+     * Sets locale to the translator
+     * Adds a resource for this locale to the translator
      *
      * @param GetResponseEvent $event
      *
@@ -128,6 +129,8 @@ class Translator extends LocaleListener
 
     /**
      * Sets cookie to a response
+     * To get locale from this cookie later
+     * @see \Trillium\Subscriber\Translator::onKernelRequest()
      *
      * @param FilterResponseEvent $event
      *
@@ -145,9 +148,7 @@ class Translator extends LocaleListener
     }
 
     /**
-     * Returns the list of the subscribed events
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
