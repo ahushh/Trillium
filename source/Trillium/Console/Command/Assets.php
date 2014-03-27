@@ -11,6 +11,7 @@ namespace Trillium\Console\Command;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
+use Assetic\Filter\FilterInterface;
 use Assetic\Filter\Yui\CssCompressorFilter;
 use Assetic\Filter\Yui\JsCompressorFilter;
 use Symfony\Component\Console\Command\Command;
@@ -305,9 +306,8 @@ class Assets extends Command
      *
      * @param string $alias An alias
      *
-     * @throws \RuntimeException   Wrong configuration given
      * @throws \LogicException     Filter does not exists
-     * @return CssCompressorFilter
+     * @return FilterInterface
      */
     private function getFilterByAlias($alias)
     {
