@@ -306,7 +306,7 @@ class Assets extends Command
      *
      * @param string $alias An alias
      *
-     * @throws \LogicException     Filter does not exists
+     * @throws \LogicException Filter does not exists
      * @return FilterInterface
      */
     private function getFilterByAlias($alias)
