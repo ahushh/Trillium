@@ -15,6 +15,7 @@ Requires PHP &gt;= 5.4
 - Generate assets: `$ bin/console assets`
 - Load SQL Dump: `$ mysql -u user -p < dump.sql`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
+- Change remember\_me key in the security configuration file (of current env).
 
 ## TODO:
 
