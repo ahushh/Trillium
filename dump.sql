@@ -11,6 +11,7 @@ CREATE TABLE `users` (
   `salt` varchar(255) NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO `users` VALUES ('root','zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA==',0,'[\"ROLE_ROOT\"]','');
 
 CREATE DATABASE `trillium_development`;
 USE `trillium_development`;
@@ -22,3 +23,4 @@ CREATE TABLE `users` (
   `salt` varchar(255) NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO `users` VALUES ('root','zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA==',0,'[\"ROLE_ROOT\"]','');
