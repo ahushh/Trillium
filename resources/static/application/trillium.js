@@ -30,7 +30,7 @@ var Trillium = {
             );
         },
         commands: {
-            'panel': function (term) {
+            'login': function (term) {
                 var panel_username = 'anonymous';
                 term.push(
                     function(cmd, term) {
