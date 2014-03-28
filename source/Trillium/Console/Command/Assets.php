@@ -52,6 +52,11 @@ class Assets extends Command
     ];
 
     /**
+     * @var array Loaded filters
+     */
+    private $filters = [];
+
+    /**
      * @var array Assets configuration
      */
     private $conf;
@@ -59,17 +64,12 @@ class Assets extends Command
     /**
      * @var array Filters configuration (from file)
      */
-    private $confFilters;
-
-    /**
-     * @var array Loaded filters
-     */
-    private $filters = [];
+    private $filtersConfUser;
 
     /**
      * @var array Default filters configuration
      */
-    private $filtersConf = [
+    private $filtersConfDefault = [
         'global'             => [
             'yui-path'  => null,
             'java-path' => '/usr/bin/java',
@@ -132,16 +132,16 @@ class Assets extends Command
         // Load filters configuration
         $this->conf = $conf;
         if (isset($this->conf['filters'])) {
-            $this->confFilters = $this->conf['filters'];
-            foreach ($this->filtersConf as $key => $item) {
+            $this->filtersConfUser = $this->conf['filters'];
+            foreach ($this->filtersConfDefault as $key => $item) {
                 // Configuration for a filter is missing
-                if (!array_key_exists($key, $this->confFilters)) {
-                    $this->confFilters[$key] = $item;
-                } elseif (is_array($this->confFilters[$key])) {
-                    foreach ($this->filtersConf[$key] as $name => $value) {
+                if (!array_key_exists($key, $this->filtersConfUser)) {
+                    $this->filtersConfUser[$key] = $item;
+                } elseif (is_array($this->filtersConfUser[$key])) {
+                    foreach ($this->filtersConfDefault[$key] as $name => $value) {
                         // Option for a filter configuration is missing
-                        if (!array_key_exists($name, $this->confFilters[$key])) {
-                            $this->confFilters[$key][$name] = $value;
+                        if (!array_key_exists($name, $this->filtersConfUser[$key])) {
+                            $this->filtersConfUser[$key][$name] = $value;
                         }
                     }
                 } else {
@@ -150,7 +150,7 @@ class Assets extends Command
             }
             unset($this->conf['filters']);
         } else {
-            $this->confFilters = $this->filtersConf;
+            $this->filtersConfUser = $this->filtersConfDefault;
         }
         parent::__construct('assets');
     }
@@ -366,12 +366,12 @@ class Assets extends Command
         if (isset($this->filters[$alias])) {
             return $this->filters[$alias];
         }
-        $conf = $this->confFilters[$alias];
+        $conf = $this->filtersConfUser[$alias];
         switch ($alias) {
             case 'yui-js-compressor':
                 $compressor = new JsCompressorFilter(
-                    $this->confFilters['global']['yui-path'],
-                    $this->confFilters['global']['java-path']
+                    $this->filtersConfUser['global']['yui-path'],
+                    $this->filtersConfUser['global']['java-path']
                 );
                 $compressor->setCharset($conf['charset']);
                 $compressor->setLineBreak($conf['linebreak']);
@@ -383,8 +383,8 @@ class Assets extends Command
                 break;
             case 'yui-css-compressor':
                 $compressor = new CssCompressorFilter(
-                    $this->confFilters['global']['yui-path'],
-                    $this->confFilters['global']['java-path']
+                    $this->filtersConfUser['global']['yui-path'],
+                    $this->filtersConfUser['global']['java-path']
                 );
                 $compressor->setCharset($conf['charset']);
                 $compressor->setLineBreak($conf['linebreak']);
