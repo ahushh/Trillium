@@ -19,11 +19,11 @@
         "priority": 1,
         "filters": ["yui-js-compressor"]
     },
-    "vendor/jquery-terminal/dterm.js": {
+    "vendor/jquery-terminal/js/dterm.js": {
         "priority": 2,
         "filters": ["yui-js-compressor"]
     },
-    "vendor/jquery-terminal/jquery.terminal-0.8.7.js": {
+    "vendor/jquery-terminal/js/jquery.terminal-0.8.7.js": {
         "priority": 3,
         "filters": ["yui-js-compressor"]
     },
