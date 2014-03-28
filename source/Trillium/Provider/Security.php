@@ -9,9 +9,11 @@
 
 namespace Trillium\Provider;
 
+use Kilte\AccountManager\Controller\Controller;
 use Kilte\AccountManager\Provider\MySQLiUserProvider;
 use Kilte\SecurityProvider\Provider;
 use Trillium\Subscriber\AuthenticationSuccessHandler;
+use Trillium\Subscriber\UserController;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -29,9 +31,10 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
      */
     public function registerServices(Container $container)
     {
+        $container['security.user_class']           = 'Kilte\AccountManager\User\User';
         $container['security.mysqli_user_provider'] = function ($c) {
             return (new MySQLiUserProvider($c['mysqli'], 'users', 'username'))
-                ->setSupportsClass('Kilte\AccountManager\User\User');
+                ->setSupportsClass($c['security.user_class']);
         };
         $container['security.provider']             = function ($c) {
             /**
@@ -41,7 +44,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             $router        = $c['router'];
             $configuration = $c['configuration'];
             $config        = $configuration->load('security');
-            $provider = new Provider(
+            $provider      = new Provider(
                 [
                     'http_kernel'                   => $c['http_kernel'],
                     'dispatcher'                    => $c['dispatcher'],
@@ -57,7 +60,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
                 ]
             );
             // Override authentication success handler
-            $provider['authentication.success_handler._proto']      = $provider->protect(
+            $provider['authentication.success_handler._proto'] = $provider->protect(
                 function ($name, $options) use ($provider) {
                     return function () use ($name, $options, $provider) {
                         $handler = new AuthenticationSuccessHandler(
@@ -74,7 +77,19 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             return $provider;
         };
         $container['security']                      = function ($c) {
-            return $c['security.provider']['security']($c['security.provider']);
+            return $c['security.provider']['security'];
+        };
+        $container['userController']                = function ($c) {
+            return new Controller(
+                $c['security'],
+                $c['security.provider']['encoder_factory'],
+                $c['security.mysqli_user_provider'],
+                $c['dispatcher'],
+                $c['security.user_class']
+            );
+        };
+        $container['userControllerSubscriber']      = function ($c) {
+            return new UserController($c['userController']);
         };
     }
 
@@ -84,7 +99,8 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
     public function getSubscribers(Container $container)
     {
         return [
-            $container['security.provider']['firewall']
+            $container['security.provider']['firewall'],
+            $container['userControllerSubscriber']
         ];
     }
 
