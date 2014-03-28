@@ -1,10 +1,10 @@
 {
     "filters": {
         "global": {
-            "yui-path": "/usr/share/yui-compressor/yui-compressor.jar"
+            "yui-path": "/usr/share/yui-compressor/yui-compressor.jar",
+            "java-path": "/usr/bin/java"
         }
     },
-    "java-path": "/usr/bin/java",
     "vendor/jquery-terminal/css/jquery.terminal.css": {
         "filters": ["yui-css-compressor"]
     },
