@@ -34,10 +34,67 @@ var Trillium = {
                 var panel_username = 'anonymous';
                 term.push(
                     function(cmd, term) {
-                        if (cmd == 'help') {
-                            term.echo('type "ping" it will display "pong"');
-                        } else if (cmd == 'ping') {
-                            term.echo('pong');
+                        if (cmd == 'password') {
+                            var oldPass = false;
+                            var newPass = false;
+                            var confirmPass = false;
+                            term.set_mask(true).push(
+                                function (string) {
+                                    confirmPass = string;
+                                    $.ajax(
+                                        TrilliumUrlGenerator.generate('user.edit.password'),
+                                        {
+                                            async: false,
+                                            cache: false,
+                                            data: {
+                                                '_password_old': oldPass,
+                                                '_password_new': newPass,
+                                                '_password_confirm': confirmPass
+                                            },
+                                            dataType: 'json',
+                                            type: 'POST'
+                                        }
+                                    ).done(
+                                        function (data) {
+                                            var key, size = 0;
+                                            for (key in data) {
+                                                if (data.hasOwnProperty(key)) {
+                                                    size++;
+                                                    term.error(data[key]);
+                                                }
+                                            }
+                                            if (size == 0) {
+                                                term.echo('Password updated');
+                                            }
+                                        }
+                                    ).fail(
+                                        function (jqXHR, textStatus, errorThrown) {
+                                            console.log(jqXHR, textStatus, errorThrown);
+                                            term.error('Unknown error');
+                                        }
+                                    ).always(
+                                        function () {
+                                            term.pop();
+                                            term.set_mask(false);
+                                        }
+                                    );
+                                },
+                                {prompt: 'Confirm password: '}
+                            );
+                            term.set_mask(true).push(
+                                function (string) {
+                                    newPass = string;
+                                    term.pop();
+                                },
+                                {prompt: 'New password: '}
+                            );
+                            term.set_mask(true).push(
+                                function (string) {
+                                    oldPass = string;
+                                    term.pop();
+                                },
+                                {prompt: 'Old password: '}
+                            );
                         } else {
                             term.echo('unknown command "' + cmd + '"');
                         }
