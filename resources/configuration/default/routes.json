@@ -24,5 +24,13 @@
         "defaults": {
             "_controller": null
         }
+    },
+    "user.edit.password": {
+        "path": "/user/edit/password/{username}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "editPassword",
+            "username": ""
+        }
     }
 }

@@ -5,6 +5,7 @@
         }
     },
     "\\Trillium\\Controller\\User": {
-        "signIn": "json"
+        "signIn": "json",
+        "editPassword": "json"
     }
 }

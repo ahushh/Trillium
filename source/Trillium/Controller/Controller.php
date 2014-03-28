@@ -13,6 +13,7 @@ namespace Trillium\Controller;
  * Controller Class
  *
  * @property-read \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+ * @property-read \Kilte\AccountManager\Controller\ControllerInterface       $userController
  *
  * @package Trillium\Controller
  */

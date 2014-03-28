@@ -9,7 +9,9 @@
 
 namespace Trillium\Controller;
 
+use Kilte\AccountManager\Exception\UserNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * User Class
@@ -34,6 +36,25 @@ class User extends Controller
             'username' => $this->session->get('_security.last_username'),
             'error'    => $this->container['security.provider']['last_error']($request)
         ];
+    }
+
+    /**
+     * Updates password for an user
+     *
+     * @param Request $request A request instance
+     * @param string $username Username
+     *
+     * @throws HttpException
+     * @return array
+     */
+    public function editPassword(Request $request, $username)
+    {
+        try {
+            $result = $this->userController->updatePassword($request, $username);
+            return !is_array($result) ? [] : $result;
+        } catch (UserNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
+        }
     }
 
 }
