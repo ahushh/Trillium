@@ -30,19 +30,26 @@ class Assets extends Command
 {
 
     /**
-     * @var string Source directory
+     * Checksums filename
      */
-    private $source;
+    const CHECKSUMS = 'checksums.json';
 
     /**
-     * @var string Public directory
+     * @var array List of the directories
      */
-    private $public;
+    private $directories = [
+        'source' => false,
+        'cache'  => false,
+        'public' => false,
+    ];
 
     /**
-     * @var string Cache directory
+     * @var array File types
      */
-    private $cache;
+    private $types = [
+        'js',
+        'css'
+    ];
 
     /**
      * @var array Assets configuration
@@ -87,18 +94,18 @@ class Assets extends Command
      */
     private $messages = [
         'wrong_ignore_value' => '<fg=red>[EE]</fg=red> Wrong ignore value given',
-        'invalid_src_dir'    => '<fg=red>[EE]</fg=red> Source directory does not exists',
-        'invalid_pub_dir'    => '<fg=red>[EE]</fg=red> Public directory does not exists',
-        'invalid_cache_dir'  => '<fg=red>[EE]</fg=red> Cache directory does not exists',
+        'dir_invalid'        => '<fg=red>[EE]</fg=red> %s directory does not exists',
+        'dir_ok'             => '<info>[OK]</info> %s directory: %s',
         'ignore'             => '<info>Ignore %s</info>',
-        'src_dir'            => '<info>[OK]</info> Source directory: %s',
-        'pub_dir'            => '<info>[OK]</info> Public directory: %s',
+        'remove_cache'       => 'Remove cache',
         'build'              => "\nWill now build...",
         'assets_type'        => "\nType: %s",
         'not_found'          => '<fg=red>[WW]</fg=red> No assets found.',
         'found'              => '%s assets found',
+        'load_from_cache'    => "from cache",
+        'load_from_source'   => "from source",
         'overwrite_asset'    => "\t<fg=red>[WW]</fg=red> Overwrite \"%s\" by \"%s\"",
-        'found_asset'        => "\tFound: %s \"%s\" with \"%s\" priority",
+        'found_asset'        => "\tFound: %s \"%s\" with \"%s\" priority [%s]",
         'dump_assets'        => 'Dump "%s" into "%s"... ',
         'dump_success'       => '<info>[OK]</info>',
         'dump_failed'        => '<fg=red>[FAIL]</fg=red>',
@@ -119,9 +126,9 @@ class Assets extends Command
      */
     public function __construct($source, $public, $cache, array $conf)
     {
-        $this->source = $source;
-        $this->public = $public;
-        $this->cache  = $cache;
+        $this->directories['source'] = $source;
+        $this->directories['public'] = $public;
+        $this->directories['cache']  = $cache;
         // Load filters configuration
         $this->conf = $conf;
         if (isset($this->conf['filters'])) {
@@ -164,14 +171,14 @@ class Assets extends Command
                 . '"css" for css file'
             )
             ->addOption(
-                'javascript',
+                'js',
                 'j',
                 InputOption::VALUE_OPTIONAL,
                 'Javascript result filename',
                 'scripts.js'
             )
             ->addOption(
-                'stylesheet',
+                'css',
                 'c',
                 InputOption::VALUE_OPTIONAL,
                 'Styles result filename',
@@ -189,76 +196,71 @@ class Assets extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $errors       = [];
         $cacheEnabled = !$input->getOption('disable-cache');
+        $errors       = 0;
+        $filesystem   = new Filesystem();
         $ignore       = $input->getOption('ignore');
-        $names        = [
-            'css' => $input->getOption('stylesheet'),
-            'js'  => $input->getOption('javascript'),
-        ];
-        if ($ignore !== null && !in_array($ignore, ['css', 'js'])) {
-            $errors[] = $this->messages['wrong_ignore_value'];
+        $names        = [];
+        $verbosity    = $output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE;
+        foreach ($this->types as $type) {
+            $names[$type] = $input->getOption($type);
         }
-        if ($this->source === false) {
-            $errors[] = $this->messages['invalid_src_dir'];
+        if ($ignore !== null && !in_array($ignore, $this->types)) {
+            $errors++;
+            $output->writeln($this->messages['wrong_ignore_value']);
         }
-        if ($this->public === false) {
-            $errors[] = $this->messages['invalid_pub_dir'];
+        // Check directories
+        foreach ($this->directories as $dirType => $dirPath) {
+            $dirPath = realpath($dirPath);
+            if ($dirPath === false) {
+                $errors++;
+                $output->writeln(sprintf($this->messages['dir_invalid'], ucwords($dirType)));
+            } else {
+                $this->directories[$dirType] = rtrim($dirPath, '\/') . DIRECTORY_SEPARATOR;
+                $output->writeln(sprintf($this->messages['dir_ok'], ucwords($dirType), $this->directories[$dirType]));
+            }
         }
-        if ($this->cache === false) {
-            $errors[] = $this->messages['invalid_cache_dir'];
-        }
-        if (!empty($errors)) {
-            $output->writeln($errors);
-
+        if ($errors > 0) {
             return 1;
         }
-        $this->source = rtrim($this->source, '\/') . '/';
-        $this->public = rtrim($this->public, '\/') . '/';
-        $this->cache  = rtrim($this->cache, '\/') . '/';
+        // Ignore type
         if ($ignore !== null) {
+            unset($this->types[array_search($ignore, $this->types)]);
             $output->writeln(sprintf($this->messages['ignore'], $ignore));
         }
-        $output->writeln(
-            [
-                sprintf($this->messages['src_dir'], $this->source),
-                sprintf($this->messages['pub_dir'], $this->public),
-                $this->messages['build']
-            ]
-        );
-        $assets     = $ignore === null ? ['js', 'css'] : ($ignore === 'css' ? ['js'] : ['css']);
-        $i          = 0;
-        $filesystem = new Filesystem();
-        if (!$cacheEnabled) {
-            // Remove cache
-            $filesystem->remove(
-                array_map(
-                    function ($name) {
-                        return $this->cache . $name;
-                    },
-                    array_diff(scandir($this->cache), ['.', '..', '.gitignore'])
-                )
-            );
-        }
+        // Load checksums
         $checksums    = [];
         $checksumsNew = [];
-        if (is_file($this->cache . 'checksums.json')) {
-            $checksumsRaw = @file_get_contents($this->cache . 'checksums.json');
+        if (is_file($this->directories['cache'] . self::CHECKSUMS)) {
+            $checksumsRaw = @file_get_contents($this->directories['cache'] . self::CHECKSUMS);
             if ($checksumsRaw !== false) {
                 $checksums = json_decode($checksumsRaw, true);
             }
             unset($checksumsRaw);
         }
-
+        // Remove cache
+        if (!$cacheEnabled) {
+            $output->writeln($this->messages['remove_cache']);
+            $filesystem->remove(
+                array_map(
+                    function ($name) {
+                        return $this->directories['cache'] . $name;
+                    },
+                    array_diff(scandir($this->directories['cache']), ['.', '..', '.gitignore'])
+                )
+            );
+        }
         /**
          * @var $sorted FileAsset[]
          * @var $file   \Symfony\Component\Finder\SplFileInfo
          */
-        foreach ($assets as $type) {
+        $output->writeln($this->messages['build']);
+        $i = 0;
+        foreach ($this->types as $type) {
             $output->writeln(sprintf($this->messages['assets_type'], $type));
             $collection = [];
             $sorted     = [];
-            $iterator   = $this->getIterator('*.' . $type, $this->source);
+            $iterator   = $this->getIterator('*.' . $type, $this->directories['source']);
             $total      = iterator_count($iterator);
             if ($total === 0) {
                 $output->writeln($this->messages['not_found']);
@@ -270,23 +272,17 @@ class Assets extends Command
                 $baseName           = $file->getBasename();
                 $realPath           = $file->getRealPath();
                 $hash               = md5_file($realPath);
-                $key                = str_replace($this->source, '', $realPath);
+                $key                = str_replace($this->directories['source'], '', $realPath);
                 $options            = isset($this->conf[$key]) ? $this->conf[$key] : [];
                 $priority           = isset($options['priority']) ? (int)$options['priority'] : null;
                 $options['filters'] = isset($options['filters']) ? $options['filters'] : [];
                 $filters            = [];
                 $cached             = false;
                 $cacheExpired       = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
-                if (is_file($this->cache . $baseName) && $cacheEnabled && !$cacheExpired) {
-                    /*if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
-                        $output->writeln('Load from cache: ' . $realPath);
-                    }*/
-                    $path   = $this->cache . $baseName;
+                if (is_file($this->directories['cache'] . $baseName) && $cacheEnabled && !$cacheExpired) {
+                    $path   = $this->directories['cache'] . $baseName;
                     $cached = true;
                 } else {
-                    /*if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
-                        $output->writeln('Load from source: ' . $realPath);
-                    }*/
                     $path = $realPath;
                     if (is_array($options['filters'])) {
                         foreach ($options['filters'] as $filter) {
@@ -296,32 +292,27 @@ class Assets extends Command
                         $filters[] = $this->getFilterByAlias($options['filters']);
                     }
                 }
-                $asset = new FileAsset($path, $filters);
-                if (!$cached) {
-                    // Write asset to cache
-                    $filesystem->dumpFile($this->cache . $baseName, $asset->dump());
-                }
-                if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+                if ($verbosity) {
                     $output->writeln(
                         sprintf(
                             $this->messages['found_asset'],
                             $a . '/' . $total,
                             $key,
-                            $priority !== null ? $priority : 'unspecified'
+                            $priority !== null ? $priority : 'unspecified',
+                            $cached ? $this->messages['load_from_cache'] : $this->messages['load_from_source']
                         )
                     );
                 }
+                $asset = new FileAsset($path, $filters);
+                if (!$cached) {
+                    // Write asset to cache
+                    $filesystem->dumpFile($this->directories['cache'] . $baseName, $asset->dump());
+                }
                 if ($priority !== null) {
                     if (isset($sorted[$priority])) {
-                        $sourceKey = str_replace($this->source, '', $sorted[$priority]->getSourceRoot())
-                            . '/' . $sorted[$priority]->getSourcePath();
-                        $output->writeln(
-                            sprintf(
-                                $this->messages['overwrite_asset'],
-                                $sourceKey,
-                                $key
-                            )
-                        );
+                        $sourceKey = str_replace($this->directories['source'], '', $sorted[$priority]->getSourceRoot());
+                        $sourceKey .= '/' . $sorted[$priority]->getSourcePath();
+                        $output->writeln(sprintf($this->messages['overwrite_asset'], $sourceKey, $key));
                     }
                     $sorted[$priority] = $asset;
                 } else {
@@ -333,10 +324,10 @@ class Assets extends Command
             ksort($sorted);
             $collection     = array_merge($sorted, $collection);
             $collection     = new AssetCollection($collection);
-            $collectionPath = $this->public . $names[$type];
+            $collectionPath = $this->directories['public'] . $names[$type];
             $output->write(sprintf($this->messages['dump_assets'], $type, $collectionPath));
             $filesystem->dumpFile($collectionPath, $collection->dump());
-            $filesystem->dumpFile($this->cache . 'checksums.json', json_encode($checksumsNew));
+            $filesystem->dumpFile($this->directories['cache'] . self::CHECKSUMS, json_encode($checksumsNew));
             if (is_file($collectionPath)) {
                 $output->writeln($this->messages['dump_success']);
             } else {
