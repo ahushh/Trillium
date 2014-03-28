@@ -32,6 +32,7 @@ class Environment
         'locales'       => 'resources/locales',
         'views'         => 'resources/views',
         'static.source' => 'resources/static',
+        'static.cache'  => 'resources/cache/assets',
         'static.public' => 'public/static',
     ];
 

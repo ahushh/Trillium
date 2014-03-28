@@ -60,6 +60,7 @@ class Application extends \Symfony\Component\Console\Application
                 new Assets(
                     $this->env->getDirectory('static.source'),
                     $this->env->getDirectory('static.public'),
+                    $this->env->getDirectory('static.cache'),
                     $this->configuration->load('assets')->get()
                 ),
                 new CsFix($this->env->getDirectory('source') . '../'),

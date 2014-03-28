@@ -40,6 +40,11 @@ class Assets extends Command
     private $public;
 
     /**
+     * @var string Cache directory
+     */
+    private $cache;
+
+    /**
      * @var array Assets configuration
      */
     private $conf;
@@ -84,6 +89,7 @@ class Assets extends Command
         'wrong_ignore_value' => '<fg=red>[EE]</fg=red> Wrong ignore value given',
         'invalid_src_dir'    => '<fg=red>[EE]</fg=red> Source directory does not exists',
         'invalid_pub_dir'    => '<fg=red>[EE]</fg=red> Public directory does not exists',
+        'invalid_cache_dir'  => '<fg=red>[EE]</fg=red> Cache directory does not exists',
         'ignore'             => '<info>Ignore %s</info>',
         'src_dir'            => '<info>[OK]</info> Source directory: %s',
         'pub_dir'            => '<info>[OK]</info> Public directory: %s',
@@ -105,15 +111,17 @@ class Assets extends Command
      *
      * @param string $source Source directory
      * @param string $public Public directory
+     * @param string $cache  Cache directory
      * @param array  $conf   Configuration
      *
      * @throws \LogicException
      * @return self
      */
-    public function __construct($source, $public, array $conf)
+    public function __construct($source, $public, $cache, array $conf)
     {
         $this->source = $source;
         $this->public = $public;
+        $this->cache  = $cache;
         // Load filters configuration
         $this->conf = $conf;
         if (isset($this->conf['filters'])) {
@@ -157,17 +165,22 @@ class Assets extends Command
             )
             ->addOption(
                 'javascript',
-                'js',
+                'j',
                 InputOption::VALUE_OPTIONAL,
                 'Javascript result filename',
                 'scripts.js'
             )
             ->addOption(
                 'stylesheet',
-                'css',
+                'c',
                 InputOption::VALUE_OPTIONAL,
                 'Styles result filename',
                 'styles.css'
+            )->addOption(
+                'disable-cache',
+                'd',
+                InputOption::VALUE_NONE,
+                'Ignore and clear cache'
             );
     }
 
@@ -176,12 +189,13 @@ class Assets extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $ignore = $input->getOption('ignore');
-        $names  = [
+        $errors       = [];
+        $cacheEnabled = !$input->getOption('disable-cache');
+        $ignore       = $input->getOption('ignore');
+        $names        = [
             'css' => $input->getOption('stylesheet'),
             'js'  => $input->getOption('javascript'),
         ];
-        $errors = [];
         if ($ignore !== null && !in_array($ignore, ['css', 'js'])) {
             $errors[] = $this->messages['wrong_ignore_value'];
         }
@@ -191,6 +205,9 @@ class Assets extends Command
         if ($this->public === false) {
             $errors[] = $this->messages['invalid_pub_dir'];
         }
+        if ($this->cache === false) {
+            $errors[] = $this->messages['invalid_cache_dir'];
+        }
         if (!empty($errors)) {
             $output->writeln($errors);
 
@@ -198,6 +215,7 @@ class Assets extends Command
         }
         $this->source = rtrim($this->source, '\/') . '/';
         $this->public = rtrim($this->public, '\/') . '/';
+        $this->cache  = rtrim($this->cache, '\/') . '/';
         if ($ignore !== null) {
             $output->writeln(sprintf($this->messages['ignore'], $ignore));
         }
@@ -211,6 +229,27 @@ class Assets extends Command
         $assets     = $ignore === null ? ['js', 'css'] : ($ignore === 'css' ? ['js'] : ['css']);
         $i          = 0;
         $filesystem = new Filesystem();
+        if (!$cacheEnabled) {
+            // Remove cache
+            $filesystem->remove(
+                array_map(
+                    function ($name) {
+                        return $this->cache . $name;
+                    },
+                    array_diff(scandir($this->cache), ['.', '..', '.gitignore'])
+                )
+            );
+        }
+        $checksums    = [];
+        $checksumsNew = [];
+        if (is_file($this->cache . 'checksums.json')) {
+            $checksumsRaw = @file_get_contents($this->cache . 'checksums.json');
+            if ($checksumsRaw !== false) {
+                $checksums = json_decode($checksumsRaw, true);
+            }
+            unset($checksumsRaw);
+        }
+
         /**
          * @var $sorted FileAsset[]
          * @var $file   \Symfony\Component\Finder\SplFileInfo
@@ -228,20 +267,40 @@ class Assets extends Command
             $output->writeln(sprintf($this->messages['found'], $total));
             $a = 1;
             foreach ($iterator as $file) {
-                $path               = $file->getRealPath();
-                $key                = str_replace($this->source, '', $path);
+                $baseName           = $file->getBasename();
+                $realPath           = $file->getRealPath();
+                $hash               = md5_file($realPath);
+                $key                = str_replace($this->source, '', $realPath);
                 $options            = isset($this->conf[$key]) ? $this->conf[$key] : [];
-                $priority           = isset($options['priority']) ? (int) $options['priority'] : null;
+                $priority           = isset($options['priority']) ? (int)$options['priority'] : null;
                 $options['filters'] = isset($options['filters']) ? $options['filters'] : [];
                 $filters            = [];
-                if (is_array($options['filters'])) {
-                    foreach ($options['filters'] as $filter) {
-                        $filters[] = $this->getFilterByAlias($filter);
+                $cached             = false;
+                $cacheExpired       = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
+                if (is_file($this->cache . $baseName) && $cacheEnabled && !$cacheExpired) {
+                    /*if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+                        $output->writeln('Load from cache: ' . $realPath);
+                    }*/
+                    $path   = $this->cache . $baseName;
+                    $cached = true;
+                } else {
+                    /*if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+                        $output->writeln('Load from source: ' . $realPath);
+                    }*/
+                    $path = $realPath;
+                    if (is_array($options['filters'])) {
+                        foreach ($options['filters'] as $filter) {
+                            $filters[] = $this->getFilterByAlias($filter);
+                        }
+                    } elseif (!empty($options['filters'])) {
+                        $filters[] = $this->getFilterByAlias($options['filters']);
                     }
-                } elseif (!empty($options['filters'])) {
-                    $filters[] = $this->getFilterByAlias($options['filters']);
                 }
                 $asset = new FileAsset($path, $filters);
+                if (!$cached) {
+                    // Write asset to cache
+                    $filesystem->dumpFile($this->cache . $baseName, $asset->dump());
+                }
                 if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
                     $output->writeln(
                         sprintf(
@@ -268,6 +327,7 @@ class Assets extends Command
                 } else {
                     $collection[] = $asset;
                 }
+                $checksumsNew[$realPath] = $hash;
                 $a++;
             }
             ksort($sorted);
@@ -276,6 +336,7 @@ class Assets extends Command
             $collectionPath = $this->public . $names[$type];
             $output->write(sprintf($this->messages['dump_assets'], $type, $collectionPath));
             $filesystem->dumpFile($collectionPath, $collection->dump());
+            $filesystem->dumpFile($this->cache . 'checksums.json', json_encode($checksumsNew));
             if (is_file($collectionPath)) {
                 $output->writeln($this->messages['dump_success']);
             } else {
