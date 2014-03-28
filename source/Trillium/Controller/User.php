@@ -41,8 +41,8 @@ class User extends Controller
     /**
      * Updates password for an user
      *
-     * @param Request $request A request instance
-     * @param string $username Username
+     * @param Request $request  A request instance
+     * @param string  $username Username
      *
      * @throws HttpException
      * @return array
@@ -51,6 +51,7 @@ class User extends Controller
     {
         try {
             $result = $this->userController->updatePassword($request, $username);
+
             return !is_array($result) ? [] : $result;
         } catch (UserNotFoundException $e) {
             throw new HttpException(404, $e->getMessage());

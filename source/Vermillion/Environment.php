@@ -75,10 +75,12 @@ class Environment
         }
         $environment = @file_get_contents($environment);
         if ($environment === false) {
-            throw new \RuntimeException(sprintf(
-                'Unable to get contents of the environment configuration file: %s',
-                error_get_last()['message']
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'Unable to get contents of the environment configuration file: %s',
+                    error_get_last()['message']
+                )
+            );
         }
         if (!in_array($environment, $this->availableEnvironments)) {
             throw new \RuntimeException(sprintf('Environment "%s" is not available', $environment));

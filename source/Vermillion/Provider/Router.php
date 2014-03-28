@@ -38,10 +38,12 @@ class Router implements ServiceProviderInterface, SubscriberProviderInterface
             $conf   = $container['configuration'];
             $router = new \Symfony\Component\Routing\Router(
                 new DelegatingLoader(
-                    new LoaderResolver([
-                        new JsonFileLoader($container['configuration.locator']),
-                        new YamlFileLoader($container['configuration.locator']),
-                    ])
+                    new LoaderResolver(
+                        [
+                            new JsonFileLoader($container['configuration.locator']),
+                            new YamlFileLoader($container['configuration.locator']),
+                        ]
+                    )
                 ),
                 'routes',
                 [

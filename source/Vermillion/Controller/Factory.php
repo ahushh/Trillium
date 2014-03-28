@@ -55,10 +55,12 @@ class Factory
         }
         $instance = new $controller($this->container);
         if (!$instance instanceof Controller) {
-            throw new \InvalidArgumentException(sprintf(
-                'Controller "%s" must be instance of \Vermillion\Controller\Controller',
-                $controller
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Controller "%s" must be instance of \Vermillion\Controller\Controller',
+                    $controller
+                )
+            );
         }
 
         return $instance;

@@ -93,11 +93,13 @@ class ControllerResponse implements EventSubscriberInterface
             }
             $event->setResponse(new Response($result, $status));
         } else {
-            throw new \RuntimeException(sprintf(
-                'Unable to define response type for controller "%s" with action %s',
-                $controller,
-                $action
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'Unable to define response type for controller "%s" with action %s',
+                    $controller,
+                    $action
+                )
+            );
         }
     }
 

@@ -38,7 +38,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
         };
         $container['security.provider']             = function ($c) {
             /**
-             * @var $router \Symfony\Component\Routing\Router
+             * @var $router        \Symfony\Component\Routing\Router
              * @var $configuration \Vermillion\Configuration\Configuration
              */
             $router        = $c['router'];

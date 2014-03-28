@@ -130,6 +130,7 @@ class Translator extends LocaleListener
     /**
      * Sets cookie to a response
      * To get locale from this cookie later
+     *
      * @see \Trillium\Subscriber\Translator::onKernelRequest()
      *
      * @param FilterResponseEvent $event
