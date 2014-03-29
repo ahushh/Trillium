@@ -8,7 +8,6 @@ Trillium.terminal.commands.panel.password = function (term) {
                 Trillium.urlGenerator.generate('user.edit.password'),
                 {
                     async: false,
-                    cache: false,
                     data: {
                         '_password_old': passwords['old'],
                         '_password_new': passwords['new'],

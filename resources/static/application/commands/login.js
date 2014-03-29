@@ -17,12 +17,14 @@ Trillium.terminal.commands.main.login = function (term) {
             onBlur: function () {
                 return false
             },
+            onExit: function () {
+                $.ajax(Trillium.urlGenerator.generate('user.sign.out'), {async: false});
+            },
             login: function (username, password, callback) {
                 $.ajax(
                     Trillium.urlGenerator.generate('user.sign.in.check'),
                     {
                         async: false,
-                        cache: false,
                         data: {'_username': username, '_password': password},
                         dataType: 'json',
                         type: 'POST'
