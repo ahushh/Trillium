@@ -5,10 +5,12 @@
             "java-path": "/usr/bin/java"
         }
     },
-    "vendor/jquery-terminal/css/jquery.terminal.css": {
+    "vendor/jquery-terminal/jquery.terminal.css": {
+        "priority": 0,
         "filters": ["yui-css-compressor"]
     },
     "application/style.css": {
+        "priority": 1,
         "filters": ["yui-css-compressor"]
     },
     "vendor/jquery/jquery-1.11.0.js": {
@@ -19,20 +21,16 @@
         "priority": 1,
         "filters": ["yui-js-compressor"]
     },
-    "vendor/jquery-terminal/js/dterm.js": {
+    "vendor/jquery-terminal/jquery.terminal-0.8.7.js": {
         "priority": 2,
         "filters": ["yui-js-compressor"]
     },
-    "vendor/jquery-terminal/js/jquery.terminal-0.8.7.js": {
+    "application/url-generator.js": {
         "priority": 3,
         "filters": ["yui-js-compressor"]
     },
-    "application/url-generator.js": {
-        "priority": 4,
-        "filters": ["yui-js-compressor"]
-    },
     "application/trillium.js": {
-        "priority": 5,
+        "priority": 4,
         "filters": ["yui-js-compressor"]
     }
 }
