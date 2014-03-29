@@ -25,11 +25,11 @@
         "priority": 2,
         "filters": ["yui-js-compressor"]
     },
-    "application/url-generator.js": {
+    "application/trillium.js": {
         "priority": 3,
         "filters": ["yui-js-compressor"]
     },
-    "application/trillium.js": {
+    "application/url-generator.js": {
         "priority": 4,
         "filters": ["yui-js-compressor"]
     }

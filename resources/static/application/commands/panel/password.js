@@ -5,7 +5,7 @@ Trillium.terminal.commands.panel.password = function (term) {
         function (string) {
             passwords['confirm'] = string;
             $.ajax(
-                TrilliumUrlGenerator.generate('user.edit.password'),
+                Trillium.urlGenerator.generate('user.edit.password'),
                 {
                     async: false,
                     cache: false,

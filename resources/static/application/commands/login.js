@@ -19,7 +19,7 @@ Trillium.terminal.commands.main.login = function (term) {
             },
             login: function (username, password, callback) {
                 $.ajax(
-                    TrilliumUrlGenerator.generate('user.sign.in.check'),
+                    Trillium.urlGenerator.generate('user.sign.in.check'),
                     {
                         async: false,
                         cache: false,
