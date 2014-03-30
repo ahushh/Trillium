@@ -29,5 +29,8 @@
     "role_hierarchy": {
         "ROLE_ROOT": ["ROLE_USER", "ROLE_ADMIN"]
     },
-    "hide_user_not_found": false
+    "hide_user_not_found": false,
+    "activity_listener": {
+        "delay": 300
+    }
 }

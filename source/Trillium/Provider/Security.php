@@ -10,6 +10,7 @@
 namespace Trillium\Provider;
 
 use Kilte\AccountManager\Controller\Controller;
+use Kilte\AccountManager\EventListener\ActivityListener;
 use Kilte\AccountManager\Provider\MySQLiUserProvider;
 use Kilte\SecurityProvider\Provider;
 use Trillium\Service\Security\AuthenticationSuccessHandler;
@@ -91,6 +92,18 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
         $container['security.controller_listener']      = function ($c) {
             return new ControllerListener($c['userController']);
         };
+        $container['security.activity_listener'] = function ($c) {
+            /** @var $configuration \Vermillion\Configuration\Configuration */
+            $configuration = $c['configuration'];
+            $config        = $configuration->load('security')->get('activity_listener');
+            $config['delay'] = isset($config['delay']) ? (int) $config['delay'] : 300;
+
+            return new ActivityListener(
+                $c['security'],
+                $c['security.mysqli_user_provider'],
+                time() - $config['delay']
+            );
+        };
     }
 
     /**
@@ -102,6 +115,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             $container['security.provider']['firewall'],
             $container['security.provider']['remember_me.response_listener'],
             $container['security.controller_listener'],
+            $container['security.activity_listener'],
         ];
     }
 
