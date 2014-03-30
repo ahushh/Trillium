@@ -11,11 +11,8 @@ namespace Trillium\Controller;
 
 use Kilte\AccountManager\Exception\AccessDeniedException;
 use Kilte\AccountManager\Exception\UserNotFoundException;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 
 /**
  * User Class
