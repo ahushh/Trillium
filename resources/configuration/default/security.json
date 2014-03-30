@@ -20,11 +20,7 @@
         }
     },
     "access_rules": {
-        "^/user/remove": {"roles": ["ROLE_ROOT"]},
-        "^/user/edit/password/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/user/roles": {"roles": ["ROLE_ROOT"]},
-        "^/user/profile": {"roles": ["ROLE_ROOT"]},
-        "^/user/create": {"roles": ["ROLE_ROOT"]}
+        "^/user/edit/password/.*$": {"roles": ["ROLE_ROOT"]}
     },
     "role_hierarchy": {
         "ROLE_ROOT": ["ROLE_USER", "ROLE_ADMIN"]
