@@ -96,4 +96,18 @@ class User extends Controller
         return $list;
     }
 
+    /**
+     * Creates a user
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
+    public function create(Request $request)
+    {
+        $result = $this->userController->create($request);
+
+        return $result === true ? ['success' => 'User created'] : $result;
+    }
+
 }

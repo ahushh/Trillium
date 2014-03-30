@@ -6,6 +6,7 @@
         "signIn": "json",
         "editPassword": "json",
         "isAuthorized": "json",
-        "listing": "json"
+        "listing": "json",
+        "create": "json"
     }
 }

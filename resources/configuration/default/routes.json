@@ -47,5 +47,12 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "listing"
         }
+    },
+    "user.create": {
+        "path": "/user/create",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "create"
+        }
     }
 }
