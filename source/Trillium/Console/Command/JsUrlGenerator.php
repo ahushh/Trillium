@@ -121,34 +121,16 @@ class JsUrlGenerator extends Command
             );
         }
         $filesystem = new Filesystem();
-        $filesystem->dumpFile($path, $this->getContent(json_encode($result), $basePath));
-        $output->writeln($this->messages[is_file($path) ? 'success' : 'failed']);
-
-        return 0;
-    }
-
-    /**
-     * Returns the content of the JavaScript UrlGenerator
-     *
-     * Based on the JavascriptRoutingServiceProvider
-     *
-     * @link   https://github.com/RafalFilipek/JavascriptRoutingServiceProvider
-     * @author Rafał Filipek <rafal.filipek@gmail.com>
-     *
-     * @param string $routes   List of the routes
-     * @param string $basePath Base path to the public directory
-     *
-     * @return string
-     */
-    private function getContent($routes, $basePath)
-    {
-        return sprintf(
+        $content = sprintf(
             'Trillium.urlGenerator.routes = %s;%sTrillium.urlGenerator.basePath = \'%s\';',
-            $routes,
+            json_encode($result),
             "\n",
             $basePath
         );
+        $filesystem->dumpFile($path, $content);
+        $output->writeln($this->messages[is_file($path) ? 'success' : 'failed']);
 
+        return 0;
     }
 
 }
