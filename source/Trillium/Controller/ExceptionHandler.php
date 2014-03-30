@@ -10,8 +10,8 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * ExceptionHandler Class
@@ -26,7 +26,7 @@ class ExceptionHandler extends Controller
      *
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function __invoke(Request $request)
     {
@@ -35,7 +35,7 @@ class ExceptionHandler extends Controller
          */
         $exception = $request->attributes->get('exception');
 
-        return new Response($exception->getMessage(), $exception->getStatusCode());
+        return new JsonResponse($exception->getMessage(), $exception->getStatusCode());
     }
 
 }
