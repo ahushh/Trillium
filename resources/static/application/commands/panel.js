@@ -26,7 +26,9 @@ Trillium.terminal.commands.main.panel = function (term) {
             if (data.hasOwnProperty('isAuthorized') && data.hasOwnProperty('username')) {
                 isAuthorized = data['isAuthorized'];
                 credentials._username = data['username'];
-                controlPanel();
+                if (isAuthorized) {
+                    controlPanel();
+                }
             } else {
                 console.log(data);
                 term.error('Unknown error');
