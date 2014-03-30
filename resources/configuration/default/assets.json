@@ -32,5 +32,14 @@
     "application/url-generator.js": {
         "priority": 4,
         "filters": ["yui-js-compressor"]
+    },
+    "application/commands/panel.js": {
+        "filters": ["yui-js-compressor"]
+    },
+    "application/commands/panel/logout.js": {
+        "filters": ["yui-js-compressor"]
+    },
+    "application/commands/panel/password.js": {
+        "filters": ["yui-js-compressor"]
     }
 }
