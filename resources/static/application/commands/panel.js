@@ -42,8 +42,7 @@ Trillium.terminal.commands.main.panel = function (term) {
                 ).done(
                     function (data) {
                         if (data.hasOwnProperty('username') && data.hasOwnProperty('error')) {
-                            term.error('Unable to login with username "' + data['username'] + '".');
-                            term.error('The following error has occurred: "' + data['error'] + '".');
+                            term.error(data['error']);
                             term.pop();
                         } else if (data.hasOwnProperty('success')) {
                             term.echo(data.success);
