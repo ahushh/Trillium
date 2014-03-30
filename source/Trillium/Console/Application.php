@@ -46,7 +46,7 @@ class Application extends \Symfony\Component\Console\Application
         $this->env           = $container['environment'];
         $this->router        = $container['router'];
         $this->configuration = $container['configuration'];
-        parent::__construct('Trillium', '');
+        parent::__construct('Trillium', \Vermillion\Application::VERSION);
     }
 
     /**

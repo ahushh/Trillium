@@ -23,6 +23,11 @@ class Application
 {
 
     /**
+     * Version
+     */
+    const VERSION = '1.0.0-dev';
+
+    /**
      * @var Container A container instance
      */
     private $container;
