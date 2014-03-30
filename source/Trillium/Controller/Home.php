@@ -18,11 +18,13 @@ class Home extends Controller
 {
 
     /**
+     * Homepage
+     *
      * @return array
      */
     public function index()
     {
-        return [];
+        return ['title' => 'Trillium'];
     }
 
 }

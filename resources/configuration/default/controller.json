@@ -1,8 +1,6 @@
 {
     "\\Trillium\\Controller\\Home": {
-        "index": {
-            "view": "home"
-        }
+        "index": {"view": "home"}
     },
     "\\Trillium\\Controller\\User": {
         "signIn": "json",

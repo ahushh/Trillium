@@ -76,21 +76,10 @@ class ResponseListener implements EventSubscriberInterface
                 $status = 200;
             }
             $event->setResponse(new JsonResponse($result, $status));
-        } elseif (is_array($type)) {
-            $title  = isset($result['_title']) ? $result['_title'] : 'Trillium';
-            $status = isset($result['_status']) ? $result['_status'] : 200;
-            if (isset($type['view'])) {
-                $result = $this->view->load($type['view'], $result);
-            }
-            if (!isset($type['layout']) || $type['layout'] !== false) {
-                $result = $this->view->load(
-                    'layout',
-                    [
-                        'title'   => $title,
-                        'content' => $result
-                    ]
-                );
-            }
+        } elseif (is_array($type) && isset($type['view'])) {
+            $status  = isset($result['_status']) ? $result['_status'] : 200;
+            $headers = isset($result['_headers']) ? $result['_headers'] : [];
+            $result  = $this->view->load($type['view'], $result, $headers);
             $event->setResponse(new Response($result, $status));
         } else {
             throw new \RuntimeException(
