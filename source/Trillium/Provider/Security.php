@@ -12,8 +12,8 @@ namespace Trillium\Provider;
 use Kilte\AccountManager\Controller\Controller;
 use Kilte\AccountManager\Provider\MySQLiUserProvider;
 use Kilte\SecurityProvider\Provider;
-use Trillium\Subscriber\AuthenticationSuccessHandler;
-use Trillium\Subscriber\UserController;
+use Trillium\Service\Security\AuthenticationSuccessHandler;
+use Trillium\Service\Security\Controller as ControllerListener;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -88,8 +88,8 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
                 $c['security.user_class']
             );
         };
-        $container['userControllerSubscriber']      = function ($c) {
-            return new UserController($c['userController']);
+        $container['security.controller_listener']      = function ($c) {
+            return new ControllerListener($c['userController']);
         };
     }
 
@@ -101,7 +101,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
         return [
             $container['security.provider']['firewall'],
             $container['security.provider']['remember_me.response_listener'],
-            $container['userControllerSubscriber'],
+            $container['security.controller_listener'],
         ];
     }
 

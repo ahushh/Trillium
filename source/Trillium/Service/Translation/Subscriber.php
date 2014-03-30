@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Subscriber;
+namespace Trillium\Service\Translation;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,11 +19,11 @@ use Symfony\Component\Routing\RequestContextAwareInterface;
 use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
 /**
- * Translator Class
+ * Subscriber Class
  *
- * @package Trillium\Subscriber
+ * @package Trillium\Service\Translation
  */
-class Translator extends LocaleListener
+class Subscriber extends LocaleListener
 {
 
     /**

@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Subscriber;
+namespace Trillium\Service\Security;
 
 use Kilte\AccountManager\Controller\ControllerInterface;
 use Kilte\AccountManager\Event\Events;
@@ -16,11 +16,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * UserController Class
+ * Controller Class
  *
- * @package Trillium\Subscriber
+ * @package Trillium\Service\Security
  */
-class UserController implements EventSubscriberInterface
+class Controller implements EventSubscriberInterface
 {
 
     /**

@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Subscriber;
+namespace Trillium\Service\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessH
  *
  * Returns a response with token for a terminal
  *
- * @package Trillium\Subscriber
+ * @package Trillium\Service\Security
  */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
