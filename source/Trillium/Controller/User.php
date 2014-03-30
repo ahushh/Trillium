@@ -9,8 +9,11 @@
 
 namespace Trillium\Controller;
 
+use Kilte\AccountManager\Exception\AccessDeniedException;
 use Kilte\AccountManager\Exception\UserNotFoundException;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -56,6 +59,42 @@ class User extends Controller
         } catch (UserNotFoundException $e) {
             throw new HttpException(404, $e->getMessage());
         }
+    }
+
+    /**
+     * Performs logout
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function signOut(Request $request)
+    {
+        $request->getSession()->invalidate();
+        $this->security->setToken(null);
+        $response = new Response();
+        // Note: You must update it, if security configuration file was updated
+        $response->headers->setCookie(new Cookie('keep_auth', null, 1));
+
+        return $response;
+    }
+
+    /**
+     * Checks whether user is logged in
+     * Returns isAuthorized flag and an username
+     *
+     * @return array
+     */
+    public function isAuthorized()
+    {
+        try {
+            $user = $this->userController->getUser();
+            $return = ['isAuthorized' => true, 'username' => $user->getUsername()];
+        } catch (AccessDeniedException $e) {
+            $return = ['isAuthorized' => false, 'username' => null];
+        }
+
+        return $return;
     }
 
 }

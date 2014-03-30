@@ -6,9 +6,6 @@
                 "login_path": "/user/sign/in",
                 "check_path": "/user/sign/in/check"
             },
-            "logout": {
-                "logout_path": "/user/sign/out"
-            },
             "users": "security.mysqli_user_provider",
             "anonymous": true,
             "remember_me": {

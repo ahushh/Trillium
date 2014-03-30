@@ -22,7 +22,8 @@
     "user.sign.out": {
         "path": "/user/sign/out",
         "defaults": {
-            "_controller": null
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "signOut"
         }
     },
     "user.edit.password": {
@@ -31,6 +32,13 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "editPassword",
             "username": ""
+        }
+    },
+    "user.is_authorized": {
+        "path": "/user/is_authorized",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "isAuthorized"
         }
     }
 }
