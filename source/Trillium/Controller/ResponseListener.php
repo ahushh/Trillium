@@ -7,7 +7,7 @@
  * @package Trillium
  */
 
-namespace Trillium\Subscriber;
+namespace Trillium\Controller;
 
 use Kilte\View\Environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,11 +17,11 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * ControllerResponse Class
+ * ResponseListener Class
  *
- * @package Trillium\Subscriber
+ * @package Trillium\Controller
  */
-class ControllerResponse implements EventSubscriberInterface
+class ResponseListener implements EventSubscriberInterface
 {
 
     /**

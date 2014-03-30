@@ -9,18 +9,16 @@
 
 namespace Trillium\Provider;
 
-use Symfony\Component\HttpKernel\EventListener\ResponseListener;
-use Trillium\Subscriber\ControllerResponse;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
 
 /**
- * Subscriber Class
+ * ResponseListener Class
  *
  * @package Trillium\Provider
  */
-class Subscriber implements ServiceProviderInterface, SubscriberProviderInterface
+class ResponseListener implements ServiceProviderInterface, SubscriberProviderInterface
 {
 
     /**
@@ -28,18 +26,18 @@ class Subscriber implements ServiceProviderInterface, SubscriberProviderInterfac
      */
     public function registerServices(Container $container)
     {
-        $container['controller.response.subscriber'] = function ($container) {
+        $container['controller.response_listener'] = function ($c) {
             /** @var $conf \Vermillion\Configuration\Configuration */
-            $conf   = $container['configuration'];
+            $conf   = $c['configuration'];
             $config = $conf->load('controller')->get();
 
-            return new ControllerResponse($config, $container['view']);
+            return new \Trillium\Controller\ResponseListener($config, $c['view']);
         };
-        $container['response.subscriber']            = function ($container) {
+        $container['http_kernel.response_listener'] = function ($c) {
             /** @var $conf \Vermillion\Configuration\Configuration */
-            $conf = $container['configuration'];
+            $conf = $c['configuration'];
 
-            return new ResponseListener($conf->get('charset'));
+            return new \Symfony\Component\HttpKernel\EventListener\ResponseListener($conf->get('charset'));
         };
     }
 
@@ -49,8 +47,8 @@ class Subscriber implements ServiceProviderInterface, SubscriberProviderInterfac
     public function getSubscribers(Container $container)
     {
         return [
-            $container['controller.response.subscriber'],
-            $container['response.subscriber']
+            $container['controller.response_listener'],
+            $container['http_kernel.response_listener']
         ];
     }
 
