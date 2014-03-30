@@ -68,13 +68,32 @@ class User extends Controller
     public function isAuthorized()
     {
         try {
-            $user = $this->userController->getUser();
+            $user   = $this->userController->getUser();
             $return = ['isAuthorized' => true, 'username' => $user->getUsername()];
         } catch (AccessDeniedException $e) {
             $return = ['isAuthorized' => false, 'username' => null];
         }
 
         return $return;
+    }
+
+    /**
+     * Returns list of users
+     *
+     * @return array
+     */
+    public function listing()
+    {
+        $list = [];
+        foreach ($this->userController->listing() as $user) {
+            $list[] = [
+                'username'      => $user->getUsername(),
+                'roles'         => implode(', ', $user->getRoles()), // TODO: human-friendly
+                'last_activity' => date('d.m.y / H:i:s', $user->getLastActivity()), // TODO: time-shift
+            ];
+        }
+
+        return $list;
     }
 
 }

@@ -40,5 +40,12 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "isAuthorized"
         }
+    },
+    "user.listing": {
+        "path": "/user/listing",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "listing"
+        }
     }
 }
