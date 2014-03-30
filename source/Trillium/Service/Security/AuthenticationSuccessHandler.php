@@ -9,6 +9,7 @@
 
 namespace Trillium\Service\Security;
 
+use Kilte\AccountManager\User\AdvancedUserInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -29,7 +30,19 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        return new JsonResponse(['success' => 'You are logged in']);
+        $user = $token->getUser();
+        $lastActivity = '';
+        if ($user instanceof AdvancedUserInterface) {
+            $lastActivity = "\nLast activity: ";
+            if ($user->getLastActivity() > 0) {
+                // TODO: time-shift
+                $lastActivity .= date('d.m.Y / H:i:s', $user->getLastActivity());
+            } else {
+                $lastActivity .= 'never';
+            }
+        }
+
+        return new JsonResponse(['success' => 'You are logged in' . $lastActivity]);
     }
 
 }
