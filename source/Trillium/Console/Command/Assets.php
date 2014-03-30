@@ -258,10 +258,18 @@ class Assets extends Command
         $i = 0;
         foreach ($this->types as $type) {
             $output->writeln(sprintf($this->messages['assets_type'], $type));
-            $collection = [];
-            $sorted     = [];
-            $iterator   = $this->getIterator('*.' . $type, $this->directories['source']);
-            $total      = iterator_count($iterator);
+            $conf = $this->conf[$type];
+            if (!isset($conf['filters'])) {
+                $conf['filters'] = [];
+            }
+            if (!isset($conf['priority'])) {
+                $conf['priority'] = [];
+            }
+            $defaultFilters = isset($conf['filters']['*']) ? $conf['filters']['*'] : [];
+            $collection     = [];
+            $sorted         = [];
+            $iterator       = $this->getIterator('*.' . $type, $this->directories['source']);
+            $total          = iterator_count($iterator);
             if ($total === 0) {
                 $output->writeln($this->messages['not_found']);
                 continue;
@@ -273,9 +281,8 @@ class Assets extends Command
                 $realPath           = $file->getRealPath();
                 $hash               = md5_file($realPath);
                 $key                = str_replace($this->directories['source'], '', $realPath);
-                $options            = isset($this->conf[$key]) ? $this->conf[$key] : [];
-                $priority           = isset($options['priority']) ? (int)$options['priority'] : null;
-                $options['filters'] = isset($options['filters']) ? $options['filters'] : [];
+                $priority           = isset($conf['priority'][$key]) ? (int) $conf['priority'][$key] : null;
+                $filtersAliases     = isset($conf['filters'][$key]) ? $conf['filters'][$key] : $defaultFilters;
                 $filters            = [];
                 $cached             = false;
                 $cacheExpired       = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
@@ -284,12 +291,12 @@ class Assets extends Command
                     $cached = true;
                 } else {
                     $path = $realPath;
-                    if (is_array($options['filters'])) {
-                        foreach ($options['filters'] as $filter) {
+                    if (is_array($filtersAliases)) {
+                        foreach ($filtersAliases as $filter) {
                             $filters[] = $this->getFilterByAlias($filter);
                         }
-                    } elseif (!empty($options['filters'])) {
-                        $filters[] = $this->getFilterByAlias($options['filters']);
+                    } elseif (!empty($filtersAliases)) {
+                        $filters[] = $this->getFilterByAlias($filtersAliases);
                     }
                 }
                 if ($verbosity) {

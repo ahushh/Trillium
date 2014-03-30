@@ -5,41 +5,25 @@
             "java-path": "/usr/bin/java"
         }
     },
-    "vendor/jquery-terminal/jquery.terminal.css": {
-        "priority": 0,
-        "filters": ["yui-css-compressor"]
+    "css": {
+        "filters": {
+            "*": ["yui-css-compressor"]
+        },
+        "priority": {
+            "vendor/jquery-terminal/jquery.terminal.css": 0,
+            "application/style.css": 1
+        }
     },
-    "application/style.css": {
-        "priority": 1,
-        "filters": ["yui-css-compressor"]
-    },
-    "vendor/jquery/jquery-1.11.0.js": {
-        "priority": 0,
-        "filters": ["yui-js-compressor"]
-    },
-    "vendor/jquery-mousewheel/jquery.mousewheel.js": {
-        "priority": 1,
-        "filters": ["yui-js-compressor"]
-    },
-    "vendor/jquery-terminal/jquery.terminal-0.8.7.js": {
-        "priority": 2,
-        "filters": ["yui-js-compressor"]
-    },
-    "application/trillium.js": {
-        "priority": 3,
-        "filters": ["yui-js-compressor"]
-    },
-    "application/url-generator.js": {
-        "priority": 4,
-        "filters": ["yui-js-compressor"]
-    },
-    "application/commands/panel.js": {
-        "filters": ["yui-js-compressor"]
-    },
-    "application/commands/panel/logout.js": {
-        "filters": ["yui-js-compressor"]
-    },
-    "application/commands/panel/password.js": {
-        "filters": ["yui-js-compressor"]
+    "js": {
+        "filters": {
+            "*": ["yui-js-compressor"]
+        },
+        "priority": {
+            "vendor/jquery/jquery-1.11.0.js": 0,
+            "vendor/jquery-mousewheel/jquery.mousewheel.js": 1,
+            "vendor/jquery-terminal/jquery.terminal-0.8.7.js": 2,
+            "application/trillium.js": 3,
+            "application/url-generator.js": 4
+        }
     }
 }
