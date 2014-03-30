@@ -29,7 +29,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        return new JsonResponse(['token' => $request->cookies->get('keep_auth')]);
+        return new JsonResponse(['success' => 'You are logged in']);
     }
 
 }
