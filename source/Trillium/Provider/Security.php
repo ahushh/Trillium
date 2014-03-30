@@ -90,7 +90,11 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             );
         };
         $container['security.controller_listener']      = function ($c) {
-            return new ControllerListener($c['userController']);
+            /** @var $configuration \Vermillion\Configuration\Configuration */
+            $configuration = $c['configuration'];
+            $config        = $configuration->load('security')->get();
+
+            return new ControllerListener($c['userController'], $c['dispatcher'], $config);
         };
         $container['security.activity_listener'] = function ($c) {
             /** @var $configuration \Vermillion\Configuration\Configuration */

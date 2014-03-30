@@ -28,5 +28,10 @@
     "hide_user_not_found": false,
     "activity_listener": {
         "delay": 300
+    },
+    "roles": {
+        "ROLE_ROOT": "Root",
+        "ROLE_ADMIN": "Admin",
+        "ROLE_USER": "User"
     }
 }
