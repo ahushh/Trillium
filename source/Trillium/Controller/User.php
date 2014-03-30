@@ -85,10 +85,17 @@ class User extends Controller
     public function listing()
     {
         $list = [];
+        $availableRoles = $this->configuration->load('security')->get('roles');
         foreach ($this->userController->listing() as $user) {
+            $roles = array_map(
+                function ($role) use ($availableRoles) {
+                    return isset($availableRoles[$role]) ? $availableRoles[$role] : $role;
+                },
+                $user->getRoles()
+            );
             $list[] = [
                 'username'      => $user->getUsername(),
-                'roles'         => implode(', ', $user->getRoles()), // TODO: human-friendly
+                'roles'         => implode(', ', $roles),
                 'last_activity' => date('d.m.y / H:i:s', $user->getLastActivity()), // TODO: time-shift
             ];
         }

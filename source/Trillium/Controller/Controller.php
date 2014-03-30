@@ -15,6 +15,7 @@ namespace Trillium\Controller;
  * @property-read \Symfony\Component\HttpFoundation\Session\SessionInterface $session
  * @property-read \Kilte\AccountManager\Controller\ControllerInterface       $userController
  * @property-read \Symfony\Component\Security\Core\SecurityContextInterface  $security
+ * @property-read \Vermillion\Configuration\Configuration                    $configuration
  *
  * @package Trillium\Controller
  */
