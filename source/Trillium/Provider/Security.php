@@ -100,7 +100,8 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
     {
         return [
             $container['security.provider']['firewall'],
-            $container['userControllerSubscriber']
+            $container['security.provider']['remember_me.response_listener'],
+            $container['userControllerSubscriber'],
         ];
     }
 
