@@ -40,8 +40,9 @@ var Trillium = {
 $(document).ready(function() {
     $('body').terminal(
         function(command, term) {
-            if (Trillium.terminal.commands.main.hasOwnProperty(command)) {
-                Trillium.terminal.commands.main[command](term)
+            command = $.terminal.parseCommand(command);
+            if (Trillium.terminal.commands.main.hasOwnProperty(command.name)) {
+                Trillium.terminal.commands.main[command.name](term, command.args);
             } else {
                 term.echo(Trillium.terminal.name + ': ' + command + ': command not found');
             }
