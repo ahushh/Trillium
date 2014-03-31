@@ -119,4 +119,21 @@ class User extends Controller
         return $result === true ? ['success' => 'User created'] : $result;
     }
 
+    /**
+     * Removes a user by username
+     *
+     * @param string $username Username
+     *
+     * @return array
+     */
+    public function remove($username)
+    {
+        try {
+            $this->userController->remove($username);
+            return ['message' => 'User removed'];
+        } catch (\LogicException $e) {
+            return ['message' => $e->getMessage()];
+        }
+    }
+
 }

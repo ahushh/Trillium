@@ -54,5 +54,12 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "create"
         }
+    },
+    "user.remove": {
+        "path": "/user/remove/{username}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "remove"
+        }
     }
 }

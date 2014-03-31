@@ -7,6 +7,7 @@
         "editPassword": "json",
         "isAuthorized": "json",
         "listing": "json",
-        "create": "json"
+        "create": "json",
+        "remove": "json"
     }
 }

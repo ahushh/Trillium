@@ -13,6 +13,7 @@ use Kilte\AccountManager\Controller\ControllerInterface;
 use Kilte\AccountManager\Event\CreateUserBefore;
 use Kilte\AccountManager\Event\CreateUserSuccess;
 use Kilte\AccountManager\Event\Events;
+use Kilte\AccountManager\Event\RemoveUser;
 use Kilte\AccountManager\Event\UpdatePassword;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -135,6 +136,23 @@ class Controller implements EventSubscriberInterface
     }
 
     /**
+     * On remove user
+     *
+     * @param RemoveUser $event An event instance
+     *
+     * @throws \LogicException
+     * @return void
+     */
+    public function onRemoveUser(RemoveUser $event)
+    {
+        $user        = $event->getUser();
+        $currentUser = $this->controller->getUser();
+        if ($user->getUsername() === $currentUser->getUsername()) {
+            throw new \LogicException('Unable to remove yourself');
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
@@ -142,6 +160,7 @@ class Controller implements EventSubscriberInterface
         return [
             Events::UPDATE_PASSWORD    => 'onUpdatePassword',
             Events::CREATE_USER_BEFORE => 'onCreateUserBefore',
+            Events::REMOVE_USER        => 'onRemoveUser',
         ];
     }
 
