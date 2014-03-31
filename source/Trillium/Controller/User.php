@@ -56,6 +56,8 @@ class User extends Controller
             return !is_array($result) ? [] : $result;
         } catch (UserNotFoundException $e) {
             throw new HttpException(404, $e->getMessage());
+        } catch (AccessDeniedException $e) {
+            throw new HttpException(403, $e->getMessage());
         }
     }
 
