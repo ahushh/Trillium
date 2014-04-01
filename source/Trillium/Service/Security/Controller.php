@@ -15,6 +15,7 @@ use Kilte\AccountManager\Event\CreateUserSuccess;
 use Kilte\AccountManager\Event\Events;
 use Kilte\AccountManager\Event\RemoveUser;
 use Kilte\AccountManager\Event\UpdatePassword;
+use Kilte\AccountManager\Event\UpdateRoles;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -153,6 +154,39 @@ class Controller implements EventSubscriberInterface
     }
 
     /**
+     * On update roles
+     *
+     * @param UpdateRoles $event An event instance
+     *
+     * @return void
+     */
+    public function onUpdateRoles(UpdateRoles $event)
+    {
+        $request = $event->getRequest();
+        $user = $event->getUser();
+        if (in_array('ROLE_ROOT', $user->getRoles())) {
+            throw new HttpException(403, 'User is root');
+        }
+        if ($request->getMethod() === 'POST') {
+            $roles = $request->get('roles', []);
+            if (empty($roles)) {
+                $error = 'Roles cannot to be empty';
+            } else {
+                $notSupported = array_diff($roles, array_keys($this->config['roles']));
+                if (!empty($notSupported)) {
+                    $error = sprintf(
+                        'The following roles are not supported: %s',
+                        implode(', ', $notSupported)
+                    );
+                }
+            }
+            if (isset($error)) {
+                $event->setErrors(['error' => $error]);
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
@@ -161,6 +195,7 @@ class Controller implements EventSubscriberInterface
             Events::UPDATE_PASSWORD    => 'onUpdatePassword',
             Events::CREATE_USER_BEFORE => 'onCreateUserBefore',
             Events::REMOVE_USER        => 'onRemoveUser',
+            Events::UPDATE_ROLES       => 'onUpdateRoles',
         ];
     }
 

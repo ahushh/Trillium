@@ -61,5 +61,12 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "remove"
         }
+    },
+    "user.edit.roles": {
+        "path": "/user/edit/roles/{username}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\User",
+            "_action": "editRoles"
+        }
     }
 }

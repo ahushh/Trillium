@@ -21,6 +21,7 @@
     },
     "access_rules": {
         "^/user/edit/password/.*$": {"roles": ["ROLE_ROOT"]},
+        "^/user/edit/roles/.*$": {"roles": ["ROLE_ROOT"]},
         "^/user/create": {"roles": ["ROLE_ROOT"]},
         "^/user/remove/.*$": {"roles": ["ROLE_ROOT"]}
     },

@@ -8,6 +8,7 @@
         "isAuthorized": "json",
         "listing": "json",
         "create": "json",
-        "remove": "json"
+        "remove": "json",
+        "editRoles": "json"
     }
 }

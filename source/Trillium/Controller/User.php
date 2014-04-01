@@ -136,4 +136,25 @@ class User extends Controller
         }
     }
 
+    /**
+     * Update roles
+     *
+     * @param Request $request  A request
+     * @param string  $username An username
+     *
+     * @throws HttpException
+     * @return array
+     */
+    public function editRoles(Request $request, $username)
+    {
+        try {
+            $result = $this->userController->updateRoles($request, $username);
+
+            return $result === true ? ['success' => 'Roles updated'] : $result;
+        } catch (UserNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
+        }
+
+    }
+
 }
