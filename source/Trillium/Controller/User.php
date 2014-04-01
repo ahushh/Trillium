@@ -52,13 +52,14 @@ class User extends Controller
     {
         try {
             $result = $this->userController->updatePassword($request, $username);
-
-            return !is_array($result) ? [] : $result;
+            $result = !is_array($result) ? ['success' => 'Password updated'] : ['error' => $result];
         } catch (UserNotFoundException $e) {
-            throw new HttpException(404, $e->getMessage());
+            $result = ['error' => $e->getMessage(), '_status' => 404];
         } catch (AccessDeniedException $e) {
-            throw new HttpException(403, $e->getMessage());
+            $result = ['error' => $e->getMessage(), '_status' => 403];
         }
+
+        return $result;
     }
 
     /**

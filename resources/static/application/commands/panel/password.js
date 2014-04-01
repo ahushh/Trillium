@@ -1,11 +1,11 @@
-Trillium.terminal.commands.panel.password = function (term) {
+Trillium.terminal.commands.panel.password = function (term, args) {
     var passwords = {};
-    term.set_mask(true)
-    .push(
+    var username = args.length > 0 && args[0] ? args[0] : null;
+    term.push(
         function (string) {
             passwords['confirm'] = string;
             $.ajax(
-                Trillium.urlGenerator.generate('user.edit.password'),
+                Trillium.urlGenerator.generate('user.edit.password', username !== null ? {'username': username} : {}),
                 {
                     async: false,
                     data: {
@@ -18,21 +18,28 @@ Trillium.terminal.commands.panel.password = function (term) {
                 }
             ).done(
                 function (data) {
-                    var key, size = 0;
-                    for (key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            size++;
-                            term.error(data[key]);
+                    if (data.hasOwnProperty('success')) {
+                        term.echo(data.success);
+                    } else if (data.hasOwnProperty('error')) {
+                        if (data.error instanceof Array) {
+                            for (var e in data.error) {
+                                if (data.error.hasOwnProperty(e)) {
+                                    term.error(data.error[e]);
+                                }
+                            }
+                        } else {
+                            term.error(data.error);
                         }
-                    }
-                    if (size == 0) {
-                        term.echo('Password updated');
                     }
                 }
             ).fail(
                 function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR, textStatus, errorThrown);
-                    term.error('Unknown error');
+                    if (jqXHR.hasOwnProperty('responseJSON') && jqXHR.responseJSON.hasOwnProperty('error')) {
+                        term.error(jqXHR.responseJSON.error);
+                    } else {
+                        console.log(jqXHR, textStatus, errorThrown);
+                        term.error('Unknown error');
+                    }
                 }
             ).always(
                 function () {
@@ -43,6 +50,7 @@ Trillium.terminal.commands.panel.password = function (term) {
         },
         {prompt: 'Confirm password: '}
     )
+    .set_mask(true)
     .push(
         function (string) {
             passwords['new'] = string;
@@ -50,11 +58,13 @@ Trillium.terminal.commands.panel.password = function (term) {
         },
         {prompt: 'New password: '}
     )
+    .set_mask(true)
     .push(
         function (string) {
             passwords['old'] = string;
             term.pop();
         },
         {prompt: 'Old password: '}
-    );
+    )
+    .set_mask(true);
 };
