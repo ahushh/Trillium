@@ -31,6 +31,22 @@ var Trillium = {
                     term.error('Unknown error');
                 }
             }
+        },
+        commandHandler: function (command, term, namespace) {
+            var container = Trillium.terminal.commands;
+            if (namespace) {
+                if (container.hasOwnProperty(namespace)) {
+                    container = container[namespace];
+                } else {
+                    term.error('Undefined namespace "' + namespace + '"');
+                }
+            }
+            command = $.terminal.parseCommand(command);
+            if (container.hasOwnProperty(command.name)) {
+                container[command.name](term, command.args);
+            } else {
+                term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
+            }
         }
     },
     urlGenerator: {
@@ -67,12 +83,7 @@ var Trillium = {
 $(document).ready(function() {
     $('body').terminal(
         function(command, term) {
-            command = $.terminal.parseCommand(command);
-            if (Trillium.terminal.commands.main.hasOwnProperty(command.name)) {
-                Trillium.terminal.commands.main[command.name](term, command.args);
-            } else {
-                term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
-            }
+            Trillium.terminal.commandHandler(command, term, 'main');
         },
         {
             greetings: null,

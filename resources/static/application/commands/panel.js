@@ -4,12 +4,7 @@ Trillium.terminal.commands.main.panel = function (term) {
     var controlPanel = function () {
         term.push(
             function (command, term) {
-                command = $.terminal.parseCommand(command);
-                if (Trillium.terminal.commands.panel[command.name]) {
-                    Trillium.terminal.commands.panel[command.name](term, command.args)
-                } else {
-                    term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
-                }
+                Trillium.terminal.commandHandler(command, term, 'panel');
             },
             {
                 name: 'panel',
