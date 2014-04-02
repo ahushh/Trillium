@@ -35,49 +35,49 @@ class View implements ServiceProviderInterface
             return (new Macros())->register(
                 [
                     'url'       => function ($name, $params = []) use ($container) {
-                            static $generator = null;
-                            if ($generator === null) {
-                                /** @var $router Router */
-                                $router    = $container['router'];
-                                $generator = $router->getGenerator();
-                            }
+                        static $generator = null;
+                        if ($generator === null) {
+                            /** @var $router Router */
+                            $router    = $container['router'];
+                            $generator = $router->getGenerator();
+                        }
 
-                            return $generator->generate($name, $params, UrlGeneratorInterface::ABSOLUTE_URL);
-                        },
+                        return $generator->generate($name, $params, UrlGeneratorInterface::ABSOLUTE_URL);
+                    },
                     'static'    => function ($path) use ($container) {
-                            static $baseUrl = null;
-                            if ($baseUrl === null) {
-                                /** @var $router Router */
-                                $router  = $container['router'];
-                                $context = $router->getContext();
-                                $baseUrl = $context->getScheme() . '://'
-                                    . $context->getHost() . '/'
-                                    . $context->getBaseUrl();
-                            }
+                        static $baseUrl = null;
+                        if ($baseUrl === null) {
+                            /** @var $router Router */
+                            $router  = $container['router'];
+                            $context = $router->getContext();
+                            $baseUrl = $context->getScheme() . '://'
+                                . $context->getHost() . '/'
+                                . $context->getBaseUrl();
+                        }
 
-                            return $baseUrl . 'static/' . ltrim($path, '/');
-                        },
+                        return $baseUrl . 'static/' . ltrim($path, '/');
+                    },
                     '_'         => function ($id, array $params = [], $domain = null, $locale = null) use ($container) {
-                            static $translator = null;
-                            if ($translator === null) {
-                                /** @var $translator \Symfony\Component\Translation\TranslatorInterface */
-                                $translator = $container['translator'];
-                            }
+                        static $translator = null;
+                        if ($translator === null) {
+                            /** @var $translator \Symfony\Component\Translation\TranslatorInterface */
+                            $translator = $container['translator'];
+                        }
 
-                            return $translator->trans($id, $params, $domain, $locale);
-                        },
+                        return $translator->trans($id, $params, $domain, $locale);
+                    },
                     'isGranted' => function ($attributes, $object = null) use ($container) {
-                            static $security = null;
-                            if ($security === null) {
-                                /** @var $security \Symfony\Component\Security\Core\SecurityContextInterface */
-                                $security = $container['security'];
-                            }
-                            try {
-                                return $security->isGranted($attributes, $object);
-                            } catch (AuthenticationCredentialsNotFoundException $e) {
-                                return false;
-                            }
-                        },
+                        static $security = null;
+                        if ($security === null) {
+                            /** @var $security \Symfony\Component\Security\Core\SecurityContextInterface */
+                            $security = $container['security'];
+                        }
+                        try {
+                            return $security->isGranted($attributes, $object);
+                        } catch (AuthenticationCredentialsNotFoundException $e) {
+                            return false;
+                        }
+                    },
                 ]
             );
         };

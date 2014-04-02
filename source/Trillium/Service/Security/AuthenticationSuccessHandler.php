@@ -30,7 +30,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        $user = $token->getUser();
+        $user         = $token->getUser();
         $lastActivity = '';
         if ($user instanceof AdvancedUserInterface) {
             $lastActivity = "\nLast activity: ";

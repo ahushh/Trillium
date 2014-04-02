@@ -277,15 +277,15 @@ class Assets extends Command
             $output->writeln(sprintf($this->messages['found'], $total));
             $a = 1;
             foreach ($iterator as $file) {
-                $baseName           = $file->getBasename();
-                $realPath           = $file->getRealPath();
-                $hash               = md5_file($realPath);
-                $key                = str_replace($this->directories['source'], '', $realPath);
-                $priority           = isset($conf['priority'][$key]) ? (int) $conf['priority'][$key] : null;
-                $filtersAliases     = isset($conf['filters'][$key]) ? $conf['filters'][$key] : $defaultFilters;
-                $filters            = [];
-                $cached             = false;
-                $cacheExpired       = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
+                $baseName       = $file->getBasename();
+                $realPath       = $file->getRealPath();
+                $hash           = md5_file($realPath);
+                $key            = str_replace($this->directories['source'], '', $realPath);
+                $priority       = isset($conf['priority'][$key]) ? (int) $conf['priority'][$key] : null;
+                $filtersAliases = isset($conf['filters'][$key]) ? $conf['filters'][$key] : $defaultFilters;
+                $filters        = [];
+                $cached         = false;
+                $cacheExpired   = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
                 if (is_file($this->directories['cache'] . $baseName) && $cacheEnabled && !$cacheExpired) {
                     $path   = $this->directories['cache'] . $baseName;
                     $cached = true;

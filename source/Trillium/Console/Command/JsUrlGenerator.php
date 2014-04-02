@@ -121,7 +121,7 @@ class JsUrlGenerator extends Command
             );
         }
         $filesystem = new Filesystem();
-        $content = sprintf(
+        $content    = sprintf(
             'Trillium.urlGenerator.routes = %s;%sTrillium.urlGenerator.basePath = \'%s\';',
             json_encode($result),
             "\n",

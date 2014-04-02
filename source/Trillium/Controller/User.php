@@ -64,10 +64,10 @@ class User extends Controller
      */
     public function listing()
     {
-        $list = [];
+        $list           = [];
         $availableRoles = $this->configuration->load('security')->get('roles');
         foreach ($this->userController->listing() as $user) {
-            $roles = array_map(
+            $roles  = array_map(
                 function ($role) use ($availableRoles) {
                     return isset($availableRoles[$role]) ? $availableRoles[$role] : $role;
                 },
@@ -155,7 +155,7 @@ class User extends Controller
     {
         try {
             $result = $this->userController->updateRoles($request, $username);
-            $result =  $result === true ? ['success' => 'Roles updated'] : ['error' => $result, '_status' => 400];
+            $result = $result === true ? ['success' => 'Roles updated'] : ['error' => $result, '_status' => 400];
         } catch (UserNotFoundException $e) {
             $result = ['error' => $e->getMessage(), '_status' => 404];
         } catch (HttpException $e) {

@@ -157,7 +157,7 @@ class Controller implements EventSubscriberInterface
     public function onUpdateRoles(UpdateRoles $event)
     {
         $request = $event->getRequest();
-        $user = $event->getUser();
+        $user    = $event->getUser();
         if (in_array('ROLE_ROOT', $user->getRoles())) {
             throw new HttpException(403, 'User is root');
         }

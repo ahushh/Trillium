@@ -26,7 +26,7 @@ class ResponseListener implements ServiceProviderInterface, SubscriberProviderIn
      */
     public function registerServices(Container $container)
     {
-        $container['controller.response_listener'] = function ($c) {
+        $container['controller.response_listener']  = function ($c) {
             /** @var $conf \Vermillion\Configuration\Configuration */
             $conf   = $c['configuration'];
             $config = $conf->load('controller')->get();
