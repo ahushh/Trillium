@@ -18,16 +18,14 @@ Trillium.terminal.commands.panel.roles = function (term, args) {
             function (data) {
                 if (data.hasOwnProperty('success')) {
                     term.echo(data.success);
-                } else if (data.hasOwnProperty('error')) {
-                    term.error(data.error);
                 } else {
                     console.log(data);
                     term.error('Unknown response given');
                 }
             }
         ).fail(
-            function () {
-                // TODO
+            function (jqXHR, textStatus, errorThrown) {
+                Trillium.terminal.responseHandler.fail(term, jqXHR, textStatus, errorThrown);
             }
         );
     }

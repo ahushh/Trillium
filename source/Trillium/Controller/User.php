@@ -154,12 +154,14 @@ class User extends Controller
     {
         try {
             $result = $this->userController->updateRoles($request, $username);
-
-            return $result === true ? ['success' => 'Roles updated'] : $result;
+            $result =  $result === true ? ['success' => 'Roles updated'] : ['error' => $result, '_status' => 400];
         } catch (UserNotFoundException $e) {
-            throw new HttpException(404, $e->getMessage());
+            $result = ['error' => $e->getMessage(), '_status' => 404];
+        } catch (HttpException $e) {
+            $result = ['error' => $e->getMessage(), '_status' => $e->getStatusCode()];
         }
 
+        return $result;
     }
 
 }
