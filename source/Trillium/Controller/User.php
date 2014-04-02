@@ -111,7 +111,7 @@ class User extends Controller
             $result = ['success' => 'User removed'];
         } catch (UserNotFoundException $e) {
             $result = ['error' => $e->getMessage(), '_status' => 404];
-        } catch (\LogicException $e) {
+        } catch (HttpException $e) {
             // Unable to remove yourself
             $result = ['error' => $e->getMessage(), '_status' => 403];
         }

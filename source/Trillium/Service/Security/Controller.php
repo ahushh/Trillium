@@ -141,7 +141,7 @@ class Controller implements EventSubscriberInterface
      *
      * @param RemoveUser $event An event instance
      *
-     * @throws \LogicException
+     * @throws HttpException
      * @return void
      */
     public function onRemoveUser(RemoveUser $event)
@@ -149,7 +149,7 @@ class Controller implements EventSubscriberInterface
         $user        = $event->getUser();
         $currentUser = $this->controller->getUser();
         if ($user->getUsername() === $currentUser->getUsername()) {
-            throw new \LogicException('Unable to remove yourself');
+            throw new HttpException(403, 'Unable to remove yourself');
         }
     }
 
