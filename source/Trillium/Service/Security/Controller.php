@@ -158,6 +158,7 @@ class Controller implements EventSubscriberInterface
      *
      * @param UpdateRoles $event An event instance
      *
+     * @throws HttpException
      * @return void
      */
     public function onUpdateRoles(UpdateRoles $event)

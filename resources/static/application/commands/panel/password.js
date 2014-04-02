@@ -20,26 +20,14 @@ Trillium.terminal.commands.panel.password = function (term, args) {
                 function (data) {
                     if (data.hasOwnProperty('success')) {
                         term.echo(data.success);
-                    } else if (data.hasOwnProperty('error')) {
-                        if (data.error instanceof Array) {
-                            for (var e in data.error) {
-                                if (data.error.hasOwnProperty(e)) {
-                                    term.error(data.error[e]);
-                                }
-                            }
-                        } else {
-                            term.error(data.error);
-                        }
+                    } else {
+                        console.log(data);
+                        term.error('Unknown response type');
                     }
                 }
             ).fail(
                 function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.hasOwnProperty('responseJSON') && jqXHR.responseJSON.hasOwnProperty('error')) {
-                        term.error(jqXHR.responseJSON.error);
-                    } else {
-                        console.log(jqXHR, textStatus, errorThrown);
-                        term.error('Unknown error');
-                    }
+                    Trillium.terminal.responseHandler.fail(term, jqXHR, textStatus, errorThrown);
                 }
             ).always(
                 function () {
