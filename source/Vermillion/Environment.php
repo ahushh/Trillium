@@ -63,6 +63,7 @@ class Environment
     public function __construct()
     {
         error_reporting(-1);
+        date_default_timezone_set('UTC');
         foreach ($this->directories as $key => $directory) {
             $path = realpath(__DIR__ . '/../../' . $directory);
             if ($path === false) {
