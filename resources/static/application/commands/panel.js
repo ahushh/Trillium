@@ -69,3 +69,4 @@ Trillium.terminal.commands.main.panel = function (term) {
             .set_mask(false);
     }
 };
+Trillium.terminal.help.main.panel = 'Login into the control panel.';

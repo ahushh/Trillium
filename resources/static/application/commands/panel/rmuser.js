@@ -25,3 +25,4 @@ Trillium.terminal.commands.panel.rmuser = function (term, args) {
         )
     }
 };
+Trillium.terminal.help.panel.rmuser = 'Remove an user.\nUsage: rmuser <username>';
