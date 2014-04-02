@@ -40,29 +40,6 @@ class User extends Controller
     }
 
     /**
-     * Updates password for an user
-     *
-     * @param Request $request  A request instance
-     * @param string  $username Username
-     *
-     * @throws HttpException
-     * @return array
-     */
-    public function editPassword(Request $request, $username)
-    {
-        try {
-            $result = $this->userController->updatePassword($request, $username);
-            $result = !is_array($result) ? ['success' => 'Password updated'] : ['error' => $result, '_status' => 400];
-        } catch (UserNotFoundException $e) {
-            $result = ['error' => $e->getMessage(), '_status' => 404];
-        } catch (AccessDeniedException $e) {
-            $result = ['error' => $e->getMessage(), '_status' => 403];
-        }
-
-        return $result;
-    }
-
-    /**
      * Checks whether user is logged in
      * Returns isAuthorized flag and an username
      *
@@ -131,14 +108,38 @@ class User extends Controller
     {
         try {
             $this->userController->remove($username);
-
-            return ['success' => 'User removed'];
+            $result = ['success' => 'User removed'];
         } catch (UserNotFoundException $e) {
-            return ['error' => $e->getMessage(), '_status' => 404];
+            $result = ['error' => $e->getMessage(), '_status' => 404];
         } catch (\LogicException $e) {
             // Unable to remove yourself
-            return ['error' => $e->getMessage(), '_status' => 403];
+            $result = ['error' => $e->getMessage(), '_status' => 403];
         }
+
+        return $result;
+    }
+
+    /**
+     * Updates password for an user
+     *
+     * @param Request $request  A request instance
+     * @param string  $username Username
+     *
+     * @throws HttpException
+     * @return array
+     */
+    public function editPassword(Request $request, $username)
+    {
+        try {
+            $result = $this->userController->updatePassword($request, $username);
+            $result = !is_array($result) ? ['success' => 'Password updated'] : ['error' => $result, '_status' => 400];
+        } catch (UserNotFoundException $e) {
+            $result = ['error' => $e->getMessage(), '_status' => 404];
+        } catch (AccessDeniedException $e) {
+            $result = ['error' => $e->getMessage(), '_status' => 403];
+        }
+
+        return $result;
     }
 
     /**
