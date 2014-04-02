@@ -8,7 +8,7 @@ Trillium.terminal.commands.main.panel = function (term) {
                 if (Trillium.terminal.commands.panel[command.name]) {
                     Trillium.terminal.commands.panel[command.name](term, command.args)
                 } else {
-                    term.echo(Trillium.terminal.name + ': ' + command + ': command not found');
+                    term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
                 }
             },
             {

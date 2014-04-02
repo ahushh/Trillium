@@ -71,7 +71,7 @@ $(document).ready(function() {
             if (Trillium.terminal.commands.main.hasOwnProperty(command.name)) {
                 Trillium.terminal.commands.main[command.name](term, command.args);
             } else {
-                term.echo(Trillium.terminal.name + ': ' + command + ': command not found');
+                term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
             }
         },
         {
