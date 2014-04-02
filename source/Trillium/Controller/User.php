@@ -117,7 +117,7 @@ class User extends Controller
     {
         $result = $this->userController->create($request);
 
-        return $result === true ? ['success' => 'User created'] : $result;
+        return $result === true ? ['success' => 'User created'] : ['error' => $result, '_status' => 400];
     }
 
     /**

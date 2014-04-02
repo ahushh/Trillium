@@ -12,17 +12,13 @@ Trillium.terminal.commands.panel.adduser = function (term) {
                         if (data.hasOwnProperty('success')) {
                             term.echo(data.success);
                         } else {
-                            for (var error in data) {
-                                if (data.hasOwnProperty(error)) {
-                                    term.error(data[error]);
-                                }
-                            }
+                            console.log(data);
+                            term.error('Unknown response type');
                         }
                     }
                 ).fail(
                     function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR, textStatus, errorThrown);
-                        term.error('Unknown error');
+                        Trillium.terminal.responseHandler.fail(term, jqXHR, textStatus, errorThrown)
                     }
                 );
             }

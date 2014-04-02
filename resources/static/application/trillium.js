@@ -4,6 +4,30 @@ var Trillium = {
         commands: {
             main: {},
             panel: {}
+        },
+        responseHandler: {
+            commonErrorMessageHandler: function (term, error) {
+                if (error instanceof Array || error instanceof Object) {
+                    for (var e in error) {
+                        if (error.hasOwnProperty(e)) {
+                            term.error(error[e]);
+                        }
+                    }
+                } else {
+                    term.error(error);
+                }
+            },
+            success: function () {
+                // TODO
+            },
+            fail: function (term, hr, textStatus, errorThrown) {
+                if (hr.hasOwnProperty('responseJSON') && hr.responseJSON.hasOwnProperty('error')) {
+                    Trillium.terminal.responseHandler.commonErrorMessageHandler(term, hr.responseJSON.error);
+                } else {
+                    console.log(hr, textStatus, errorThrown);
+                    term.error('Unknown error');
+                }
+            }
         }
     },
     urlGenerator: {
