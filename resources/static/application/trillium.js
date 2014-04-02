@@ -5,6 +5,10 @@ var Trillium = {
             main: {},
             panel: {}
         },
+        help: {
+            main: {},
+            panel: {}
+        },
         responseHandler: {
             success: function (term, data) {
                 if (data.hasOwnProperty('success')) {
@@ -43,9 +47,19 @@ var Trillium = {
             }
             command = $.terminal.parseCommand(command);
             if (container.hasOwnProperty(command.name)) {
-                container[command.name](term, command.args);
+                if (command.args.length > 0 && (command.args[0] == '--help' || command.args[0] == '-h')) {
+                    // Show help message, if exists
+                    if (Trillium.terminal.help[namespace][command.name]) {
+                        term.echo(Trillium.terminal.help[namespace][command.name]);
+                    } else {
+                        term.error('Help message for this command is not exists');
+                    }
+                } else {
+                    // Run command
+                    container[command.name](term, command.args);
+                }
             } else {
-                term.echo(Trillium.terminal.name + ': ' + command.name + ': command not found');
+                term.error(Trillium.terminal.name + ': ' + command.name + ': command not found');
             }
         }
     },
