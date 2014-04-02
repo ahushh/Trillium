@@ -27,8 +27,8 @@
         "^/user/listing": {"roles": ["ROLE_USER"]}
     },
     "role_hierarchy": {
-        "ROLE_ROOT": ["ROLE_USER", "ROLE_ADMIN"],
-        "ROLE_ADMIN": ["ROLE_USER"]
+        "ROLE_ADMIN": ["ROLE_USER"],
+        "ROLE_ROOT": ["ROLE_ADMIN"]
     },
     "hide_user_not_found": false,
     "activity_listener": {

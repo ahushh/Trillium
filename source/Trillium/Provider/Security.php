@@ -56,6 +56,7 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
                     'https_port'                    => $config->get('https_port'),
                     'firewalls'                     => $config->get('firewalls'),
                     'access_rules'                  => $config->get('access_rules'),
+                    'role_hierarchy'                => $config->get('role_hierarchy'),
                     'hide_user_not_found'           => $config->get('hide_user_not_found'),
                     'security.mysqli_user_provider' => $c['security.mysqli_user_provider'],
                 ]
