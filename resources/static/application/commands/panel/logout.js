@@ -3,3 +3,4 @@ Trillium.terminal.commands.panel.logout = function (term) {
     $.ajax(Trillium.urlGenerator.generate('user.sign.out'), {async: false});
 };
 Trillium.terminal.help.panel.logout = 'Logout and exit from panel.';
+Trillium.terminal.description.panel.logout = 'Logout and exit from panel.';

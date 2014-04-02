@@ -21,3 +21,4 @@ Trillium.terminal.commands.panel.roles = function (term, args) {
     }
 };
 Trillium.terminal.help.panel.roles = 'Update roles for an user.\nUsage: roles <username> <role>...';
+Trillium.terminal.description.panel.roles = 'Update roles for an user';

@@ -70,3 +70,4 @@ Trillium.terminal.commands.main.panel = function (term) {
     }
 };
 Trillium.terminal.help.main.panel = 'Login into the control panel.';
+Trillium.terminal.description.main.panel = 'Control panel';

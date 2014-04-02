@@ -1,13 +1,33 @@
 var Trillium = {
     terminal: {
         name: 'trillium',
+        // Commands
         commands: {
             main: {},
             panel: {}
         },
+        // Help messages for each command
         help: {
             main: {},
             panel: {}
+        },
+        // Summary for each command
+        description: {
+            main: {},
+            panel: {}
+        },
+        baseHelpCommand: function (namespace, term) {
+            var container = Trillium.terminal.description[namespace];
+            if (container.length == 0) {
+                term.error('Help is not available');
+            } else {
+                term.echo('Available commands: ');
+                for (var command in container) {
+                    if (container.hasOwnProperty(command)) {
+                        term.echo(command + ' - ' + container[command]);
+                    }
+                }
+            }
         },
         responseHandler: {
             success: function (term, data) {

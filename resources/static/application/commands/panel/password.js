@@ -55,3 +55,4 @@ Trillium.terminal.commands.panel.password = function (term, args) {
 Trillium.terminal.help.panel.password = 'Update password.\n' +
 'Usage: password [username]\n' +
 'If no username given, update for current user.';
+Trillium.terminal.description.panel.password = 'Update password';

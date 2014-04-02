@@ -23,3 +23,4 @@ Trillium.terminal.commands.panel.users = function (term) {
     );
 };
 Trillium.terminal.help.panel.users = 'Displays information about users.';
+Trillium.terminal.description.panel.users = 'List of the users';

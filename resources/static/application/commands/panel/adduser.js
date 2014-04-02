@@ -39,4 +39,5 @@ Trillium.terminal.commands.panel.adduser = function (term) {
         {prompt: 'Username: '}
     );
 };
-Trillium.terminal.help.panel.adduser = 'Adds a user interactively';
+Trillium.terminal.help.panel.adduser = 'Adds an user interactively';
+Trillium.terminal.description.panel.adduser = 'Create a new user';
