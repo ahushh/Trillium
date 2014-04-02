@@ -131,9 +131,13 @@ class User extends Controller
     {
         try {
             $this->userController->remove($username);
-            return ['message' => 'User removed'];
+
+            return ['success' => 'User removed'];
+        } catch (UserNotFoundException $e) {
+            return ['error' => $e->getMessage(), '_status' => 404];
         } catch (\LogicException $e) {
-            return ['message' => $e->getMessage()];
+            // Unable to remove yourself
+            return ['error' => $e->getMessage(), '_status' => 403];
         }
     }
 
