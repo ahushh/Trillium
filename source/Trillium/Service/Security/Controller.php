@@ -113,16 +113,9 @@ class Controller implements EventSubscriberInterface
             if ($passLen < 6 || $passLen > 40) {
                 $errors['password'] = sprintf('Wrong password len [%s-%s expected]', 6, 40);
             }
-            if (empty($roles)) {
-                $errors['roles'] = 'Roles can not be empty';
-            } else {
-                $notSupported = array_diff($roles, array_keys($this->config['roles']));
-                if (!empty($notSupported)) {
-                    $errors['roles'] = sprintf(
-                        'The following roles are not supported: %s',
-                        implode(', ', $notSupported)
-                    );
-                }
+            $errors['roles'] = $this->checkRoles($roles);
+            if ($errors['roles'] === true) {
+                unset($errors['roles']);
             }
             $event->setErrors($errors);
             if (empty($errors)) {
@@ -169,19 +162,8 @@ class Controller implements EventSubscriberInterface
             throw new HttpException(403, 'User is root');
         }
         if ($request->getMethod() === 'POST') {
-            $roles = $request->get('roles', []);
-            if (empty($roles)) {
-                $error = 'Roles cannot to be empty';
-            } else {
-                $notSupported = array_diff($roles, array_keys($this->config['roles']));
-                if (!empty($notSupported)) {
-                    $error = sprintf(
-                        'The following roles are not supported: %s',
-                        implode(', ', $notSupported)
-                    );
-                }
-            }
-            if (isset($error)) {
+            $error = $this->checkRoles($request->get('roles', []));
+            if ($error !== true) {
                 $event->setErrors(['error' => $error]);
             }
         }
@@ -198,6 +180,36 @@ class Controller implements EventSubscriberInterface
             Events::REMOVE_USER        => 'onRemoveUser',
             Events::UPDATE_ROLES       => 'onUpdateRoles',
         ];
+    }
+
+    /**
+     * Performs check roles
+     * Returns true, if roles are valid
+     * Otherwise returns error message
+     *
+     * @param mixed $roles Roles
+     *
+     * @return boolean|string
+     */
+    private function checkRoles($roles)
+    {
+        if (!is_array($roles)) {
+            $roles = [$roles];
+        }
+        if (empty($roles)) {
+            $error = 'Roles cannot to be empty';
+        } else {
+            unset($this->config['roles']['ROLE_ROOT']);
+            $notSupported = array_diff($roles, array_keys($this->config['roles']));
+            if (!empty($notSupported)) {
+                $error = sprintf(
+                    'The following roles are not supported: %s',
+                    implode(', ', $notSupported)
+                );
+            }
+        }
+
+        return isset($error) ? $error : true;
     }
 
 }
