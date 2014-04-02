@@ -11,12 +11,7 @@ Trillium.terminal.commands.panel.rmuser = function (term, args) {
                         {dataType: 'json'}
                     ).done(
                         function (data) {
-                            if (data.hasOwnProperty('success')) {
-                                term.echo(data.success);
-                            } else {
-                                console.log(data);
-                                term.error('Unknown response type');
-                            }
+                            Trillium.terminal.responseHandler.success(term, data);
                         }
                     ).fail(
                         function (jqXHR, textStatus, errorThrown) {

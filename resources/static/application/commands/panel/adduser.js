@@ -3,18 +3,12 @@ Trillium.terminal.commands.panel.adduser = function (term) {
     term.push(
         function (confirm) {
             if (confirm == 'y') {
-                term.echo('Sending request...');
                 $.ajax(
                     Trillium.urlGenerator.generate('user.create'),
                     {async: false, data: userData, dataType: 'json', type: 'POST'}
                 ).done(
                     function (data) {
-                        if (data.hasOwnProperty('success')) {
-                            term.echo(data.success);
-                        } else {
-                            console.log(data);
-                            term.error('Unknown response type');
-                        }
+                        Trillium.terminal.responseHandler.success(term, data);
                     }
                 ).fail(
                     function (jqXHR, textStatus, errorThrown) {

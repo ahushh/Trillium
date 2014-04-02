@@ -18,12 +18,7 @@ Trillium.terminal.commands.panel.password = function (term, args) {
                 }
             ).done(
                 function (data) {
-                    if (data.hasOwnProperty('success')) {
-                        term.echo(data.success);
-                    } else {
-                        console.log(data);
-                        term.error('Unknown response type');
-                    }
+                    Trillium.terminal.responseHandler.success(term, data);
                 }
             ).fail(
                 function (jqXHR, textStatus, errorThrown) {
@@ -37,22 +32,23 @@ Trillium.terminal.commands.panel.password = function (term, args) {
             );
         },
         {prompt: 'Confirm password: '}
-    )
-    .set_mask(true)
-    .push(
+    ).set_mask(
+        true
+    ).push(
         function (string) {
             passwords['new'] = string;
             term.pop();
         },
         {prompt: 'New password: '}
-    )
-    .set_mask(true)
-    .push(
+    ).set_mask(
+        true
+    ).push(
         function (string) {
             passwords['old'] = string;
             term.pop();
         },
         {prompt: 'Old password: '}
-    )
-    .set_mask(true);
+    ).set_mask(
+        true
+    );
 };

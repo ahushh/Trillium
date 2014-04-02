@@ -1,6 +1,8 @@
 Trillium.terminal.commands.panel.users = function (term) {
-    $.ajax(Trillium.urlGenerator.generate('user.listing'), {async: false, dataType: 'json'})
-    .done(
+    $.ajax(
+        Trillium.urlGenerator.generate('user.listing'),
+        {async: false, dataType: 'json'}
+    ).done(
         function (data) {
             var listing = '';
             for (var user in data) {
@@ -13,8 +15,7 @@ Trillium.terminal.commands.panel.users = function (term) {
             }
             term.echo(listing);
         }
-    )
-    .fail(
+    ).fail(
         function (jqXHR, textStatus, errorThrown) {
             term.error('Unknown error');
             console.log(jqXHR, textStatus, errorThrown);
