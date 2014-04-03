@@ -279,6 +279,7 @@ class Assets extends Command
             foreach ($iterator as $file) {
                 $baseName       = $file->getBasename();
                 $realPath       = $file->getRealPath();
+                $cachedName     = strtr($file->getRelativePath(), ['\\' => '_', '/' => '_']) . $baseName;
                 $hash           = md5_file($realPath);
                 $key            = str_replace($this->directories['source'], '', $realPath);
                 $priority       = isset($conf['priority'][$key]) ? (int) $conf['priority'][$key] : null;
@@ -286,8 +287,8 @@ class Assets extends Command
                 $filters        = [];
                 $cached         = false;
                 $cacheExpired   = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
-                if (is_file($this->directories['cache'] . $baseName) && $cacheEnabled && !$cacheExpired) {
-                    $path   = $this->directories['cache'] . $baseName;
+                if (is_file($this->directories['cache'] . $cachedName) && $cacheEnabled && !$cacheExpired) {
+                    $path   = $this->directories['cache'] . $cachedName;
                     $cached = true;
                 } else {
                     $path = $realPath;
@@ -313,7 +314,7 @@ class Assets extends Command
                 $asset = new FileAsset($path, $filters);
                 if (!$cached) {
                     // Write asset to cache
-                    $filesystem->dumpFile($this->directories['cache'] . $baseName, $asset->dump());
+                    $filesystem->dumpFile($this->directories['cache'] . $cachedName, $asset->dump());
                 }
                 if ($priority !== null) {
                     if (isset($sorted[$priority])) {
