@@ -1,4 +1,21 @@
 var Trillium = {
+    settings: {
+        system: {},
+        user: {},
+        load: function () {
+            var option_key, value;
+            for (option_key in Trillium.settings.system) {
+                if (Trillium.settings.system.hasOwnProperty(option_key)) {
+                    value = $.cookie(option_key);
+                    if (value) {
+                        Trillium.settings.user[option_key] = value;
+                    } else {
+                        Trillium.settings.user[option_key] = Trillium.settings.system[option_key];
+                    }
+                }
+            }
+        }
+    },
     terminal: {
         name: 'trillium',
         // Commands
@@ -115,6 +132,7 @@ var Trillium = {
     }
 };
 $(document).ready(function() {
+    Trillium.settings.load();
     $('body').terminal(
         function(command, term) {
             Trillium.terminal.commandHandler(command, term, 'main');
