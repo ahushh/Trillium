@@ -9,9 +9,11 @@
 
 namespace Trillium\Console;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Trillium\Console\Command\Assets;
 use Trillium\Console\Command\CsFix;
 use Trillium\Console\Command\Environment;
+use Trillium\Console\Command\JsSystemSettings;
 use Trillium\Console\Command\JsUrlGenerator;
 use Vermillion\Container;
 
@@ -39,6 +41,11 @@ class Application extends \Symfony\Component\Console\Application
     private $configuration;
 
     /**
+     * @var \Trillium\Service\Settings\Storage
+     */
+    private $settings;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(Container $container)
@@ -46,6 +53,7 @@ class Application extends \Symfony\Component\Console\Application
         $this->env           = $container['environment'];
         $this->router        = $container['router'];
         $this->configuration = $container['configuration'];
+        $this->settings      = $container['settings'];
         parent::__construct('Trillium', \Vermillion\Application::VERSION);
     }
 
@@ -72,6 +80,11 @@ class Application extends \Symfony\Component\Console\Application
                     $this->env->getDirectory('static.source'),
                     $this->router->getRouteCollection()->all()
                 ),
+                new JsSystemSettings(
+                    $this->env->getDirectory('static.source'),
+                    $this->settings,
+                    new Filesystem()
+                )
             ]
         );
     }
