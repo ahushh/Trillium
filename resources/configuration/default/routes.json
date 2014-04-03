@@ -68,5 +68,15 @@
             "_controller": "\\Trillium\\Controller\\User",
             "_action": "editRoles"
         }
+    },
+    "settings.validate": {
+        "path": "/settings/validate",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Settings",
+            "_action": "validate"
+        },
+        "requirements": {
+            "_method": "POST"
+        }
     }
 }

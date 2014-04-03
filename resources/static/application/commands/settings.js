@@ -9,14 +9,30 @@ Trillium.terminal.commands.main.settings = function (term, args) {
     } else if (args[0] == 'set') {
         // Update settings
         if (args.length > 2) {
-            if (Trillium.settings.user.hasOwnProperty(args[1])) {
-                // TODO: validation
-                $.cookie(args[1], args[2], {expires: 365});
-                // Reload settings
-                Trillium.settings.load();
-            } else {
-                term.error('Option "' + args[1] + '" is not available');
+            args = args.slice(1);
+            var settings = {};
+            for (var k = 0, v = 1; v <= args.length; k += 2, v += 2) {
+                settings[args[k]] = args[v];
             }
+            $.ajax(
+                Trillium.urlGenerator.generate('settings.validate'),
+                {async: false, data: {'settings': settings}, dataType: 'json', type: 'POST'}
+            ).done(
+                function (data) {
+                    Trillium.terminal.responseHandler.success(term, data);
+                    for (var key in settings) {
+                        if (settings.hasOwnProperty(key)) {
+                            $.cookie(key, settings[key], {expires: 365});
+                        }
+                    }
+                    // Reload settings
+                    Trillium.settings.load();
+                }
+            ).fail(
+                function (jqXHR, textStatus, errorThrown) {
+                    Trillium.terminal.responseHandler.fail(term, jqXHR, textStatus, errorThrown);
+                }
+            );
         } else {
             term.error('No key or value given');
         }
@@ -25,8 +41,8 @@ Trillium.terminal.commands.main.settings = function (term, args) {
     }
 };
 Trillium.terminal.help.main.settings = 'User settings.\n' +
-'Usage: settings [command] [key] [value]\n' +
+'Usage: settings [command] [[key] [value]]...\n' +
 'Available commands:\n' +
 'set - Sets a new value for given key\n' +
-'Example: settings set locale ru';
+'Example: settings set locale ru timeshift 4';
 Trillium.terminal.description.main.settings = 'User settings';

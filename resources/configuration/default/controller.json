@@ -10,5 +10,8 @@
         "create": "json",
         "remove": "json",
         "editRoles": "json"
+    },
+    "\\Trillium\\Controller\\Settings": {
+        "validate": "json"
     }
 }
