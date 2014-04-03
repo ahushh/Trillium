@@ -57,15 +57,6 @@ class View implements ServiceProviderInterface
 
                         return $baseUrl . 'static/' . ltrim($path, '/');
                     },
-                    '_'         => function ($id, array $params = [], $domain = null, $locale = null) use ($container) {
-                        static $translator = null;
-                        if ($translator === null) {
-                            /** @var $translator \Symfony\Component\Translation\TranslatorInterface */
-                            $translator = $container['translator'];
-                        }
-
-                        return $translator->trans($id, $params, $domain, $locale);
-                    },
                     'isGranted' => function ($attributes, $object = null) use ($container) {
                         static $security = null;
                         if ($security === null) {

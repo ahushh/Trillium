@@ -1,7 +1,5 @@
 {
     "http_port": 80,
     "https_port": 443,
-    "locale": "en",
-    "locale_fallback": "en",
     "charset": "UTF-8"
 }
