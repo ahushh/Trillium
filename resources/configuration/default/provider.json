@@ -6,5 +6,6 @@
     "\\Trillium\\Provider\\Translator",
     "\\Trillium\\Provider\\View",
     "\\Trillium\\Provider\\ResponseListener",
-    "\\Trillium\\Provider\\Security"
+    "\\Trillium\\Provider\\Security",
+    "\\Trillium\\Provider\\Settings"
 ]
