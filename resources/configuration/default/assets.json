@@ -22,8 +22,10 @@
             "vendor/jquery/jquery-1.11.0.js": 0,
             "vendor/jquery-mousewheel/jquery.mousewheel.js": 1,
             "vendor/jquery-terminal/jquery.terminal-0.8.7.js": 2,
-            "application/trillium.js": 3,
-            "application/url-generator.js": 4
+            "vendor/jquery-cookie/jquery.cookie.js": 3,
+            "application/trillium.js": 4,
+            "application/url-generator.js": 5,
+            "application/settings.js": 6
         }
     }
 }
