@@ -24,7 +24,7 @@ class Home extends Controller
      */
     public function index()
     {
-        return ['title' => 'Trillium'];
+        return ['title' => 'Trillium', 'skin' => $this->settings->get('skin')];
     }
 
 }
