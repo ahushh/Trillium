@@ -23,8 +23,11 @@
             "vendor/jquery-terminal/jquery.terminal-0.8.7.js",
             "vendor/jquery-cookie/jquery.cookie.js",
             "application/js/trillium.js",
-            "application/js/url-generator.js",
             "application/js/settings.js",
+            "application/js/url-generator.js",
+            "application/js/generated/settings.js",
+            "application/js/generated/url-generator.js",
+            "application/js/terminal.js",
             "application/js/commands/"
         ]
     }

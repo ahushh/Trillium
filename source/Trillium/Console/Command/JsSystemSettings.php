@@ -74,7 +74,7 @@ class JsSystemSettings extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->directory . 'application/js/settings.js'
+                $this->directory . 'application/js/generated/settings.js'
             );
     }
 
