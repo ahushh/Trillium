@@ -1,6 +1,6 @@
 /vendor
 /composer.lock
-/public/static/scripts.js
-/public/static/styles.css
-/resources/static/application/url-generator.js
-/resources/static/application/settings.js
+/public/static/*
+!/public/static/images/
+/resources/static/application/js/url-generator.js
+/resources/static/application/js/settings.js
