@@ -31,7 +31,7 @@ class Settings implements ServiceProviderInterface, SubscriberProviderInterface
         $container['settings']                  = function ($c) {
             /** @var $configuration \Vermillion\Configuration\Configuration */
             $configuration = $c['configuration'];
-            $settings      = $configuration->load('settings')->get();
+            $settings      = $configuration->get('settings');
 
             return new SettingsService($configuration->get('available_skins'), $settings);
         };

@@ -5,5 +5,9 @@
     "available_skins": [
         "black",
         "white"
-    ]
+    ],
+    "settings": {
+        "timeshift": 0,
+        "skin":      "black"
+    }
 }

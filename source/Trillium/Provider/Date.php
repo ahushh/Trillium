@@ -33,7 +33,7 @@ class Date implements ServiceProviderInterface
             /** @var $config \Vermillion\Configuration\Configuration */
             $config = $c['configuration'];
 
-            return new \Trillium\Service\Date\Date($config->load('settings')->get('timeshift'));
+            return new \Trillium\Service\Date\Date($config->get('settings')['timeshift']);
         };
     }
 
