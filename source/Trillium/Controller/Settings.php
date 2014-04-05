@@ -30,7 +30,7 @@ class Settings extends Controller
     {
         $errors = $this->settings->validate($request->get('settings', []));
 
-        return !empty($errors) ? ['error' => $errors, '_status' => 400] : ['success' => 'Settings updated'];
+        return !empty($errors) ? ['error' => $errors, '_status' => 400] : [];
     }
 
 }

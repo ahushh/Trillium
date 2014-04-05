@@ -14,6 +14,12 @@ var Trillium = {
                     }
                 }
             }
+        },
+        validate: function (settings, done, fail) {
+            $.ajax(
+                Trillium.urlGenerator.generate('settings.validate'),
+                {async: false, data: {'settings': settings}, dataType: 'json', type: 'POST'}
+            ).done(done).fail(fail);
         }
     },
     terminal: {
@@ -136,6 +142,11 @@ var Trillium = {
 };
 $(document).ready(function() {
     Trillium.settings.load();
+    Trillium.settings.validate(
+        Trillium.settings.user,
+        function () {},
+        function () {Trillium.settings.user = Trillium.settings.system;}
+    );
     $('body').terminal(
         function(command, term) {
             Trillium.terminal.commandHandler(command, term, 'main');

@@ -14,12 +14,9 @@ Trillium.terminal.commands.main.settings = function (term, args) {
             for (var k = 0, v = 1; v <= args.length; k += 2, v += 2) {
                 settings[args[k]] = args[v];
             }
-            $.ajax(
-                Trillium.urlGenerator.generate('settings.validate'),
-                {async: false, data: {'settings': settings}, dataType: 'json', type: 'POST'}
-            ).done(
-                function (data) {
-                    Trillium.terminal.responseHandler.success(term, data);
+            Trillium.settings.validate(
+                settings,
+                function () {
                     for (var key in settings) {
                         if (settings.hasOwnProperty(key)) {
                             $.cookie(key, settings[key], {expires: 365});
@@ -31,8 +28,8 @@ Trillium.terminal.commands.main.settings = function (term, args) {
                     var css_skin = Trillium.urlGenerator.raw('static/' + Trillium.settings.user['skin'] + '.css');
                     css_skin = $('<link id="css_skin" rel="stylesheet" type="text/css" href="' + css_skin + '" />');
                     $('#css_skin').replaceWith(css_skin);
-                }
-            ).fail(
+                    term.echo('Settings updated');
+                },
                 function (jqXHR, textStatus, errorThrown) {
                     Trillium.terminal.responseHandler.fail(term, jqXHR, textStatus, errorThrown);
                 }
