@@ -33,7 +33,7 @@ class Settings implements ServiceProviderInterface, SubscriberProviderInterface
             $configuration = $c['configuration'];
             $settings      = $configuration->load('settings')->get();
 
-            return new SettingsService($settings);
+            return new SettingsService($configuration->get('available_skins'), $settings);
         };
         $container['settings.request_listener'] = function ($c) {
             return new RequestListener($c['settings']);

@@ -1,5 +1,9 @@
 {
     "http_port": 80,
     "https_port": 443,
-    "charset": "UTF-8"
+    "charset": "UTF-8",
+    "available_skins": [
+        "black",
+        "white"
+    ]
 }

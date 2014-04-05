@@ -33,4 +33,14 @@ class Settings extends Controller
         return !empty($errors) ? ['error' => $errors, '_status' => 400] : [];
     }
 
+    /**
+     * Returns list of available skins
+     *
+     * @return array
+     */
+    public function skins()
+    {
+        return $this->configuration->get('available_skins');
+    }
+
 }

@@ -43,15 +43,22 @@ class Settings
     private $userSettings;
 
     /**
+     * @var array Available skins
+     */
+    private $availableSkins;
+
+    /**
      * Constructor
      *
+     * @param array $availableSkins Available skins
      * @param array $systemSettings System settings
      * @param array $userSettings   User settings
      *
      * @return self
      */
-    public function __construct(array $systemSettings = [], array $userSettings = [])
+    public function __construct(array $availableSkins, array $systemSettings = [], array $userSettings = [])
     {
+        $this->availableSkins = $availableSkins;
         $this->systemSettings = $systemSettings;
         $this->userSettings   = $userSettings;
     }
@@ -139,8 +146,7 @@ class Settings
                     }
                     break;
                 case 'skin':
-                    // TODO: Available skins
-                    if (!in_array($val, ['black', 'white'])) {
+                    if (!in_array($val, $this->availableSkins)) {
                         $errors[] = sprintf('"%s" skin is not exists', $val);
                     }
                     break;

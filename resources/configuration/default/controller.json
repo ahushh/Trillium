@@ -12,6 +12,7 @@
         "editRoles": "json"
     },
     "\\Trillium\\Controller\\Settings": {
-        "validate": "json"
+        "validate": "json",
+        "skins": "json"
     }
 }
