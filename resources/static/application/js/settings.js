@@ -1,19 +1,22 @@
 Trillium.settings = {
+    // System settings
     system: {},
+    // User settings
     user: {},
+    // Returns settings from cookies
     load: function () {
-        var option_key, value;
-        for (option_key in Trillium.settings.system) {
-            if (Trillium.settings.system.hasOwnProperty(option_key)) {
-                value = $.cookie(option_key);
-                if (value) {
-                    Trillium.settings.user[option_key] = value;
-                } else {
-                    Trillium.settings.user[option_key] = Trillium.settings.system[option_key];
-                }
+        var key, value, settings = {};
+        for (key in Trillium.settings.system) {
+            value = $.cookie(key);
+            if (value) {
+                settings[key] = value;
+            } else {
+                settings[key] = Trillium.settings.system[key];
             }
         }
+        return settings;
     },
+    // Validates settings
     validate: function (settings, done, fail) {
         $.ajax(
             Trillium.urlGenerator.generate('settings.validate'),

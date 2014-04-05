@@ -1,13 +1,19 @@
 var Trillium = {};
-$(document).ready(function() {
-    Trillium.settings.load();
+$(document).ready(function () {
+    // Load and validate settings
+    var settings = Trillium.settings.load();
     Trillium.settings.validate(
-        Trillium.settings.user,
-        function () {},
-        function () {Trillium.settings.user = Trillium.settings.system;}
+        settings,
+        function () {
+            Trillium.settings.user = settings
+        },
+        function () {
+            Trillium.settings.user = Trillium.settings.system;
+        }
     );
+    // Create the terminal
     $('body').terminal(
-        function(command, term) {
+        function (command, term) {
             Trillium.terminal.commandHandler(command, term, 'main');
         },
         {

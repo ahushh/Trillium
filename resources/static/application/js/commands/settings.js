@@ -1,11 +1,11 @@
 Trillium.terminal.commands.main.settings = function (term, args) {
     if (args.length == 0) {
         // Show settings
+        var output = 'System settings: ';
         for (var key in Trillium.settings.user) {
-            if (Trillium.settings.user.hasOwnProperty(key)) {
-                term.echo(key + ': ' + Trillium.settings.user[key]);
-            }
+            output += "\n" + key + ': ' + Trillium.settings.user[key];
         }
+        term.echo(output);
     } else if (args[0] == 'set') {
         // Update settings
         if (args.length > 2) {
@@ -18,12 +18,9 @@ Trillium.terminal.commands.main.settings = function (term, args) {
                 settings,
                 function () {
                     for (var key in settings) {
-                        if (settings.hasOwnProperty(key)) {
-                            $.cookie(key, settings[key], {expires: 365});
-                        }
+                        $.cookie(key, settings[key], {expires: 365});
+                        Trillium.settings.user[key] = settings[key];
                     }
-                    // Reload settings
-                    Trillium.settings.load();
                     // Reload skin
                     var css_skin = Trillium.urlGenerator.raw('static/' + Trillium.settings.user['skin'] + '.css');
                     css_skin = $('<link id="css_skin" rel="stylesheet" type="text/css" href="' + css_skin + '" />');
@@ -42,8 +39,8 @@ Trillium.terminal.commands.main.settings = function (term, args) {
     }
 };
 Trillium.terminal.help.main.settings = 'User settings.\n' +
-'Usage: settings [command] [[key] [value]]...\n' +
-'Available commands:\n' +
-'set - Sets a new value for given key\n' +
-'Example: settings set locale ru timeshift 4';
+    'Usage: settings [command] [[key] [value]]...\n' +
+    'Available commands:\n' +
+    'set - Sets a new value for given key\n' +
+    'Example: settings set locale ru timeshift 4';
 Trillium.terminal.description.main.settings = 'User settings';
