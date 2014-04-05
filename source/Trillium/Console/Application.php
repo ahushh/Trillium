@@ -41,7 +41,7 @@ class Application extends \Symfony\Component\Console\Application
     private $configuration;
 
     /**
-     * @var \Trillium\Service\Settings\Storage
+     * @var \Trillium\Service\Settings\Settings
      */
     private $settings;
 

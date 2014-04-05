@@ -23,7 +23,7 @@ class RequestListener implements EventSubscriberInterface
 {
 
     /**
-     * @var Storage Settings
+     * @var Settings Settings
      */
     private $settings;
 
@@ -35,14 +35,14 @@ class RequestListener implements EventSubscriberInterface
     /**
      * Constructor
      *
-     * @param Storage $settings Settings
+     * @param Settings $settings Settings
      *
      * @return self
      */
-    public function __construct(Storage $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings     = $settings;
-        $this->settingsKeys = array_keys($settings->get(null, Storage::SYSTEM));
+        $this->settingsKeys = array_keys($settings->get(null, Settings::SYSTEM));
     }
 
     /**
@@ -65,7 +65,7 @@ class RequestListener implements EventSubscriberInterface
                 $userSettings[$key] = $option;
             }
         }
-        $this->settings->set($userSettings, null, Storage::USER);
+        $this->settings->set($userSettings, null, Settings::USER);
     }
 
     /**

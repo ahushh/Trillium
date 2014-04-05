@@ -10,11 +10,11 @@
 namespace Trillium\Service\Settings;
 
 /**
- * Storage Class
+ * Settings Class
  *
  * @package Trillium\Service\Settings
  */
-class Storage
+class Settings
 {
 
     /**
@@ -62,7 +62,7 @@ class Storage
      *
      * @param mixed $key   A key
      * @param mixed $value A value
-     * @param int   $type  Settings type (Storage::SYSTEM, Storage::USER, Storage::ALL)
+     * @param int   $type  Settings type (Settings::SYSTEM, Settings::USER, Settings::ALL)
      *
      * @throws \InvalidArgumentException
      * @return $this
@@ -84,14 +84,14 @@ class Storage
     /**
      * Returns a value by key
      *
-     * If type is Storage::ALL and key is not exists in user settings, tries to get it from system settings.
+     * If type is Settings::ALL and key is not exists in user settings, tries to get it from system settings.
      * If key could not be found, throws InvalidArgumentException
      *
      * If key is null, returns all settings:
-     * Only system for Storage::SYSTEM, only user for Storage::USER and all settings for Storage::ALL.
+     * Only system for Settings::SYSTEM, only user for Settings::USER and all settings for Settings::ALL.
      *
      * @param mixed $key  A key
-     * @param int   $type Settings type (Storage::SYSTEM, Storage::USER, Storage::ALL)
+     * @param int   $type Settings type (Settings::SYSTEM, Settings::USER, Settings::ALL)
      *
      * @throws \InvalidArgumentException
      * @return mixed
@@ -112,9 +112,50 @@ class Storage
     }
 
     /**
+     * Performs check
+     * Returns array with occurred errors
+     *
+     * @param array $settings Settings
+     *
+     * @return array
+     */
+    public function validate(array $settings)
+    {
+        $errors = [];
+        $settings = array_unique($settings);
+        if (empty($settings)) {
+            $errors[] = 'Settings can not be empty';
+        }
+        foreach ($settings as $key => $val) {
+            switch ($key) {
+                case 'timeshift':
+                    if (!is_numeric($val)) {
+                        $errors[] = 'Timeshift must be an integer';
+                    } else {
+                        $val = (int) $val;
+                        if ($val < -12 || $val > 12) {
+                            $errors[] = sprintf('Timeshift must be from %s to %s', -12, 12);
+                        }
+                    }
+                    break;
+                case 'skin':
+                    // TODO: Available skins
+                    if (!in_array($val, ['black', 'white'])) {
+                        $errors[] = sprintf('"%s" skin is not exists', $val);
+                    }
+                    break;
+                default:
+                    $errors[] = sprintf('Option "%s" is not supported', $key);
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * Creates a settings storage
      *
-     * @param int $type A type (Storage::SYSTEM, Storage::USER, Storage::ALL)
+     * @param int $type A type (Settings::SYSTEM, Settings::USER, Settings::ALL)
      *
      * @return array
      * @throws \InvalidArgumentException

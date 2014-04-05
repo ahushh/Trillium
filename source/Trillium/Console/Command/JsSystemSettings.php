@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Trillium\Service\Settings\Storage;
+use Trillium\Service\Settings\Settings;
 
 /**
  * JsSystemSettings Class
@@ -30,7 +30,7 @@ class JsSystemSettings extends Command
     private $directory;
 
     /**
-     * @var Storage Settings
+     * @var Settings Settings
      */
     private $settings;
 
@@ -43,13 +43,13 @@ class JsSystemSettings extends Command
      * Constructor
      *
      * @param string     $directory A destination directory for a generated script
-     * @param Storage    $settings  Settings
+     * @param Settings   $settings  Settings
      * @param Filesystem $fs        Filesystem instance
      *
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function __construct($directory, Storage $settings, Filesystem $fs)
+    public function __construct($directory, Settings $settings, Filesystem $fs)
     {
         if (!is_dir($directory)) {
             throw new \InvalidArgumentException(sprintf('Directory %s does not exists', $directory));
@@ -86,7 +86,7 @@ class JsSystemSettings extends Command
         $path = $input->getOption('path');
         $this->fs->dumpFile(
             $path,
-            sprintf('Trillium.settings.system=%s;', json_encode($this->settings->get(null, Storage::SYSTEM)))
+            sprintf('Trillium.settings.system=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
         );
         $output->writeln($this->fs->exists($path) ? '<fg=green>Success</fg=green>' : '<fg=red>Failed</fg=red>');
     }

@@ -16,7 +16,7 @@ namespace Trillium\Controller;
  * @property-read \Kilte\AccountManager\Controller\ControllerInterface       $userController
  * @property-read \Symfony\Component\Security\Core\SecurityContextInterface  $security
  * @property-read \Vermillion\Configuration\Configuration                    $configuration
- * @property-read \Trillium\Service\Settings\Storage                         $settings
+ * @property-read \Trillium\Service\Settings\Settings                        $settings
  *
  * @package Trillium\Controller
  */

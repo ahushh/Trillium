@@ -10,7 +10,7 @@
 namespace Trillium\Provider;
 
 use Trillium\Service\Settings\RequestListener;
-use Trillium\Service\Settings\Storage;
+use Trillium\Service\Settings\Settings as SettingsService;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -33,7 +33,7 @@ class Settings implements ServiceProviderInterface, SubscriberProviderInterface
             $configuration = $c['configuration'];
             $settings      = $configuration->load('settings')->get();
 
-            return new Storage($settings);
+            return new SettingsService($settings);
         };
         $container['settings.request_listener'] = function ($c) {
             return new RequestListener($c['settings']);
