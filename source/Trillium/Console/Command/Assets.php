@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Assets Class
@@ -44,14 +45,6 @@ class Assets extends Command
     ];
 
     /**
-     * @var array File types
-     */
-    private $types = [
-        'js',
-        'css'
-    ];
-
-    /**
      * @var array Loaded filters
      */
     private $filters = [];
@@ -59,58 +52,37 @@ class Assets extends Command
     /**
      * @var array Assets configuration
      */
-    private $conf;
+    private $configAssets;
 
     /**
-     * @var array Filters configuration (from file)
+     * @var array Filters configuration
      */
-    private $filtersConfUser;
+    private $configFilters;
 
     /**
-     * @var array Default filters configuration
+     * @var Filesystem Filesystem instance
      */
-    private $filtersConfDefault = [
-        'global'             => [
-            'yui-path'  => null,
-            'java-path' => '/usr/bin/java',
-        ],
-        'yui-js-compressor'  => [
-            'charset'              => null,
-            'linebreak'            => null,
-            'stack-size'           => null,
-            'nomunge'              => null,
-            'disable-optimization' => null,
-            'preserve-semi'        => null,
-        ],
-        'yui-css-compressor' => [
-            'charset'    => null,
-            'linebreak'  => null,
-            'stack-size' => null,
-        ],
+    private $fs;
+
+    /**
+     * @var array Checksums
+     */
+    private $checksums = [
+        'current' => [],
+        'new'     => [],
     ];
 
-    /**
-     * @var array Output messages
-     */
     private $messages = [
-        'wrong_ignore_value' => '<fg=red>[EE]</fg=red> Wrong ignore value given',
-        'dir_invalid'        => '<fg=red>[EE]</fg=red> %s directory does not exists',
-        'dir_ok'             => '<info>[OK]</info> %s directory: %s',
-        'ignore'             => '<info>Ignore %s</info>',
-        'remove_cache'       => 'Remove cache',
-        'build'              => "\nWill now build...",
-        'assets_type'        => "\nType: %s",
-        'not_found'          => '<fg=red>[WW]</fg=red> No assets found.',
-        'found'              => '%s assets found',
-        'load_from_cache'    => "from cache",
-        'load_from_source'   => "from source",
-        'overwrite_asset'    => "\t<fg=red>[WW]</fg=red> Overwrite \"%s\" by \"%s\"",
-        'found_asset'        => "\tFound: %s \"%s\" with \"%s\" priority [%s]",
-        'dump_assets'        => 'Dump "%s" into "%s"... ',
-        'dump_success'       => '<info>[OK]</info>',
-        'dump_failed'        => '<fg=red>[FAIL]</fg=red>',
-        'success'            => '<info>Success</info>',
-        'failed'             => '<fg=red>Nothing to build</fg=red>',
+        'directory'       => 'Directory [%s]: %s',
+        'remove_cache'    => 'Remove cache',
+        'collection'      => "\nCollection: %s",
+        'fail'            => '<fg=red>[FAIL]</fg=red> %s',
+        'non_exists_file' => 'File "%s" does not exists',
+        'asset'           => "\tAsset: %s",
+        'dump'            => 'Dump collection into %s ... ',
+        'success'         => '<fg=green>[OK]</fg=green>',
+        'failed'          => '<fg=red>[FAIL]</fg=red>',
+        'elapsed_time'    => 'Elapsed time (seconds): %s',
     ];
 
     /**
@@ -126,32 +98,17 @@ class Assets extends Command
      */
     public function __construct($source, $public, $cache, array $conf)
     {
-        $this->directories['source'] = $source;
-        $this->directories['public'] = $public;
-        $this->directories['cache']  = $cache;
-        // Load filters configuration
-        $this->conf = $conf;
-        if (isset($this->conf['filters'])) {
-            $this->filtersConfUser = $this->conf['filters'];
-            foreach ($this->filtersConfDefault as $key => $item) {
-                // Configuration for a filter is missing
-                if (!array_key_exists($key, $this->filtersConfUser)) {
-                    $this->filtersConfUser[$key] = $item;
-                } elseif (is_array($this->filtersConfUser[$key])) {
-                    foreach ($this->filtersConfDefault[$key] as $name => $value) {
-                        // Option for a filter configuration is missing
-                        if (!array_key_exists($name, $this->filtersConfUser[$key])) {
-                            $this->filtersConfUser[$key][$name] = $value;
-                        }
-                    }
-                } else {
-                    throw new \LogicException('Unable to read the configuration file');
-                }
-            }
-            unset($this->conf['filters']);
+        if (isset($conf['filters'])) {
+            $filtersConfig = $conf['filters'];
+            unset($conf['filters']);
         } else {
-            $this->filtersConfUser = $this->filtersConfDefault;
+            $filtersConfig = [];
         }
+        $this->configFilters        = $this->getFiltersConfig($filtersConfig);
+        $this->configAssets         = $this->getAssetsConfig($conf);
+        $this->directories          = $this->checkDirectories($source, $public, $cache);
+        $this->fs                   = new Filesystem();
+        $this->checksums['current'] = $this->loadChecksums();
         parent::__construct('assets');
     }
 
@@ -162,33 +119,7 @@ class Assets extends Command
     {
         $this
             ->setDescription('Build assets via assetic')
-            ->addOption(
-                'ignore',
-                'i',
-                InputOption::VALUE_OPTIONAL,
-                'Ignore files.' . "\n"
-                . '"js" for javascript files' . "\n"
-                . '"css" for css file'
-            )
-            ->addOption(
-                'js',
-                'j',
-                InputOption::VALUE_OPTIONAL,
-                'Javascript result filename',
-                'scripts.js'
-            )
-            ->addOption(
-                'css',
-                'c',
-                InputOption::VALUE_OPTIONAL,
-                'Styles result filename',
-                'styles.css'
-            )->addOption(
-                'disable-cache',
-                'd',
-                InputOption::VALUE_NONE,
-                'Ignore and clear cache'
-            );
+            ->addOption('update-cache', 'u', InputOption::VALUE_NONE, 'Update cache');
     }
 
     /**
@@ -196,169 +127,148 @@ class Assets extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $cacheEnabled = !$input->getOption('disable-cache');
-        $errors       = 0;
-        $filesystem   = new Filesystem();
-        $ignore       = $input->getOption('ignore');
-        $names        = [];
-        $verbosity    = $output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE;
-        foreach ($this->types as $type) {
-            $names[$type] = $input->getOption($type);
-        }
-        if ($ignore !== null && !in_array($ignore, $this->types)) {
-            $errors++;
-            $output->writeln($this->messages['wrong_ignore_value']);
-        }
-        // Check directories
+        $startTime = time();
         foreach ($this->directories as $dirType => $dirPath) {
-            $dirPath = realpath($dirPath);
-            if ($dirPath === false) {
-                $errors++;
-                $output->writeln(sprintf($this->messages['dir_invalid'], ucwords($dirType)));
-            } else {
-                $this->directories[$dirType] = rtrim($dirPath, '\/') . DIRECTORY_SEPARATOR;
-                $output->writeln(sprintf($this->messages['dir_ok'], ucwords($dirType), $this->directories[$dirType]));
-            }
+            $output->writeln(sprintf($this->messages['directory'], $dirType, $dirPath));
         }
-        if ($errors > 0) {
-            return 1;
-        }
-        // Ignore type
-        if ($ignore !== null) {
-            unset($this->types[array_search($ignore, $this->types)]);
-            $output->writeln(sprintf($this->messages['ignore'], $ignore));
-        }
-        // Load checksums
-        $checksums    = [];
-        $checksumsNew = [];
-        if (is_file($this->directories['cache'] . self::CHECKSUMS)) {
-            $checksumsRaw = @file_get_contents($this->directories['cache'] . self::CHECKSUMS);
-            if ($checksumsRaw !== false) {
-                $checksums = json_decode($checksumsRaw, true);
-            }
-            unset($checksumsRaw);
-        }
-        // Remove cache
-        if (!$cacheEnabled) {
+        if ($input->getOption('update-cache')) {
             $output->writeln($this->messages['remove_cache']);
-            $filesystem->remove(
-                array_map(
-                    function ($name) {
-                        return $this->directories['cache'] . $name;
-                    },
-                    array_diff(scandir($this->directories['cache']), ['.', '..', '.gitignore'])
-                )
-            );
+            $this->removeCache();
         }
-        /**
-         * @var $sorted FileAsset[]
-         * @var $file   \Symfony\Component\Finder\SplFileInfo
-         */
-        $output->writeln($this->messages['build']);
-        $i = 0;
-        foreach ($this->types as $type) {
-            $output->writeln(sprintf($this->messages['assets_type'], $type));
-            $conf = $this->conf[$type];
-            if (!isset($conf['filters'])) {
-                $conf['filters'] = [];
-            }
-            if (!isset($conf['priority'])) {
-                $conf['priority'] = [];
-            }
-            $defaultFilters = isset($conf['filters']['*']) ? $conf['filters']['*'] : [];
-            $collection     = [];
-            $sorted         = [];
-            $iterator       = $this->getIterator('*.' . $type, $this->directories['source']);
-            $total          = iterator_count($iterator);
-            if ($total === 0) {
-                $output->writeln($this->messages['not_found']);
-                continue;
-            }
-            $output->writeln(sprintf($this->messages['found'], $total));
-            $a = 1;
-            foreach ($iterator as $file) {
-                $baseName       = $file->getBasename();
-                $realPath       = $file->getRealPath();
-                $cachedName     = strtr($file->getRelativePath(), ['\\' => '_', '/' => '_']) . $baseName;
-                $hash           = md5_file($realPath);
-                $key            = str_replace($this->directories['source'], '', $realPath);
-                $priority       = isset($conf['priority'][$key]) ? (int) $conf['priority'][$key] : null;
-                $filtersAliases = isset($conf['filters'][$key]) ? $conf['filters'][$key] : $defaultFilters;
-                $filters        = [];
-                $cached         = false;
-                $cacheExpired   = !array_key_exists($realPath, $checksums) || $checksums[$realPath] != $hash;
-                if (is_file($this->directories['cache'] . $cachedName) && $cacheEnabled && !$cacheExpired) {
-                    $path   = $this->directories['cache'] . $cachedName;
-                    $cached = true;
-                } else {
-                    $path = $realPath;
-                    if (is_array($filtersAliases)) {
-                        foreach ($filtersAliases as $filter) {
-                            $filters[] = $this->getFilterByAlias($filter);
-                        }
-                    } elseif (!empty($filtersAliases)) {
-                        $filters[] = $this->getFilterByAlias($filtersAliases);
-                    }
+        foreach ($this->configAssets as $collectionName => $values) {
+            $output->writeln(sprintf($this->messages['collection'], $collectionName));
+            $collection = [];
+            foreach ($values['set'] as $items) {
+                $name = is_array($items) ? (isset($items[0]) ? trim($items[0]) : '') : $items;
+                if (empty($name)) {
+                    throw new \LogicException('Filename could not be empty');
                 }
-                if ($verbosity) {
+                $name = strtr($name, ['\\' => DIRECTORY_SEPARATOR, '/' => DIRECTORY_SEPARATOR]);
+                /** @var $files SplFileInfo[] */
+                try {
+                    if ($name{strlen($name) - 1} == DIRECTORY_SEPARATOR) {
+                        $files = (new Finder())->files()->name($values['type'])->in(
+                            $this->directories['source'] . $name
+                        );
+                    } else {
+                        $files = [new SplFileInfo($this->directories['source'] . $name, $name, null)];
+                    }
+                } catch (\Exception $e) {
+                    $output->writeln(sprintf($this->messages['fail'], $e->getMessage()));
+
+                    return 1;
+                }
+                foreach ($files as $file) {
+                    if (!$file->isReadable()) {
+                        $output->writeln(
+                            sprintf(
+                                $this->messages['fail'],
+                                sprintf($this->messages['non_exists_file'], $file->getRealPath())
+                            )
+                        );
+
+                        return 1;
+                    }
                     $output->writeln(
                         sprintf(
-                            $this->messages['found_asset'],
-                            $a . '/' . $total,
-                            $key,
-                            $priority !== null ? $priority : 'unspecified',
-                            $cached ? $this->messages['load_from_cache'] : $this->messages['load_from_source']
+                            $this->messages['asset'],
+                            str_replace($this->directories['source'], '', $file->getRealPath())
                         )
                     );
+                    $filters      = is_array($items) && isset($items[1]) ? $items[1] : $values['default_filters'];
+                    $collection[] = $this->createAsset($file, $filters);
                 }
-                $asset = new FileAsset($path, $filters);
-                if (!$cached) {
-                    // Write asset to cache
-                    $filesystem->dumpFile($this->directories['cache'] . $cachedName, $asset->dump());
-                }
-                if ($priority !== null) {
-                    if (isset($sorted[$priority])) {
-                        $sourceKey = str_replace($this->directories['source'], '', $sorted[$priority]->getSourceRoot());
-                        $sourceKey .= '/' . $sorted[$priority]->getSourcePath();
-                        $output->writeln(sprintf($this->messages['overwrite_asset'], $sourceKey, $key));
-                    }
-                    $sorted[$priority] = $asset;
-                } else {
-                    $collection[] = $asset;
-                }
-                $checksumsNew[$realPath] = $hash;
-                $a++;
             }
-            ksort($sorted);
-            $collection     = array_merge($sorted, $collection);
-            $collection     = new AssetCollection($collection);
-            $collectionPath = $this->directories['public'] . $names[$type];
-            $output->write(sprintf($this->messages['dump_assets'], $type, $collectionPath));
-            $filesystem->dumpFile($collectionPath, $collection->dump());
-            $filesystem->dumpFile($this->directories['cache'] . self::CHECKSUMS, json_encode($checksumsNew));
-            if (is_file($collectionPath)) {
-                $output->writeln($this->messages['dump_success']);
-            } else {
-                $output->writeln($this->messages['dump_failed']);
-            }
-            $i++;
+            $collectionPath = $this->directories['public'] . $collectionName;
+            $output->write(sprintf($this->messages['dump'], $collectionPath));
+            $collection = new AssetCollection($collection);
+            $this->fs->dumpFile($collectionPath, $collection->dump());
+            $output->writeln($this->messages[$this->fs->exists($collectionPath) ? 'success' : 'failed']);
         }
-        $output->writeln($this->messages[$i === 0 ? 'failed' : 'success']);
+        $this->fs->dumpFile($this->directories['cache'] . self::CHECKSUMS, json_encode($this->checksums['new']));
+        $output->writeln(sprintf($this->messages['elapsed_time'], time() - $startTime));
 
         return 0;
     }
 
     /**
-     * Returns iterator
+     * Creates a asset
      *
-     * @param string $name      Name
-     * @param string $directory Path to a directory
+     * @param SplFileInfo  $file
+     * @param array|string $filters
      *
-     * @return Finder
+     * @return FileAsset
      */
-    private function getIterator($name, $directory)
+    private function createAsset(SplFileInfo $file, $filters = [])
     {
-        return (new Finder())->files()->name($name)->in($directory);
+        $baseName     = $file->getBasename();
+        $realPath     = $file->getRealPath();
+        $hash         = md5_file($realPath);
+        $cachedPath   = sprintf(
+            '%s' . strtr($file->getRelativePath(), ['\\' => '_', '/' => '_']) . '_%s',
+            $this->directories['cache'],
+            $baseName
+        );
+        $cacheExpired = !isset($this->checksums['current'][$realPath]) || $this->checksums['current'][$realPath] != $hash;
+        if (!is_file($cachedPath) || $cacheExpired) {
+            // Cache expired
+            $filters = $this->getFiltersByAliases($filters);
+            $source  = $realPath;
+            $cached  = false;
+        } else {
+            // Load from cache
+            $filters = [];
+            $source  = $cachedPath;
+            $cached  = true;
+        }
+        $this->checksums['new'][$realPath] = $hash;
+        $asset                             = new FileAsset($source, $filters);
+        if ($cached !== true) {
+            $this->fs->dumpFile($cachedPath, $asset->dump());
+        }
+
+        return $asset;
+    }
+
+    /**
+     * Returns checksums
+     *
+     * @throws \RuntimeException
+     * @return array
+     */
+    private function loadChecksums()
+    {
+        $checksums = [];
+        $filename  = $this->directories['cache'] . self::CHECKSUMS;
+        if (is_file($filename)) {
+            $checksumsRaw = @file_get_contents($filename);
+            if ($checksumsRaw !== false) {
+                $checksums = json_decode($checksumsRaw, true);
+            } else {
+                throw new \RuntimeException(
+                    sprintf('Unable to load checksums. An error has occurred: %s', error_get_last()['message'])
+                );
+            }
+        }
+
+        return $checksums;
+    }
+
+    /**
+     * Removes cache
+     *
+     * @return void
+     */
+    private function removeCache()
+    {
+        $this->fs->remove(
+            array_map(
+                function ($name) {
+                    return $this->directories['cache'] . $name;
+                },
+                array_diff(scandir($this->directories['cache']), ['.', '..', '.gitignore'])
+            )
+        );
     }
 
     /**
@@ -369,17 +279,17 @@ class Assets extends Command
      * @throws \LogicException Filter does not exists
      * @return FilterInterface
      */
-    private function getFilterByAlias($alias)
+    private function getFilter($alias)
     {
         if (isset($this->filters[$alias])) {
             return $this->filters[$alias];
         }
-        $conf = $this->filtersConfUser[$alias];
+        $conf = $this->configFilters[$alias];
         switch ($alias) {
             case 'yui-js-compressor':
                 $compressor = new JsCompressorFilter(
-                    $this->filtersConfUser['global']['yui-path'],
-                    $this->filtersConfUser['global']['java-path']
+                    $this->configFilters['global']['yui-path'],
+                    $this->configFilters['global']['java-path']
                 );
                 $compressor->setCharset($conf['charset']);
                 $compressor->setLineBreak($conf['linebreak']);
@@ -391,8 +301,8 @@ class Assets extends Command
                 break;
             case 'yui-css-compressor':
                 $compressor = new CssCompressorFilter(
-                    $this->filtersConfUser['global']['yui-path'],
-                    $this->filtersConfUser['global']['java-path']
+                    $this->configFilters['global']['yui-path'],
+                    $this->configFilters['global']['java-path']
                 );
                 $compressor->setCharset($conf['charset']);
                 $compressor->setLineBreak($conf['linebreak']);
@@ -404,6 +314,143 @@ class Assets extends Command
         }
 
         return $this->filters[$alias];
+    }
+
+    /**
+     * Returns a filters
+     *
+     * @param string|array $aliases Aliases
+     *
+     * @return array
+     */
+    private function getFiltersByAliases($aliases)
+    {
+        if (!is_array($aliases)) {
+            $aliases = [$aliases];
+        }
+        $filters = [];
+        foreach ($aliases as $alias) {
+            $filters[] = $this->getFilter($alias);
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Checks filters configuration
+     *
+     * @param array $config Configuration
+     *
+     * @throws \LogicException
+     * @return array
+     */
+    private function getFiltersConfig(array $config)
+    {
+        $defaults = [
+            'global'             => [
+                'yui-path'  => '/usr/share/yui-compressor',
+                'java-path' => '/usr/bin/java',
+            ],
+            'yui-js-compressor'  => [
+                'charset'              => null,
+                'linebreak'            => null,
+                'stack-size'           => null,
+                'nomunge'              => null,
+                'disable-optimization' => null,
+                'preserve-semi'        => null,
+            ],
+            'yui-css-compressor' => [
+                'charset'    => null,
+                'linebreak'  => null,
+                'stack-size' => null,
+            ],
+        ];
+        if (empty($config)) {
+            return $defaults;
+        }
+        foreach ($defaults as $key => $item) {
+            // Configuration for a filter is missing
+            if (!array_key_exists($key, $config)) {
+                $config[$key] = $item;
+            } elseif (is_array($config[$key])) {
+                foreach ($defaults[$key] as $name => $value) {
+                    // Option for a filter configuration is missing
+                    if (!array_key_exists($name, $config[$key])) {
+                        $config[$key][$name] = $value;
+                    }
+                }
+            } else {
+                throw new \LogicException('Wrong filters configuration given');
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Returns valid assets config
+     *
+     * @param array $config Configuration
+     *
+     * @return array
+     * @throws \LogicException
+     */
+    private function getAssetsConfig(array $config)
+    {
+        foreach ($config as $collectionName => &$values) {
+            $values['type']            = explode('.', $collectionName);
+            $values['type']            = '*.' . end($values['type']);
+            $values['default_filters'] = isset($values['default_filters']) ? $values['default_filters'] : [];
+            if (!array_key_exists('set', $values)) {
+                throw new \LogicException(sprintf('Set is not exists in "%s" section', $collectionName));
+            }
+            if (!is_array($values['set'])) {
+                throw new \LogicException(
+                    sprintf(
+                        'Set in "%s" section has wrong type. Expects array %s given',
+                        $collectionName,
+                        gettype($values['set'])
+                    )
+                );
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Check directories
+     *
+     * @param string $source
+     * @param string $public
+     * @param string $cache
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    private function checkDirectories($source, $public, $cache)
+    {
+        $directories = [
+            'source' => $source,
+            'cache'  => $cache,
+            'public' => $public,
+        ];
+        foreach ($directories as $type => $dir) {
+            if (!is_dir($dir)) {
+                throw new \InvalidArgumentException(sprintf('%s directory "%s" does not exists', ucwords($type), $dir));
+            }
+            if (!is_writable($dir)) {
+                throw new \InvalidArgumentException(sprintf('%s directory "%s" is not writable', ucwords($type), $dir));
+            }
+        }
+        $directories = array_map(
+            function ($dir) {
+                return rtrim($dir, '\/') . DIRECTORY_SEPARATOR;
+            },
+            $directories
+        );
+
+        return $directories;
     }
 
 }
