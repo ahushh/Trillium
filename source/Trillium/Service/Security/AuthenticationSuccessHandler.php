@@ -26,6 +26,29 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
 
     /**
+     * @var callable|null Date formatter
+     */
+    private $dateFormatter = null;
+
+    /**
+     * Sets date formatter
+     *
+     * @param callback $callable Formatter
+     *
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function setDateFormatter($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException('Formatter is not callable');
+        }
+        $this->dateFormatter = $callable;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
@@ -35,8 +58,11 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         if ($user instanceof AdvancedUserInterface) {
             $lastActivity = "\nLast activity: ";
             if ($user->getLastActivity() > 0) {
-                // TODO: time-shift
-                $lastActivity .= date('d.m.Y / H:i:s', $user->getLastActivity());
+                if ($this->dateFormatter !== null) {
+                    $lastActivity .= call_user_func($this->dateFormatter, $user->getLastActivity());
+                } else {
+                    $lastActivity .= date('d.m.Y / H:i:s', $user->getLastActivity());
+                }
             } else {
                 $lastActivity .= 'never';
             }

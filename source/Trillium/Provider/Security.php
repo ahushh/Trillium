@@ -63,13 +63,14 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
             );
             // Override authentication success handler
             $provider['authentication.success_handler._proto'] = $provider->protect(
-                function ($name, $options) use ($provider) {
-                    return function () use ($name, $options, $provider) {
+                function ($name, $options) use ($provider, $c) {
+                    return function () use ($name, $options, $provider, $c) {
                         $handler = new AuthenticationSuccessHandler(
                             $provider['http_utils'],
                             $options
                         );
                         $handler->setProviderKey($name);
+                        $handler->setDateFormatter([$c['date'], 'format']);
 
                         return $handler;
                     };

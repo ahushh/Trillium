@@ -76,7 +76,7 @@ class User extends Controller
             $list[] = [
                 'username'      => $user->getUsername(),
                 'roles'         => implode(', ', $roles),
-                'last_activity' => date('d.m.y / H:i:s', $user->getLastActivity()), // TODO: time-shift
+                'last_activity' => $this->date->format($user->getLastActivity()),
             ];
         }
 

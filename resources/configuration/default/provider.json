@@ -5,6 +5,7 @@
     "\\Trillium\\Provider\\MySQLi",
     "\\Trillium\\Provider\\View",
     "\\Trillium\\Provider\\ResponseListener",
+    "\\Trillium\\Provider\\Date",
     "\\Trillium\\Provider\\Security",
     "\\Trillium\\Provider\\Settings"
 ]

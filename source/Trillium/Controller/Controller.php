@@ -17,6 +17,7 @@ namespace Trillium\Controller;
  * @property-read \Symfony\Component\Security\Core\SecurityContextInterface  $security
  * @property-read \Vermillion\Configuration\Configuration                    $configuration
  * @property-read \Trillium\Service\Settings\Settings                        $settings
+ * @property-read \Trillium\Service\Date\Date                                $date
  *
  * @package Trillium\Controller
  */
