@@ -5,27 +5,27 @@
             "java-path": "/usr/bin/java"
         }
     },
-    "css": {
-        "filters": {
-            "*": ["yui-css-compressor"]
-        },
-        "priority": {
-            "vendor/jquery-terminal/jquery.terminal.css": 0,
-            "application/style.css": 1
-        }
+    "black.css": {
+        "set": [
+            ["application/css/black.css", "yui-css-compressor"]
+        ]
     },
-    "js": {
-        "filters": {
-            "*": ["yui-js-compressor"]
-        },
-        "priority": {
-            "vendor/jquery/jquery-1.11.0.js": 0,
-            "vendor/jquery-mousewheel/jquery.mousewheel.js": 1,
-            "vendor/jquery-terminal/jquery.terminal-0.8.7.js": 2,
-            "vendor/jquery-cookie/jquery.cookie.js": 3,
-            "application/trillium.js": 4,
-            "application/url-generator.js": 5,
-            "application/settings.js": 6
-        }
+    "white.css": {
+        "set": [
+            ["application/css/white.css", "yui-css-compressor"]
+        ]
+    },
+    "scripts.js": {
+        "default_filters": "yui-js-compressor",
+        "set": [
+            "vendor/jquery/jquery-1.11.0.js",
+            "vendor/jquery-mousewheel/jquery.mousewheel.js",
+            "vendor/jquery-terminal/jquery.terminal-0.8.7.js",
+            "vendor/jquery-cookie/jquery.cookie.js",
+            "application/js/trillium.js",
+            "application/js/url-generator.js",
+            "application/js/settings.js",
+            "application/js/commands/"
+        ]
     }
 }

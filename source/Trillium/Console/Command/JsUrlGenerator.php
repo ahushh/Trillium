@@ -74,7 +74,7 @@ class JsUrlGenerator extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->directory . 'application/url-generator.js'
+                $this->directory . 'application/js/url-generator.js'
             )
             ->addOption(
                 'base-path',
