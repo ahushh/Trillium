@@ -56,6 +56,9 @@ Trillium.terminal = {
         }
     },
     commandHandler: function (command, term, namespace) {
+        if (!command) {
+            return ;
+        }
         var container = Trillium.terminal.commands;
         if (namespace) {
             if (container.hasOwnProperty(namespace)) {
