@@ -65,6 +65,9 @@ class RequestListener implements EventSubscriberInterface
                 $userSettings[$key] = $option;
             }
         }
+        if (sizeof($this->settings->validate($userSettings)) > 0) {
+            $userSettings = $this->settings->get(null, Settings::SYSTEM);
+        }
         $this->settings->set($userSettings, null, Settings::USER);
     }
 
