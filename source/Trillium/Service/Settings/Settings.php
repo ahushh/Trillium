@@ -128,7 +128,7 @@ class Settings
      */
     public function validate(array $settings)
     {
-        $errors = [];
+        $errors   = [];
         $settings = array_unique($settings);
         if (empty($settings)) {
             $errors[] = 'Settings can not be empty';

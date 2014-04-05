@@ -55,7 +55,7 @@ class RequestListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
-            return ;
+            return;
         }
         $request      = $event->getRequest();
         $userSettings = [];
