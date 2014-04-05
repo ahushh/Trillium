@@ -40,42 +40,42 @@
 }
 @keyframes blink {
   0%, 100% {
-        background-color: #000;
-        color: #aaa;
+        background-color: #fff;
+        color: #222;
   }
   50% {
-        background-color: #bbb; /* not #aaa because it's seem there is Google Chrome bug */
-        color: #000;
+        background-color: #222; /* not #aaa because it's seem there is Google Chrome bug */
+        color: #aaa;
   }
 }
 @-webkit-keyframes blink {
   0%, 100% {
-        background-color: #000;
-        color: #aaa;
+        background-color: #fff;
+        color: #222;
   }
   50% {
-        background-color: #bbb;
-        color: #000;
+        background-color: #222;
+        color: #fff;
   }
 }
 @-ms-keyframes blink {
   0%, 100% {
-        background-color: #000;
-        color: #aaa;
+        background-color: #fff;
+        color: #222;
   }
   50% {
-        background-color: #bbb;
-        color: #000;
+        background-color: #222;
+        color: #fff;
   }
 }
 @-moz-keyframes blink {
   0%, 100% {
-        background-color: #000;
-        color: #aaa;
+        background-color: #fff;
+        color: #222;
   }
   50% {
-        background-color: #bbb;
-        color: #000;
+        background-color: #222;
+        color: #fff;
   }
 }
 .terminal .terminal-output div div, .cmd .prompt {
@@ -87,9 +87,9 @@
     float: left;
 }
 .terminal, .cmd {
-    font-family: FreeMono, monospace;
-    color: #aaa;
-    background-color: #000;
+    font-family: Consolas, FreeMono, monospace;
+    color: #222;
+    background-color: #fff;
     font-size: 12px;
     line-height: 14px;
 }
@@ -105,25 +105,25 @@
     /*display: inline-block; */
 }
 .terminal .inverted, .cmd .inverted, .cmd .cursor.blink {
-    background-color: #aaa;
-    color: #000;
+    background-color: #222;
+    color: #fff;
 }
 .terminal .terminal-output div div::-moz-selection,
 .terminal .terminal-output div span::-moz-selection,
 .terminal .terminal-output div div a::-moz-selection {
-    background-color: #aaa;
-    color: #000;
+    background-color: #222;
+    color: #fff;
 }
 .terminal .terminal-output div div::selection,
 .terminal .terminal-output div div a::selection,
 .terminal .terminal-output div span::selection,
 .cmd > span::selection,
 .cmd .prompt span::selection {
-    background-color: #aaa;
-    color: #000;
+    background-color: #222;
+    color: #fff;
 }
 .terminal .terminal-output div.error, .terminal .terminal-output div.error div {
-    color: red;
+    color: #440000;
 }
 .tilda {
     position: fixed;
@@ -139,7 +139,7 @@
     color: #0F60FF;
 }
 .terminal a:hover {
-    color: red;
+    color: #440000;
 }
 
 #trillium_greeting {
