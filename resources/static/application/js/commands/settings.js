@@ -27,6 +27,10 @@ Trillium.terminal.commands.main.settings = function (term, args) {
                     }
                     // Reload settings
                     Trillium.settings.load();
+                    // Reload skin
+                    var css_skin = Trillium.urlGenerator.raw('static/' + Trillium.settings.user['skin'] + '.css');
+                    css_skin = $('<link id="css_skin" rel="stylesheet" type="text/css" href="' + css_skin + '" />');
+                    $('#css_skin').replaceWith(css_skin);
                 }
             ).fail(
                 function (jqXHR, textStatus, errorThrown) {

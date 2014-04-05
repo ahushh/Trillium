@@ -128,6 +128,9 @@ var Trillium = {
             } else {
                 throw 'Undefined route "' + name + '"!';
             }
+        },
+        raw: function (path) {
+            return window.location.protocol + '//' + window.location.hostname + this.basePath + '/' + path;
         }
     }
 };
