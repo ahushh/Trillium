@@ -12,6 +12,11 @@ CREATE TABLE `users` (
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `users` VALUES ('root','zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA==',0,'[\"ROLE_ROOT\"]','');
+CREATE TABLE `boards` (
+  `name` varchar(10) NOT NULL,
+  `summary` varchar(100) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE DATABASE `trillium_development`;
 USE `trillium_development`;
@@ -24,3 +29,8 @@ CREATE TABLE `users` (
   PRIMARY KEY (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `users` VALUES ('root','zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA==',0,'[\"ROLE_ROOT\"]','');
+CREATE TABLE `boards` (
+  `name` varchar(10) NOT NULL,
+  `summary` varchar(100) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
