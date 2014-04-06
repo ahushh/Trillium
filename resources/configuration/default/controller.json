@@ -14,5 +14,12 @@
     "\\Trillium\\Controller\\Settings": {
         "validate": "json",
         "skins": "json"
+    },
+    "\\Trillium\\Controller\\Board": {
+        "create": "json",
+        "get": "json",
+        "update": "json",
+        "delete": "json",
+        "listing": "json"
     }
 }

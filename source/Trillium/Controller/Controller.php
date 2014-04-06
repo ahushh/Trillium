@@ -18,6 +18,7 @@ namespace Trillium\Controller;
  * @property-read \Vermillion\Configuration\Configuration                    $configuration
  * @property-read \Trillium\Service\Settings\Settings                        $settings
  * @property-read \Trillium\Service\Date\Date                                $date
+ * @property-read \Trillium\Service\Imageboard\BoardInterface                $board
  *
  * @package Trillium\Controller
  */

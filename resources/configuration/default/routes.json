@@ -85,5 +85,43 @@
             "_controller": "\\Trillium\\Controller\\Settings",
             "_action": "skins"
         }
+    },
+    "board.create": {
+        "path": "/board/create",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Board",
+            "_action": "create"
+        },
+        "requirements": {
+            "_method": "POST"
+        }
+    },
+    "board.get": {
+        "path": "/board/get/{name}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Board",
+            "_action": "get"
+        }
+    },
+    "board.update": {
+        "path": "/board/update/{board}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Board",
+            "_action": "update"
+        }
+    },
+    "board.delete": {
+        "path": "/board/delete/{name}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Board",
+            "_action": "delete"
+        }
+    },
+    "board.listing": {
+        "path": "/board/listing",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Board",
+            "_action": "listing"
+        }
     }
 }
