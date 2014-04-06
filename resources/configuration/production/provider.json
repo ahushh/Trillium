@@ -8,5 +8,6 @@
     "\\Trillium\\Provider\\ResponseListener",
     "\\Trillium\\Provider\\Date",
     "\\Trillium\\Provider\\Security",
-    "\\Trillium\\Provider\\Settings"
+    "\\Trillium\\Provider\\Settings",
+    "\\Trillium\\Provider\\Imageboard"
 ]
