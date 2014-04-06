@@ -11,15 +11,17 @@ Requires PHP &gt;= 5.4
 - Create virtual host with `public/` document root directory
 - Make `resources/cache` writable
 - `$ chmod +x bin/console`
+- Edit the configuration files in resources directory
+- Don't forget to change remember\_me key in the security configuration file
 - Generate `javascript url generator`: `$ bin/console jug`
+- Dump system settings: `$ bin/console jss`
 - Generate assets: `$ bin/console assets`
 - Load SQL Dump: `$ mysql -u user -p < dump.sql`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
-- Change remember\_me key in the security configuration file (of current env).
 
 ## TODO:
 
-Too many things. Now almost is ready skeleton only.
+Too many things.
 
 ## Contributing
 
