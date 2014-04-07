@@ -68,7 +68,7 @@ class ResponseListener implements EventSubscriberInterface
                 $type = $actions[$action];
             }
         }
-        if ($type == 'json') {
+        if ($type == 'json' || $type === null) {
             if (isset($result['_status'])) {
                 $status = $result['_status'];
                 unset($result['_status']);

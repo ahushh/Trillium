@@ -1,25 +1,5 @@
 {
     "\\Trillium\\Controller\\Home": {
         "index": {"view": "home"}
-    },
-    "\\Trillium\\Controller\\User": {
-        "signIn": "json",
-        "editPassword": "json",
-        "isAuthorized": "json",
-        "listing": "json",
-        "create": "json",
-        "remove": "json",
-        "editRoles": "json"
-    },
-    "\\Trillium\\Controller\\Settings": {
-        "validate": "json",
-        "skins": "json"
-    },
-    "\\Trillium\\Controller\\Board": {
-        "create": "json",
-        "get": "json",
-        "update": "json",
-        "delete": "json",
-        "listing": "json"
     }
 }
