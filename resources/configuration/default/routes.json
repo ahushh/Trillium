@@ -108,6 +108,9 @@
         "defaults": {
             "_controller": "\\Trillium\\Controller\\Board",
             "_action": "update"
+        },
+        "requirements": {
+            "_method": "POST"
         }
     },
     "board.delete": {
