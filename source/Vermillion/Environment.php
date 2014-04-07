@@ -25,14 +25,15 @@ class Environment
      * @var array List of the all necessary directories
      */
     private $directories = [
-        'source'        => 'source',
-        'configuration' => 'resources/configuration',
-        'cache'         => 'resources/cache',
-        'logs'          => 'resources/logs',
-        'views'         => 'resources/views',
-        'static.source' => 'resources/static',
-        'static.cache'  => 'resources/cache/assets',
-        'static.public' => 'public/static',
+        'source'           => 'source',
+        'configuration'    => 'resources/configuration',
+        'cache'            => 'resources/cache',
+        'logs'             => 'resources/logs',
+        'views'            => 'resources/views',
+        'static.source'    => 'resources/static',
+        'static.generated' => 'resources/static/generated',
+        'static.cache'     => 'resources/cache/assets',
+        'static.public'    => 'public/static',
     ];
 
     /**

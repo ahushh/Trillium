@@ -77,11 +77,11 @@ class Application extends \Symfony\Component\Console\Application
                     $this->env->getEnvironment()
                 ),
                 new JsUrlGenerator(
-                    $this->env->getDirectory('static.source'),
+                    $this->env->getDirectory('static.generated'),
                     $this->router->getRouteCollection()->all()
                 ),
                 new JsSystemSettings(
-                    $this->env->getDirectory('static.source'),
+                    $this->env->getDirectory('static.generated'),
                     $this->settings,
                     new Filesystem()
                 )

@@ -52,6 +52,8 @@ class JsUrlGenerator extends Command
      * @param string  $directory A destination directory for a generated script
      * @param Route[] $routes    Routes
      *
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function __construct($directory, array $routes)
@@ -74,7 +76,7 @@ class JsUrlGenerator extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->directory . 'application/js/generated/url-generator.js'
+                $this->directory . 'url-generator.js'
             )
             ->addOption(
                 'base-path',

@@ -46,6 +46,7 @@ class JsSystemSettings extends Command
      * @param Settings   $settings  Settings
      * @param Filesystem $fs        Filesystem instance
      *
+     * @throws \LogicException
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -74,7 +75,7 @@ class JsSystemSettings extends Command
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'Destination path to the file',
-                $this->directory . 'application/js/generated/settings.js'
+                $this->directory . 'settings.js'
             );
     }
 
