@@ -124,10 +124,9 @@ class JsUrlGenerator extends Command
         }
         $filesystem = new Filesystem();
         $content    = sprintf(
-            'Trillium.urlGenerator.routes = %s;%sTrillium.urlGenerator.basePath = \'%s\';',
-            json_encode($result),
-            "\n",
-            $basePath
+            'generated.basePath = \'%s\';generated.routes = %s;',
+            $basePath,
+            json_encode($result)
         );
         $filesystem->dumpFile($path, $content);
         $output->writeln($this->messages[is_file($path) ? 'success' : 'failed']);

@@ -87,7 +87,7 @@ class JsSystemSettings extends Command
         $path = $input->getOption('path');
         $this->fs->dumpFile(
             $path,
-            sprintf('Trillium.settings.system=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
+            sprintf('generated.settings=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
         );
         $output->writeln($this->fs->exists($path) ? '<fg=green>Success</fg=green>' : '<fg=red>Failed</fg=red>');
     }
