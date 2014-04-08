@@ -94,6 +94,8 @@ class Assets extends Command
      * @param array  $conf   Configuration
      *
      * @throws \LogicException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function __construct($source, $public, $cache, array $conf)
@@ -197,18 +199,15 @@ class Assets extends Command
      * @param SplFileInfo  $file
      * @param array|string $filters
      *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @throws \LogicException
      * @return FileAsset
      */
     private function createAsset(SplFileInfo $file, $filters = [])
     {
-        $baseName     = $file->getBasename();
         $realPath     = $file->getRealPath();
         $hash         = md5_file($realPath);
-        $cachedPath   = sprintf(
-            '%s' . strtr($file->getRelativePath(), ['\\' => '_', '/' => '_']) . '_%s',
-            $this->directories['cache'],
-            $baseName
-        );
+        $cachedPath   = $this->directories['cache'] . strtr($file->getRealPath(), ['\\' => '_', '/' => '_']);
         $cacheExpired = !isset($this->checksums['current'][$realPath]) || $this->checksums['current'][$realPath] != $hash;
         if (!is_file($cachedPath) || $cacheExpired) {
             // Cache expired
@@ -257,6 +256,7 @@ class Assets extends Command
     /**
      * Removes cache
      *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
      * @return void
      */
     private function removeCache()
@@ -321,6 +321,7 @@ class Assets extends Command
      *
      * @param string|array $aliases Aliases
      *
+     * @throws \LogicException
      * @return array
      */
     private function getFiltersByAliases($aliases)
