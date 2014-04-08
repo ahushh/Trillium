@@ -24,10 +24,10 @@
         "^/user/edit/roles/.*$": {"roles": ["ROLE_ROOT"]},
         "^/user/create": {"roles": ["ROLE_ROOT"]},
         "^/user/remove/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/user/listing": {"roles": ["ROLE_USER"]},
-        "^/board/create": {"roles": ["ROLE_USER"]},
-        "^/board/update/.*$": {"roles": ["ROLE_USER"]},
-        "^/board/delete/.*$": {"roles": ["ROLE_USER"]}
+        "^/user/listing": {"roles": ["ROLE_ROOT"]},
+        "^/board/create": {"roles": ["ROLE_ROOT"]},
+        "^/board/update/.*$": {"roles": ["ROLE_ROOT"]},
+        "^/board/delete/.*$": {"roles": ["ROLE_ROOT"]}
     },
     "role_hierarchy": {
     },
