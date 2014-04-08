@@ -22,10 +22,10 @@
             "vendor/jquery-mousewheel/jquery.mousewheel.js",
             "vendor/jquery-terminal/jquery.terminal-0.8.7.js",
             "vendor/jquery-cookie/jquery.cookie.js",
-            "application/js/trillium.js",
+            "generated/generated.js",
             "generated/settings.js",
             "generated/url-generator.js",
-            "application/js/terminal.js",
+            "application/js/trillium.js",
             "application/js/commands/"
         ]
     }

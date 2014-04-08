@@ -1,47 +1,138 @@
-var Trillium = new(function () {
+function Trillium(systemSettings, routes, basePath) {
     var self = this;
+    var commands = {
+        help: {
+            run: function (term) {
+                var output = '', cmdName;
+                for (var cmd in commands) {
+                    cmdName = cmd;
+                    cmd = commands[cmd];
+                    if (cmd.isAvailable && cmd.summary) {
+                        output += '\n' + cmdName + ' - ' + cmd.summary;
+                    }
+                }
+                if (output.length === 0) {
+                    term.error('Help is not available');
+                } else {
+                    term.echo('Available commands: ' + output);
+                }
+            },
+            isAvailable: true
+        }
+    };
+    // Show/Hide secured commands
+    var toggleSecuredCommands = function (flag) {
+        for (var c in commands) {
+            if (commands[c].secured) {
+                commands[c].isAvailable = flag;
+            }
+        }
+    };
+    this.host = 'trillium'; // Terminal host
+    this.username = false;
+    var commandNotFound = function (term, commandName) {
+        term.error(self.host + ': ' + commandName + ': command not found');
+    };
+    this.greeting = function (term) {
+        term.echo('<div id="trillium_greeting"></div>', {raw: true});
+    };
+    this.addCommand = function (name, help, summary, func, secured, isAvailable) {
+        commands[name] = {run: func, help: help, summary: summary, secured: secured, isAvailable: isAvailable};
+    };
+    // Shows/hides a command
+    this.showCommand = function (name, flag) {
+        if (commands.hasOwnProperty(name)) {
+            commands[name].isAvailable = flag;
+        }
+    };
+    // Perform on logout
+    this.logout = function (term) {
+        app.username = false;
+        app.prompt(term.set_prompt);
+        app.showCommand('login', true);
+        toggleSecuredCommands(false);
+    };
+    // Perform on login
+    this.login = function (username, term) {
+        self.username = username;
+        self.prompt(term.set_prompt);
+        self.showCommand('login', false);
+        toggleSecuredCommands(true);
+    };
+    // Terminal prompt
+    this.prompt = function (callback) {
+        var username = self.username === false ? 'anonymous' : self.username;
+        callback("[" + username + "@" + self.host + "] >>> ");
+    };
+    // Creates a confirm terminal
+    this.termConfirm = function (term, onConfirm, onCancel) {
+        term.push(
+            function (answer) {
+                switch (answer) {
+                    case 'y':
+                        if ($.isFunction(onConfirm)) {
+                            onConfirm();
+                        }
+                        term.pop();
+                        break;
+                    case 'n':
+                        if ($.isFunction(onCancel)) {
+                            onCancel();
+                        }
+                        term.pop();
+                        break;
+                    default:
+                        term.error('You can say only "yes" or "no"!');
+                }
+            },
+            {prompt: 'Are you sure? [y/n]'}
+        );
+        return term;
+    };
+    // Settings
     this.settings = {
         // System settings
-        system: {},
+        system: systemSettings,
         // User settings
         user: {},
         // Returns user settings from cookies
         load: function () {
             var key, value, settings = {};
-            for (key in Trillium.settings.system) {
+            for (key in this.system) {
                 value = $.cookie(key);
                 if (value) {
                     settings[key] = value;
                 } else {
-                    settings[key] = Trillium.settings.system[key];
+                    settings[key] = this.system[key];
                 }
             }
             return settings;
         },
         // Validates settings
         validate: function (settings, done, fail) {
-            var url = self.urlGenerator.generate('settings.validate'),
-                options = {async: false, data: {'settings': settings}, dataType: 'json', type: 'POST'};
+            var url = self.urlGenerator.generate('settings.validate');
+            var options = {async: false, data: {'settings': settings}, dataType: 'json', type: 'POST'};
             $.ajax(url, options).done(done).fail(fail);
         }
     };
+    // URL Generator
     this.urlGenerator = {
-        routes: {},
-        basePath: '',
+        routes: routes,
+        basePath: basePath,
         generate: function (name, params) {
             if (this.routes[name]) {
                 params = params == undefined ? {} : params;
-                var route        = this.routes[name],
+                var route = this.routes[name],
                     requirements = route['requirements'],
-                    defaults     = route['defaults'],
-                    variables    = route['variables'],
-                    result       = route['path'],
+                    defaults = route['defaults'],
+                    variables = route['variables'],
+                    result = route['path'],
                     val;
                 for (var param in variables) {
                     param = variables[param];
                     val = params[param] ? params[param] : defaults[param];
                     if (val === undefined) {
-                        throw 'Missing "' + param + '" parameter for route "'+name+'"!';
+                        throw 'Missing "' + param + '" parameter for route "' + name + '"!';
                     }
                     if (requirements.hasOwnProperty(param) && !new RegExp(requirements[param]).test(val)) {
                         throw 'Parameter "' + param + '" for route "' + name + '" must pass "' + requirements[param] + '" test!';
@@ -57,30 +148,108 @@ var Trillium = new(function () {
             return window.location.protocol + '//' + window.location.hostname + this.basePath + '/' + path;
         }
     };
-})();
-$('document').ready(
-    function () {
+    // jQueryXHR response handlers
+    this.responseHandler = {
+        success: function (term, data) {
+            if (data.hasOwnProperty('success')) {
+                term.echo(data.success);
+            } else {
+                console.log(data);
+                term.error('Unknown response type');
+            }
+        },
+        fail: function (term, hr, textStatus, errorThrown) {
+            if (hr.hasOwnProperty('responseJSON') && hr['responseJSON'].hasOwnProperty('error')) {
+                var error = hr['responseJSON'].error;
+                if (error instanceof Array || error instanceof Object) {
+                    for (var e in error) {
+                        if (error.hasOwnProperty(e)) {
+                            term.error(error[e]);
+                        }
+                    }
+                } else {
+                    term.error(error);
+                }
+            } else {
+                console.log(hr, textStatus, errorThrown);
+                term.error('Unknown error');
+            }
+        }
+    };
+    // Creates a terminal
+    this.run = function (selector) {
         // Load and validate settings
-        var settings = Trillium.settings.load();
-        Trillium.settings.validate(
+        var settings = self.settings.load();
+        self.settings.validate(
             settings,
-            function () { Trillium.settings.user = settings;                },
-            function () { Trillium.settings.user = Trillium.settings.system;}
-        );
-        // Echoes the greeting
-        var echoGreeting = function (term) {
-            term.echo('<div id="trillium_greeting"></div>', {raw: true});
-        };
-        // Create the terminal
-        $('body').terminal(
-            function (command, term) { Trillium.terminal.commandHandler(command, term, 'main'); },
-            {
-                greetings: null,
-                onInit: echoGreeting,
-                onClear: echoGreeting,
-                onBlur: function () { return false; },
-                prompt: "[anonymous@" + Trillium.terminal.name + "] >>> "
+            function () {
+                self.settings.user = settings;
+            },
+            function () {
+                self.settings.user = self.settings.system;
             }
         );
+        $(selector).terminal(
+            function (command, term) {
+                if (!command) {
+                    return ;
+                }
+                command = $.terminal.parseCommand(command);
+                if (!commands.hasOwnProperty(command.name)) {
+                    commandNotFound(term, command.name);
+                    return ;
+                }
+                var cmd = commands[command.name];
+                if (!cmd.isAvailable) {
+                    commandNotFound(term, command.name);
+                    return ;
+                }
+                if (command.args.length > 0 && (command.args[0] == '--help' || command.args[0] == '-h')) {
+                    // Try to get help for given command
+                    if (cmd.help) {
+                        term.echo(cmd.help, {raw: true});
+                    } else {
+                        term.error('Help is not available');
+                    }
+                    return ;
+                }
+                cmd.run(term, command.args);
+            },
+            {
+                greetings: null,
+                onInit: function (term) {
+                    self.greeting(term);
+                    // Autologin
+                    $.ajax(
+                        self.urlGenerator.generate('user.is_authorized'),
+                        {dataType: 'json', async: false}
+                    ).done(
+                        function (data) {
+                            if (data.hasOwnProperty('isAuthorized') && data.hasOwnProperty('username')) {
+                                if (data['isAuthorized']) {
+                                    self.login(data['username'], term);
+                                } else {
+                                    self.logout(term);
+                                }
+                            } else {
+                                console.log(data);
+                                term.error('Autologin failed: Unknown error');
+                            }
+                        }
+                    );
+                },
+                onClear: self.greeting,
+                onBlur: function () {
+                    return false;
+                },
+                prompt: self.prompt
+            }
+        )
+    };
+}
+var app = new Trillium(generated.settings, generated.routes, generated.basePath);
+$('document').ready(
+    function () {
+        app.run('body');
     }
 );

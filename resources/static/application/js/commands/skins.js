@@ -1,24 +1,29 @@
-Trillium.terminal.commands.main.skins = function (term) {
-    $.ajax(
-        Trillium.urlGenerator.generate('settings.skins'),
-        {"async": false, "dataType": "json"}
-    ).done(
-        function (data) {
-            term.echo('Available skins:');
-            if (data.length == 0) {
-                term.echo('List is empty');
-            } else {
-                for (var skin in data) {
-                    if (data.hasOwnProperty(skin)) {
-                        term.echo(data[skin]);
+app.addCommand(
+    'skins',
+    'Shows available skins',
+    'Skins',
+    function (term) {
+        $.ajax(
+            app.urlGenerator.generate('settings.skins'),
+            {"dataType": "json"}
+        ).done(
+            function (data) {
+                var output = '';
+                if (data.length == 0) {
+                    output = '\nList is empty';
+                } else {
+                    for (var skin in data) {
+                        output += '\n' + data[skin];
                     }
                 }
+                term.echo('Available skins:' + output);
             }
-        }
-    ).fail(
-        function () {
-            term.error('Unable to get skins')
-        }
-    );
-};
-Trillium.terminal.help.main.skins = Trillium.terminal.description.main.skins = 'Shows available skins';
+        ).fail(
+            function (jqXhr, textStatus, errorThrown) {
+                app.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
+            }
+        );
+    },
+    false,
+    true
+);
