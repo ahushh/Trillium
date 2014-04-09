@@ -48,19 +48,20 @@ app.addCommand(
         } else {
             switch (args[0]) {
                 case '-l': // Show list
-                    term.echo('Boards: ');
                     $.ajax(
                         app.urlGenerator.generate('board.listing'),
                         {async: false, dataType: 'json'}
                     ).done(
                         function (data) {
+                            var output = 'Boards: ';
                             if (data.length == 0) {
-                                term.echo('List is empty');
+                                output += '\nList is empty';
                             } else {
                                 for (var b in data) {
-                                    term.echo('/' + data[b]['name'] + '/ - ' + data[b]['summary']);
+                                    output += '\n/' + data[b]['name'] + '/ - ' + data[b]['summary'];
                                 }
                             }
+                            term.echo(output);
                         }
                     ).fail(
                         function (jqXhr, textStatus, errorThrown) {
