@@ -15,6 +15,7 @@ use Kilte\AccountManager\Provider\MySQLiUserProvider;
 use Kilte\SecurityProvider\Provider;
 use Trillium\Service\Security\AuthenticationSuccessHandler;
 use Trillium\Service\Security\Controller as ControllerListener;
+use Trillium\Service\Security\LogoutSuccessHandler;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -73,6 +74,13 @@ class Security implements ServiceProviderInterface, SubscriberProviderInterface
                         $handler->setDateFormatter([$c['date'], 'format']);
 
                         return $handler;
+                    };
+                }
+            );
+            $provider['authentication.logout_handler._proto']  = $provider->protect(
+                function () {
+                    return function () {
+                        return new LogoutSuccessHandler();
                     };
                 }
             );
