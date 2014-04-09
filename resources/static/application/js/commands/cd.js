@@ -8,6 +8,7 @@ app.addCommand(
             term.error('No board given');
             return ;
         }
+        app.thread.current = '';
         if (args[0] == '~') {
            app.board.current = '~';
         } else {

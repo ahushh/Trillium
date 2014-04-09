@@ -62,7 +62,8 @@ function Trillium(systemSettings, routes, basePath) {
     // Terminal prompt
     this.prompt = function (callback) {
         var username = self.username === false ? 'anonymous' : self.username;
-        callback("[" + username + "@" + self.host + "] -> [" + self.board.current + "] >>> ");
+        var path = self.board.current + (self.thread.current ? '/' + self.thread.current : '');
+        callback("[" + username + "@" + self.host + "] -> [" + path + "] >>> ");
     };
     // Creates a confirm terminal
     this.termConfirm = function (term, onConfirm, onCancel) {
@@ -246,6 +247,10 @@ function Trillium(systemSettings, routes, basePath) {
                 }
             );
         }
+    };
+    // Threads
+    this.thread = {
+        current: ''
     };
     // Creates a terminal
     this.run = function (selector) {
