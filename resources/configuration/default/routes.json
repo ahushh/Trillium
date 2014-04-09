@@ -126,5 +126,12 @@
             "_controller": "\\Trillium\\Controller\\Board",
             "_action": "listing"
         }
+    },
+    "thread.create": {
+        "path": "/thread/create",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Thread",
+            "_action": "create"
+        }
     }
 }
