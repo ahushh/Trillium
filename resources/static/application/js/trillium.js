@@ -121,7 +121,7 @@ function Trillium(systemSettings, routes, basePath) {
         basePath: basePath,
         generate: function (name, params) {
             if (this.routes[name]) {
-                params = params == undefined ? {} : params;
+                params = !$.isPlainObject(params) ? {} : params;
                 var route = this.routes[name],
                     requirements = route['requirements'],
                     defaults = route['defaults'],
@@ -161,7 +161,7 @@ function Trillium(systemSettings, routes, basePath) {
         fail: function (term, hr, textStatus, errorThrown) {
             if (hr.hasOwnProperty('responseJSON') && hr['responseJSON'].hasOwnProperty('error')) {
                 var error = hr['responseJSON'].error;
-                if (error instanceof Array || error instanceof Object) {
+                if ($.isArray(error) || $.isPlainObject(error)) {
                     for (var e in error) {
                         if (error.hasOwnProperty(e)) {
                             term.error(error[e]);
