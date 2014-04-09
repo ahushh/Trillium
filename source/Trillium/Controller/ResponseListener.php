@@ -50,6 +50,7 @@ class ResponseListener implements EventSubscriberInterface
      * @param GetResponseForControllerResultEvent $event
      *
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function onControllerResponse(GetResponseForControllerResultEvent $event)

@@ -20,6 +20,7 @@ class Home extends Controller
     /**
      * Homepage
      *
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function index()

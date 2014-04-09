@@ -37,6 +37,7 @@ class RequestListener implements EventSubscriberInterface
      *
      * @param Settings $settings Settings
      *
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function __construct(Settings $settings)
@@ -50,6 +51,7 @@ class RequestListener implements EventSubscriberInterface
      *
      * @param GetResponseEvent $event An event instance
      *
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function onKernelRequest(GetResponseEvent $event)

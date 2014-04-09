@@ -85,6 +85,10 @@ class Application
      *
      * @param Request $request
      *
+     * @throws \RuntimeException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \Exception
      * @return void
      */
     public function run(Request $request)

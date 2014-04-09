@@ -32,6 +32,8 @@ class CsFix extends Command
      *
      * @param string $directory Path to sources
      *
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function __construct($directory)

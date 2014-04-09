@@ -55,6 +55,8 @@ class Environment extends Command
      * @param string $environmentPath    Path to the environment config
      * @param string $currentEnvironment Current application environment
      *
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function __construct($environmentPath, $currentEnvironment)

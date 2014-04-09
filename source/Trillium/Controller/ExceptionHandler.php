@@ -26,6 +26,7 @@ class ExceptionHandler extends Controller
      *
      * @param Request $request
      *
+     * @throws \InvalidArgumentException
      * @return JsonResponse
      */
     public function __invoke(Request $request)

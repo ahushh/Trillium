@@ -64,7 +64,8 @@ class Controller implements EventSubscriberInterface
      *
      * @param UpdatePassword $event Event
      *
-     * @throws HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function onUpdatePassword(UpdatePassword $event)
@@ -92,6 +93,7 @@ class Controller implements EventSubscriberInterface
      *
      * @param CreateUserBefore $event
      *
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function onCreateUserBefore(CreateUserBefore $event)
@@ -151,7 +153,8 @@ class Controller implements EventSubscriberInterface
      *
      * @param UpdateRoles $event An event instance
      *
-     * @throws HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function onUpdateRoles(UpdateRoles $event)
