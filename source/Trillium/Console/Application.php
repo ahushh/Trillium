@@ -12,6 +12,7 @@ namespace Trillium\Console;
 use Symfony\Component\Filesystem\Filesystem;
 use Trillium\Console\Command\Assets;
 use Trillium\Console\Command\CsFix;
+use Trillium\Console\Command\Db;
 use Trillium\Console\Command\Environment;
 use Trillium\Console\Command\JsSystemSettings;
 use Trillium\Console\Command\JsUrlGenerator;
@@ -46,6 +47,11 @@ class Application extends \Symfony\Component\Console\Application
     private $settings;
 
     /**
+     * @var \Trillium\Service\MySQLi\MySQLi
+     */
+    private $mysqli;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(Container $container)
@@ -54,6 +60,7 @@ class Application extends \Symfony\Component\Console\Application
         $this->router        = $container['router'];
         $this->configuration = $container['configuration'];
         $this->settings      = $container['settings'];
+        $this->mysqli        = $container['mysqli'];
         parent::__construct('Trillium', \Vermillion\Application::VERSION);
     }
 
@@ -84,6 +91,13 @@ class Application extends \Symfony\Component\Console\Application
                     $this->env->getDirectory('static.generated'),
                     $this->settings,
                     new Filesystem()
+                ),
+                new Db(
+                    [
+                        $this->env->getDirectory('db') . 'mysqli/development.sql',
+                        $this->env->getDirectory('db') . 'mysqli/production.sql',
+                    ],
+                    $this->mysqli
                 )
             ]
         );

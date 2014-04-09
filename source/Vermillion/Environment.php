@@ -34,6 +34,7 @@ class Environment
         'static.generated' => 'resources/static/generated',
         'static.cache'     => 'resources/cache/assets',
         'static.public'    => 'public/static',
+        'db'               => 'resources/db',
     ];
 
     /**

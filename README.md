@@ -16,7 +16,7 @@ Requires PHP &gt;= 5.4
 - Generate `javascript url generator`: `$ bin/console jug`
 - Dump system settings: `$ bin/console jss`
 - Generate assets: `$ bin/console assets`
-- Load SQL Dump: `$ mysql -u user -p < dump.sql`
+- Load SQL Dump: `$ bin/console db`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
 
 ## TODO:
