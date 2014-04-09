@@ -1,9 +1,9 @@
 app.addCommand(
     'settings',
-    'User settings\n' +
-    'Usage: settings [command] [[key] [value]]...\n' +
-    'Available commands:\n' +
-    'set - Sets a new value for given key\n' +
+    'User settings<br />' +
+    'Usage: settings [command] [[key] [value]]...<br />' +
+    'Available commands:<br />' +
+    'set - Sets a new value for given key<br />' +
     'Example: settings set skin default',
     'User settings',
     function (term, args) {
