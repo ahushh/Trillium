@@ -72,6 +72,7 @@ class Settings
      * @param int   $type  Settings type (Settings::SYSTEM, Settings::USER, Settings::ALL)
      *
      * @throws \InvalidArgumentException
+     *
      * @return $this
      */
     public function set($key, $value = null, $type = self::ALL)

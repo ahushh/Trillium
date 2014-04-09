@@ -139,7 +139,7 @@ class Board implements BoardInterface
                 $this->mysqli->real_escape_string($name)
             )
         );
-        $total = (int) $result->fetch_row()[0];
+        $total  = (int) $result->fetch_row()[0];
         $result->free();
 
         return $total > 0;

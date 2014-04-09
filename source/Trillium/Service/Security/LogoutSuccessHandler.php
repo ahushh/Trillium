@@ -24,7 +24,8 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function onLogoutSuccess(Request $request){
+    public function onLogoutSuccess(Request $request)
+    {
         return new JsonResponse(['success' => 'Goodbye!']);
     }
 
