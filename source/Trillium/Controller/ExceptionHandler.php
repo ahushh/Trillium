@@ -35,8 +35,18 @@ class ExceptionHandler extends Controller
          * @var $exception FlattenException
          */
         $exception = $request->attributes->get('exception');
+        if ($this->environment->isDebug()) {
+            $error = [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTrace()
+            ];
+        } else {
+            $error = [
+                'error' => $exception->getStatusCode() === 500 ? 'Internal Server Error' : $exception->getMessage()
+            ];
+        }
 
-        return new JsonResponse($exception->getMessage(), $exception->getStatusCode());
+        return new JsonResponse($error, $exception->getStatusCode());
     }
 
 }
