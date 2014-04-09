@@ -95,7 +95,9 @@ class Application extends \Symfony\Component\Console\Application
                 new Db(
                     [
                         $this->env->getDirectory('db') . 'mysqli/development.sql',
+                        $this->env->getDirectory('db') . 'mysqli/tables.sql',
                         $this->env->getDirectory('db') . 'mysqli/production.sql',
+                        $this->env->getDirectory('db') . 'mysqli/tables.sql',
                     ],
                     $this->mysqli
                 )
