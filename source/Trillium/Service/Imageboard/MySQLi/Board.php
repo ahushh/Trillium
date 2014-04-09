@@ -17,32 +17,8 @@ use Trillium\Service\Imageboard\Exception\BoardNotFoundException;
  *
  * @package Trillium\Service\Imageboard\MySQLi
  */
-class Board implements BoardInterface
+class Board extends MySQLi implements BoardInterface
 {
-
-    /**
-     * @var \mysqli MySQLi instance
-     */
-    private $mysqli;
-
-    /**
-     * @var string Name of the table in database
-     */
-    private $tableName;
-
-    /**
-     * Constructor
-     *
-     * @param \mysqli $mysqli    MySQLi instance
-     * @param string  $tableName Name of the table in database
-     *
-     * @return self
-     */
-    public function __construct(\mysqli $mysqli, $tableName)
-    {
-        $this->mysqli    = $mysqli;
-        $this->tableName = $tableName;
-    }
 
     /**
      * {@inheritdoc}
