@@ -159,8 +159,10 @@ function Trillium(systemSettings, routes, basePath) {
             }
         },
         fail: function (term, hr, textStatus, errorThrown) {
-            if (hr.hasOwnProperty('responseJSON') && hr['responseJSON'].hasOwnProperty('error')) {
-                var error = hr['responseJSON'].error;
+            term.error('Whoops, looks like something went wrong.');
+            var response = hr.hasOwnProperty('responseJSON') ? hr['responseJSON'] : false;
+            if (response && response.hasOwnProperty('error')) {
+                var error = response.error;
                 if ($.isArray(error) || $.isPlainObject(error)) {
                     for (var e in error) {
                         if (error.hasOwnProperty(e)) {
@@ -169,6 +171,28 @@ function Trillium(systemSettings, routes, basePath) {
                     }
                 } else {
                     term.error(error);
+                }
+                // Show trace, if exists
+                if (response.hasOwnProperty('trace')) {
+                    var trace = response['trace'];
+                    var output = '';
+                    for (var t in trace) {
+                        t = trace[t];
+                        if (t['class']) {
+                            output += t['class'];
+                        }
+                        if (t['function']) {
+                            if (t['class']) {
+                                output += '\n';
+                            }
+                            output += 'at ' + t['class'] + t['type'] + t['function'] + '(' + t['args'].join(', ') + ')';
+                        }
+                        if (t['file'] && t['line']) {
+                            output += '\nin ' + t['file'] + ':' + t['line'];
+                        }
+                        output += '\n\n';
+                    }
+                    term.echo(output);
                 }
             } else {
                 console.log(hr, textStatus, errorThrown);
