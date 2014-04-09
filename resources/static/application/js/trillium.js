@@ -62,7 +62,7 @@ function Trillium(systemSettings, routes, basePath) {
     // Terminal prompt
     this.prompt = function (callback) {
         var username = self.username === false ? 'anonymous' : self.username;
-        callback("[" + username + "@" + self.host + "] >>> ");
+        callback("[" + username + "@" + self.host + "] -> [" + self.board.current + "] >>> ");
     };
     // Creates a confirm terminal
     this.termConfirm = function (term, onConfirm, onCancel) {
@@ -174,6 +174,53 @@ function Trillium(systemSettings, routes, basePath) {
                 console.log(hr, textStatus, errorThrown);
                 term.error('Unknown error');
             }
+        }
+    };
+    // Boards
+    this.board = {
+        current: '~',
+        list: function (term) {
+            $.ajax(
+                self.urlGenerator.generate('board.listing'),
+                {dataType: 'json'}
+            ).done(
+                function (data) {
+                    var output = '';
+                    if (data.length == 0) {
+                        output += 'List is empty';
+                    } else {
+                        var board, i;
+                        for (i = 0; i < data.length; i++) {
+                            board = data[i];
+                            output += '/' + board['name'] + '/ - ' + board['summary'];
+                            if (i + 1 != data.length) {
+                                output += '\n';
+                            }
+                        }
+                    }
+                    term.echo(output);
+                }
+            ).fail(
+                function (jqXhr, textStatus, errorThrown) {
+                    self.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
+                }
+            );
+        },
+        get: function (boardName, term, onSuccess) {
+            $.ajax(
+                self.urlGenerator.generate('board.get', {'name': boardName}),
+                {async: false, dataType: 'json'}
+            ).done(
+                function (data) {
+                    if ($.isFunction(onSuccess)) {
+                        onSuccess(data);
+                    }
+                }
+            ).fail(
+                function (jqXhr, textStatus, errorThrown) {
+                    self.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
+                }
+            );
         }
     };
     // Creates a terminal

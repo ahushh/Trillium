@@ -48,26 +48,7 @@ app.addCommand(
         } else {
             switch (args[0]) {
                 case '-l': // Show list
-                    $.ajax(
-                        app.urlGenerator.generate('board.listing'),
-                        {async: false, dataType: 'json'}
-                    ).done(
-                        function (data) {
-                            var output = 'Boards: ';
-                            if (data.length == 0) {
-                                output += '\nList is empty';
-                            } else {
-                                for (var b in data) {
-                                    output += '\n/' + data[b]['name'] + '/ - ' + data[b]['summary'];
-                                }
-                            }
-                            term.echo(output);
-                        }
-                    ).fail(
-                        function (jqXhr, textStatus, errorThrown) {
-                            app.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
-                        }
-                    );
+                    app.board.list(term);
                     break;
                 case '-c': // Create
                     manageBoard(app.urlGenerator.generate('board.create'));
@@ -92,18 +73,9 @@ app.addCommand(
                     });
                     break;
                 case '-i': // Show board
-                    $.ajax(
-                        app.urlGenerator.generate('board.get', {'name': boardName}),
-                        {async: false, dataType: 'json'}
-                    ).done(
-                        function (data) {
-                            term.echo('/' + data['name'] + '/ - ' + data['summary']);
-                        }
-                    ).fail(
-                        function (jqXhr, textStatus, errorThrown) {
-                            app.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
-                        }
-                    );
+                    app.board.get(boardName, term, function (data) {
+                        term.echo('/' + data['name'] + '/ - ' + data['summary']);
+                    });
                     break;
                 default:
                     term.error('No such argument');
