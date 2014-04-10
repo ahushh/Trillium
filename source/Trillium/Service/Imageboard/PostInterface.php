@@ -14,14 +14,14 @@ namespace Trillium\Service\Imageboard;
  *
  * @package Trillium\Service\Imageboard
  */
-interface PostInterface 
+interface PostInterface
 {
 
     /**
      * Creates a post
      * Returns ID of created post
      *
-     * @param int $thread ID of parent thread
+     * @param int    $thread  ID of parent thread
      * @param string $message A message
      *
      * @return int

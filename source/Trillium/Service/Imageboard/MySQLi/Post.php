@@ -19,7 +19,6 @@ use Trillium\Service\Imageboard\PostInterface;
 class Post extends MySQLi implements PostInterface
 {
 
-
     /**
      * {@inheritdoc}
      */
