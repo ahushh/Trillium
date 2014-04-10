@@ -157,5 +157,15 @@
         "requirements": {
             "_method": "POST"
         }
+    },
+    "thread.remove": {
+        "path": "/thread/remove/{id}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Thread",
+            "_action": "remove"
+        },
+        "requirements": {
+            "_method": "GET"
+        }
     }
 }

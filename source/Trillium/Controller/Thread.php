@@ -108,6 +108,20 @@ class Thread extends Controller
     }
 
     /**
+     * Removes a thread
+     *
+     * @param int $id Thread ID
+     *
+     * @return array
+     */
+    public function remove($id)
+    {
+        return $this->thread->remove($id) > 0
+            ? ['success' => 'Thread removed']
+            : ['error' => 'Thread does not exists', '_status' => 404];
+    }
+
+    /**
      * Validates thread data
      *
      * @param string $title   Thread title
