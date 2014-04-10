@@ -147,5 +147,15 @@
             "_controller": "\\Trillium\\Controller\\Thread",
             "_action": "get"
         }
+    },
+    "thread.rename": {
+        "path": "/thread/rename/{id}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Thread",
+            "_action": "rename"
+        },
+        "requirements": {
+            "_method": "POST"
+        }
     }
 }

@@ -82,6 +82,32 @@ class Thread extends Controller
     }
 
     /**
+     * Renames a thread
+     *
+     * @param Request $request A request instance
+     * @param int     $id      Thread id
+     *
+     * @return array
+     */
+    public function rename(Request $request, $id)
+    {
+        if (!$this->thread->isExists($id)) {
+            $result = ['error' => 'Thread does not exists', '_status' => 404];
+        } else {
+            $title = $request->get('title', '');
+            $error = $this->validateTitle($title);
+            if (!empty($error)) {
+                $result = ['error' => $error, '_status' => 400];
+            } else {
+                $this->thread->rename($id, $title);
+                $result = ['success' => 'Thread renamed'];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Validates thread data
      *
      * @param string $title   Thread title
@@ -93,10 +119,10 @@ class Thread extends Controller
     private function validate($title, $board, $message)
     {
         $error      = [];
-        $titleLen   = strlen($title);
         $messageLen = mb_strlen($message);
-        if ($titleLen < 2 || $titleLen > 30) {
-            $error[] = 'Wrong thread title len';
+        $errorTitle = $this->validateTitle($title);
+        if (!empty($errorTitle)) {
+            $error[] = $errorTitle;
         }
         if (!$this->board->isExists($board)) {
             $error[] = 'Board does not exists';
@@ -106,6 +132,20 @@ class Thread extends Controller
         }
 
         return $error;
+    }
+
+    /**
+     * Validates thread title
+     *
+     * @param string $title Title
+     *
+     * @return string
+     */
+    private function validateTitle($title)
+    {
+        $titleLen = strlen($title);
+
+        return $titleLen < 2 || $titleLen > 30 ? 'Wrong thread title len' : '';
     }
 
 }
