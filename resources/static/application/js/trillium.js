@@ -250,7 +250,23 @@ function Trillium(systemSettings, routes, basePath) {
     };
     // Threads
     this.thread = {
-        current: ''
+        current: '',
+        get: function (id, term, onSuccess) {
+            $.ajax(
+                self.urlGenerator.generate('thread.get', {'id': id}),
+                {async: false, dataType: 'json'}
+            ).done(
+                function (data) {
+                    if ($.isFunction(onSuccess)) {
+                        onSuccess(data);
+                    }
+                }
+            ).fail(
+                function (jqXhr, textStatus, errorThrown) {
+                    self.responseHandler.fail(term, jqXhr, textStatus, errorThrown);
+                }
+            );
+        }
     };
     // Creates a terminal
     this.run = function (selector) {

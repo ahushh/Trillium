@@ -1,19 +1,29 @@
 app.addCommand(
     'cd',
-    'Go to board<br />' +
-    'Usage: cd &lt;board&gt;',
-    'Go to board',
+    'Go to board/thread<br />' +
+    'Usage: cd &lt;boardName&gt;[/threadID]',
+    'Go to board/thread',
     function (term, args) {
         if (args.length == 0) {
             term.error('No board given');
             return ;
         }
-        app.thread.current = '';
         if (args[0] == '~') {
-           app.board.current = '~';
+            app.board.current = '~';
+            app.thread.current = '';
         } else {
-            app.board.get(args[0], term, function (data) {
-                app.board.current = data['name'];
+            args[0] = args[0].split('/');
+            var boardName = args[0][0];
+            var threadID = args[0].length > 1 ? args[0][1] : false;
+            app.board.get(boardName, term, function (board) {
+                if (threadID) {
+                    app.thread.get(threadID, term, function (thread) {
+                        app.thread.current = thread['id'];
+                    });
+                } else {
+                    app.thread.current = '';
+                }
+                app.board.current = board['name'];
             });
         }
         app.prompt(term.set_prompt);
