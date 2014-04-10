@@ -21,7 +21,12 @@ Requires PHP &gt;= 5.4
 
 ## TODO:
 
-Too many things.
+- Remove a child threads and posts when a board is removed.
+- Remove a child posts when a thread is removed.
+- Move child threads, when board is renamed.
+- REST URLs.
+- Update requirements for the routes.
+- And too many other things.
 
 ## Contributing
 
