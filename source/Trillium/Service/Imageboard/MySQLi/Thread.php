@@ -9,6 +9,7 @@
 
 namespace Trillium\Service\Imageboard\MySQLi;
 
+use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
 use Trillium\Service\Imageboard\ThreadInterface;
 
 /**
@@ -86,6 +87,27 @@ class Thread extends MySQLi implements ThreadInterface
         $result->free();
 
         return $list;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($id)
+    {
+        $result = $this->mysqli->query(
+            sprintf(
+                "SELECT * FROM `%s` WHERE `id` = '%s'",
+                $this->tableName,
+                (int) $id
+            )
+        );
+        $thread = $result->fetch_assoc();
+        $result->free();
+        if (!is_array($thread)) {
+            throw new ThreadNotFoundException($id);
+        }
+
+        return $thread;
     }
 
 }

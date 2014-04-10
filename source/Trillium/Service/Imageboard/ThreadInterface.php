@@ -9,6 +9,8 @@
 
 namespace Trillium\Service\Imageboard;
 
+use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
+
 /**
  * ThreadInterface Interface
  *
@@ -56,5 +58,16 @@ interface ThreadInterface
      * @return array
      */
     public function listing($board);
+
+    /**
+     * Returns thread data
+     *
+     * @param int $id ID of thread
+     *
+     * @throws ThreadNotFoundException
+     *
+     * @return array
+     */
+    public function get($id);
 
 }

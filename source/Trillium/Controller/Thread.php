@@ -10,6 +10,7 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
 
 /**
  * Thread Class
@@ -39,6 +40,24 @@ class Thread extends Controller
             $thread = $this->thread->create($title, $board);
             $this->post->create($thread, $message);
             $result = ['success' => $thread];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns thread data
+     *
+     * @param int $id ID of thread
+     *
+     * @return array
+     */
+    public function get($id)
+    {
+        try {
+            $result = $this->thread->get($id);
+        } catch (ThreadNotFoundException $e) {
+            $result = ['error' => $e->getMessage(), '_status' => 404];
         }
 
         return $result;

@@ -140,5 +140,12 @@
             "_controller": "\\Trillium\\Controller\\Thread",
             "_action": "listing"
         }
+    },
+    "thread.get": {
+        "path": "/thread/get/{id}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Thread",
+            "_action": "get"
+        }
     }
 }
