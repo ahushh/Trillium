@@ -70,4 +70,13 @@ interface ThreadInterface
      */
     public function get($id);
 
+    /**
+     * Whether thread exists
+     *
+     * @param int $id ID of thread
+     *
+     * @return boolean
+     */
+    public function isExists($id);
+
 }

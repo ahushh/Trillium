@@ -110,4 +110,22 @@ class Thread extends MySQLi implements ThreadInterface
         return $thread;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isExists($id)
+    {
+        $result = $this->mysqli->query(
+            sprintf(
+                "SELECT COUNT(*) FROM `%s` WHERE `id` = '%s'",
+                $this->tableName,
+                (int) $id
+            )
+        );
+        $total  = (int) $result->fetch_row()[0];
+        $result->free();
+
+        return $total > 0;
+    }
+
 }
