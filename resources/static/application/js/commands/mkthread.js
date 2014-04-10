@@ -20,6 +20,7 @@ app.addCommand(
                     function (data) {
                         term.pop();
                         if (data.hasOwnProperty('success')) {
+                            app.board.current = boardName;
                             app.thread.current = data.success.toString();
                             app.prompt(term.set_prompt);
                         } else {
