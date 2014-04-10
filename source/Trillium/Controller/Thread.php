@@ -45,6 +45,24 @@ class Thread extends Controller
     }
 
     /**
+     * Returns list of threads for the given board
+     *
+     * @param string $board Board name
+     *
+     * @return array
+     */
+    public function listing($board)
+    {
+        if (!$this->board->isExists($board)) {
+            $result = ['error' => 'Board does not exists', '_status' => 404];
+        } else {
+            $result = $this->thread->listing($board);
+        }
+
+        return $result;
+    }
+
+    /**
      * Validates thread data
      *
      * @param string $title   Thread title

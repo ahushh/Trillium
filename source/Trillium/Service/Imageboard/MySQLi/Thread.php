@@ -67,4 +67,25 @@ class Thread extends MySQLi implements ThreadInterface
         return $this->mysqli->affected_rows;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function listing($board)
+    {
+        $result = $this->mysqli->query(
+            sprintf(
+                "SELECT * FROM `%s` WHERE `board` = '%s'",
+                $this->tableName,
+                $this->mysqli->real_escape_string($board)
+            )
+        );
+        $list = [];
+        while (($thread = $result->fetch_assoc())) {
+            $list[] = $thread;
+        }
+        $result->free();
+
+        return $list;
+    }
+
 }

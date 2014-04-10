@@ -48,4 +48,13 @@ interface ThreadInterface
      */
     public function remove($id);
 
+    /**
+     * Returns list of threads for a given board
+     *
+     * @param string $board Name of a board
+     *
+     * @return array
+     */
+    public function listing($board);
+
 }

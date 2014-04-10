@@ -133,5 +133,12 @@
             "_controller": "\\Trillium\\Controller\\Thread",
             "_action": "create"
         }
+    },
+    "thread.listing": {
+        "path": "/thread/listing/{board}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Thread",
+            "_action": "listing"
+        }
     }
 }
