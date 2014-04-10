@@ -80,7 +80,7 @@ class Thread extends MySQLi implements ThreadInterface
                 $this->mysqli->real_escape_string($board)
             )
         );
-        $list = [];
+        $list   = [];
         while (($thread = $result->fetch_assoc())) {
             $list[] = $thread;
         }

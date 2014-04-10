@@ -30,10 +30,10 @@ class Thread extends Controller
      */
     public function create(Request $request)
     {
-        $title = $request->get('title', '');
-        $board = $request->get('board', '');
+        $title   = $request->get('title', '');
+        $board   = $request->get('board', '');
         $message = $request->get('message', '');
-        $error = $this->validate($title, $board, $message);
+        $error   = $this->validate($title, $board, $message);
         if (!empty($error)) {
             $result = ['error' => $error, '_status' => 400];
         } else {
@@ -92,8 +92,8 @@ class Thread extends Controller
      */
     private function validate($title, $board, $message)
     {
-        $error = [];
-        $titleLen = strlen($title);
+        $error      = [];
+        $titleLen   = strlen($title);
         $messageLen = mb_strlen($message);
         if ($titleLen < 2 || $titleLen > 30) {
             $error[] = 'Wrong thread title len';
