@@ -19,7 +19,9 @@ app.addCommand(
                 boardName = args[0];
                 threadID = args.length > 1 && args[1] ? args[1] : threadID;
             } else if (app.board.current == '~') {
-                boardName = args[0];
+                args[0] = args[0].split('/');
+                boardName = args[0][0];
+                threadID = args[0].length > 1 && args[0][1] ? args[0][1] : threadID;
             } else {
                 threadID = args[0];
             }
