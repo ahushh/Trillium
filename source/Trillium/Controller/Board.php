@@ -90,7 +90,10 @@ class Board extends Controller
             }
             if (empty($error)) {
                 $this->board->update($name, $summary, $board);
-                $this->dispatcher->dispatch(Events::BOARD_UPDATE_SUCCESS, new BoardUpdateSuccess($name, $summary, $board));
+                $this->dispatcher->dispatch(
+                    Events::BOARD_UPDATE_SUCCESS,
+                    new BoardUpdateSuccess($name, $summary, $board)
+                );
                 $result = ['success' => 'Board updated'];
             } else {
                 $result = ['error' => $error, '_status' => 400];

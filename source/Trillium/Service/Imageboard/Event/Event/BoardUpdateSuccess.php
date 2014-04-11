@@ -47,7 +47,7 @@ class BoardUpdateSuccess extends Event
     {
         $this->newName    = $newName;
         $this->newSummary = $newSummary;
-        $this->oldName  = $oldName;
+        $this->oldName    = $oldName;
     }
 
     /**

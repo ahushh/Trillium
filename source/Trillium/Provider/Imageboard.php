@@ -9,8 +9,6 @@
 
 namespace Trillium\Provider;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Trillium\Service\Imageboard\Event\Listener\Board as BoardListener;
 use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
 use Trillium\Service\Imageboard\MySQLi\Board;
@@ -33,16 +31,16 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
      */
     public function registerServices(Container $container)
     {
-        $container['board'] = function ($c) {
+        $container['board']           = function ($c) {
             return new Board($c['mysqli'], 'boards');
         };
-        $container['thread'] = function ($c) {
+        $container['thread']          = function ($c) {
             return new Thread($c['mysqli'], 'threads');
         };
-        $container['post'] = function ($c) {
+        $container['post']            = function ($c) {
             return new Post($c['mysqli'], 'posts');
         };
-        $container['board.listener'] = function ($c) {
+        $container['board.listener']  = function ($c) {
             return new BoardListener($c['thread'], $c['post']);
         };
         $container['thread.listener'] = function ($c) {
