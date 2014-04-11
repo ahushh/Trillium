@@ -305,7 +305,7 @@ function Trillium(systemSettings, routes, basePath) {
                     }
                     return ;
                 }
-                cmd.run(term, command.args);
+                cmd.run(term, command.args, command.rest);
             },
             {
                 greetings: null,
