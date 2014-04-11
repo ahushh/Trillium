@@ -22,7 +22,9 @@ CREATE TABLE `threads` (
 CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `thread` int(10) unsigned NOT NULL,
+  `board` varchar(10) NOT NULL,
   `message` TEXT NOT NULL,
   PRIMARY KEY (`id`),
-  KEY (`thread`)
+  KEY (`thread`),
+  KEY (`board`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

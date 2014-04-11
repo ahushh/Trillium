@@ -28,4 +28,24 @@ interface PostInterface
      */
     public function create($thread, $message);
 
+    /**
+     * Remove all posts of a board
+     * Returns number of affected rows
+     *
+     * @param string $board Name of the board
+     *
+     * @return int
+     */
+    public function removeBoard($board);
+
+    /**
+     * Remove all post of a thread
+     * Returns number of affected rows
+     *
+     * @param int $id Thread ID
+     *
+     * @return int
+     */
+    public function removeThread($id);
+
 }

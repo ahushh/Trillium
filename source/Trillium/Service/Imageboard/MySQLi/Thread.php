@@ -128,4 +128,20 @@ class Thread extends MySQLi implements ThreadInterface
         return $total > 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function removeBoard($board)
+    {
+        $this->mysqli->query(
+            sprintf(
+                "DELETE FROM `%s` WHERE `board` = '%s'",
+                $this->tableName,
+                $this->mysqli->real_escape_string($board)
+            )
+        );
+
+        return $this->mysqli->affected_rows;
+    }
+
 }

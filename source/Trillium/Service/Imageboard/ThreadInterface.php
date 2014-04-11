@@ -51,6 +51,16 @@ interface ThreadInterface
     public function remove($id);
 
     /**
+     * Remove all threads of a board
+     * Returns number of affected rows
+     *
+     * @param string $board Name of the board
+     *
+     * @return int
+     */
+    public function removeBoard($board);
+
+    /**
      * Returns list of threads for a given board
      *
      * @param string $board Name of a board
