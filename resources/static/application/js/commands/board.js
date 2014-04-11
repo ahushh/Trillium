@@ -54,7 +54,10 @@ app.addCommand(
                     manageBoard(app.urlGenerator.generate('board.create'));
                     break;
                 case '-u': // Update
-                    manageBoard(app.urlGenerator.generate('board.update', {'board': boardName}));
+                    app.board.get(boardName, term, function (board) {
+                        term.echo('Update board: /' + board['name'] + '/ - ' + board['summary']);
+                        manageBoard(app.urlGenerator.generate('board.update', {'board': boardName}));
+                    });
                     break;
                 case '-r': // Delete
                     app.termConfirm(term, function () {
