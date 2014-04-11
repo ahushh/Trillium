@@ -44,10 +44,10 @@ class Thread extends MySQLi implements ThreadInterface
     {
         $this->mysqli->query(
             sprintf(
-                "UPDATE `%s` SET `title` = '%s' WHERE `id` = '%s'",
+                "UPDATE `%s` SET `title` = '%s' WHERE `id` = '%u'",
                 $this->tableName,
                 $this->mysqli->real_escape_string($title),
-                (int) $id
+                $id
             )
         );
     }
@@ -59,9 +59,9 @@ class Thread extends MySQLi implements ThreadInterface
     {
         $this->mysqli->query(
             sprintf(
-                "DELETE FROM `%s` WHERE `id` = '%s'",
+                "DELETE FROM `%s` WHERE `id` = '%u'",
                 $this->tableName,
-                (int) $id
+                $id
             )
         );
 
@@ -96,9 +96,9 @@ class Thread extends MySQLi implements ThreadInterface
     {
         $result = $this->mysqli->query(
             sprintf(
-                "SELECT * FROM `%s` WHERE `id` = '%s'",
+                "SELECT * FROM `%s` WHERE `id` = '%u'",
                 $this->tableName,
-                (int) $id
+                $id
             )
         );
         $thread = $result->fetch_assoc();
@@ -117,9 +117,9 @@ class Thread extends MySQLi implements ThreadInterface
     {
         $result = $this->mysqli->query(
             sprintf(
-                "SELECT COUNT(*) FROM `%s` WHERE `id` = '%s'",
+                "SELECT COUNT(*) FROM `%s` WHERE `id` = '%u'",
                 $this->tableName,
-                (int) $id
+                $id
             )
         );
         $total  = (int) $result->fetch_row()[0];

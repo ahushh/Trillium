@@ -26,10 +26,10 @@ class Post extends MySQLi implements PostInterface
     {
         $this->mysqli->query(
             sprintf(
-                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%s', `message` = '%s'",
+                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%u', `message` = '%s'",
                 $this->tableName,
                 $this->mysqli->real_escape_string($board),
-                (int) $thread,
+                $thread,
                 $this->mysqli->real_escape_string($message)
             )
         );
@@ -60,9 +60,9 @@ class Post extends MySQLi implements PostInterface
     {
         $this->mysqli->query(
             sprintf(
-                "DELETE FROM `%s` WHERE `thread` = '%s'",
+                "DELETE FROM `%s` WHERE `thread` = '%u'",
                 $this->tableName,
-                (int) $id
+                $id
             )
         );
 
