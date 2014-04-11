@@ -6,6 +6,27 @@ app.addCommand(
         if ((args.length == 0 && app.board.current == '~') || args[0] == '~') {
             // Boards list
             app.board.list(term);
+        } else if (args.length == 0 && app.board.current != '~' && app.thread.current != '') {
+            $.ajax(
+                app.urlGenerator.generate('post.listing', {thread: app.thread.current}),
+                {dataType: 'json'}
+            ).done(
+                function (posts) {
+                    var output = '', i = 0;
+                    for (var p in posts) {
+                        output += posts[p]['message'];
+                        if (i + 1 != posts.length) {
+                            output += '\n\n';
+                        }
+                        i++;
+                    }
+                    term.echo(output);
+                }
+            ).fail(
+                function (xhr, textStatus, errorThrown) {
+                    app.responseHandler.fail(term, xhr, textStatus, errorThrown);
+                }
+            )
         } else {
             var board = args[0] ? args[0] : app.board.current;
             $.ajax(
