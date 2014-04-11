@@ -69,4 +69,13 @@ interface PostInterface
      */
     public function remove($id);
 
+    /**
+     * Returns list of the posts
+     *
+     * @param int $thread Thread ID
+     *
+     * @return mixed
+     */
+    public function listing($thread);
+
 }

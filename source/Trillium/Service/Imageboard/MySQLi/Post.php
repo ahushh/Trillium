@@ -100,4 +100,25 @@ class Post extends MySQLi implements PostInterface
         return $this->mysqli->affected_rows;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function listing($thread)
+    {
+        $list   = [];
+        $result = $this->mysqli->query(
+            sprintf(
+                "SELECT * FROM `%s` WHERE `thread` = '%u'",
+                $this->tableName,
+                $thread
+            )
+        );
+        while (($item = $result->fetch_assoc())) {
+            $list[] = $item;
+        }
+        $result->free();
+
+        return $list;
+    }
+
 }

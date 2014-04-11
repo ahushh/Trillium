@@ -238,5 +238,15 @@
         "requirements": {
             "_method": "GET"
         }
+    },
+    "post.listing": {
+        "path": "/post/listing/{thread}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Post",
+            "_action": "listing"
+        },
+        "requirements": {
+            "_method": "GET"
+        }
     }
 }

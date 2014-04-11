@@ -65,4 +65,22 @@ class Post extends Controller
         return $result;
     }
 
+    /**
+     * Returns the list of the posts
+     *
+     * @param string $thread Thread ID
+     *
+     * @return array
+     */
+    public function listing($thread)
+    {
+        if (!$this->thread->isExists($thread)) {
+            $result = ['error' => 'Thread does not exists', '_status' => 404];
+        } else {
+            $result = $this->post->listing($thread);
+        }
+
+        return $result;
+    }
+
 }
