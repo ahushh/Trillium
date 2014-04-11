@@ -69,4 +69,19 @@ class Post extends MySQLi implements PostInterface
         return $this->mysqli->affected_rows;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function move($old, $new)
+    {
+        $this->mysqli->query(
+            sprintf(
+                "UPDATE `%s` SET `board` = '%s' WHERE `board` = '%s'",
+                $this->tableName,
+                $this->mysqli->real_escape_string($new),
+                $this->mysqli->real_escape_string($old)
+            )
+        );
+    }
+
 }

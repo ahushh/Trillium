@@ -49,4 +49,14 @@ interface PostInterface
      */
     public function removeThread($id);
 
+    /**
+     * Moves posts between boards
+     *
+     * @param string $old Old board
+     * @param string $new New board
+     *
+     * @return void
+     */
+    public function move($old, $new);
+
 }

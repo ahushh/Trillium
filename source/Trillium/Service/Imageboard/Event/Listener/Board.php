@@ -11,6 +11,7 @@ namespace Trillium\Service\Imageboard\Event\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Trillium\Service\Imageboard\Event\Event\BoardRemove;
+use Trillium\Service\Imageboard\Event\Event\BoardUpdateSuccess;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\PostInterface;
 use Trillium\Service\Imageboard\ThreadInterface;
@@ -48,6 +49,23 @@ class Board implements EventSubscriberInterface
     }
 
     /**
+     * Moves threads and posts when board was renamed
+     *
+     * @param BoardUpdateSuccess $event
+     *
+     * @return void
+     */
+    public function onUpdateSuccess(BoardUpdateSuccess $event)
+    {
+        $newName = $event->getNewName();
+        $oldName = $event->getOldName();
+        if ($newName != $oldName) {
+            $this->thread->move($oldName, $newName);
+            $this->post->move($oldName, $newName);
+        }
+    }
+
+    /**
      * Removes threads and posts when a board was removed
      *
      * @param BoardRemove $event
@@ -67,7 +85,8 @@ class Board implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::BOARD_REMOVE => 'onRemove',
+            Events::BOARD_REMOVE         => 'onRemove',
+            Events::BOARD_UPDATE_SUCCESS => 'onUpdateSuccess',
         ];
     }
 
