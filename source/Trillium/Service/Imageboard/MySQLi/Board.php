@@ -38,27 +38,6 @@ class Board extends MySQLi implements BoardInterface
     /**
      * {@inheritdoc}
      */
-    public function get($name)
-    {
-        $result = $this->mysqli->query(
-            sprintf(
-                "SELECT * FROM `%s` WHERE `name` = '%s'",
-                $this->tableName,
-                $this->mysqli->real_escape_string($name)
-            )
-        );
-        $board  = $result->fetch_assoc();
-        $result->free();
-        if (!is_array($board)) {
-            throw new BoardNotFoundException($name);
-        }
-
-        return $board;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function update($newName, $summary, $name)
     {
         $this->mysqli->query(
@@ -77,15 +56,20 @@ class Board extends MySQLi implements BoardInterface
      */
     public function delete($name)
     {
-        $this->mysqli->query(
-            sprintf(
-                "DELETE FROM `%s` WHERE `name` = '%s'",
-                $this->tableName,
-                $this->mysqli->real_escape_string($name)
-            )
-        );
+        return parent::removeItem('name', $name);
+    }
 
-        return $this->mysqli->affected_rows;
+    /**
+     * {@inheritdoc}
+     */
+    public function get($name)
+    {
+        $board = parent::getItem('name', $name);
+        if ($board === null) {
+            throw new BoardNotFoundException($name);
+        }
+
+        return $board;
     }
 
     /**
@@ -93,14 +77,7 @@ class Board extends MySQLi implements BoardInterface
      */
     public function listing()
     {
-        $list   = [];
-        $result = $this->mysqli->query(sprintf("SELECT * FROM `%s` ORDER BY `name` ASC", $this->tableName));
-        while (($board = $result->fetch_assoc())) {
-            $list[] = $board;
-        }
-        $result->free();
-
-        return $list;
+        return parent::listingItems(sprintf("SELECT * FROM `%s` ORDER BY `name` ASC", $this->tableName));
     }
 
     /**
@@ -108,17 +85,7 @@ class Board extends MySQLi implements BoardInterface
      */
     public function isExists($name)
     {
-        $result = $this->mysqli->query(
-            sprintf(
-                "SELECT COUNT(*) FROM `%s` WHERE `name` = '%s'",
-                $this->tableName,
-                $this->mysqli->real_escape_string($name)
-            )
-        );
-        $total  = (int) $result->fetch_row()[0];
-        $result->free();
-
-        return $total > 0;
+        return parent::isItemExists('name', $name);
     }
 
 }

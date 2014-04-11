@@ -40,17 +40,31 @@ class Post extends MySQLi implements PostInterface
     /**
      * {@inheritdoc}
      */
-    public function removeBoard($board)
+    public function remove($id)
     {
-        $this->mysqli->query(
+        return parent::removeItem('id', $id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listing($thread)
+    {
+        return parent::listingItems(
             sprintf(
-                "DELETE FROM `%s` WHERE `board` = '%s'",
+                "SELECT * FROM `%s` WHERE `thread` = '%u'",
                 $this->tableName,
-                $this->mysqli->real_escape_string($board)
+                $thread
             )
         );
+    }
 
-        return $this->mysqli->affected_rows;
+    /**
+     * {@inheritdoc}
+     */
+    public function removeBoard($board)
+    {
+        return parent::removeItem('board', $board);
     }
 
     /**
@@ -58,15 +72,7 @@ class Post extends MySQLi implements PostInterface
      */
     public function removeThread($id)
     {
-        $this->mysqli->query(
-            sprintf(
-                "DELETE FROM `%s` WHERE `thread` = '%u'",
-                $this->tableName,
-                $id
-            )
-        );
-
-        return $this->mysqli->affected_rows;
+        return parent::removeItem('thread', $id);
     }
 
     /**
@@ -82,43 +88,6 @@ class Post extends MySQLi implements PostInterface
                 $this->mysqli->real_escape_string($old)
             )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($id)
-    {
-        $this->mysqli->query(
-            sprintf(
-                "DELETE FROM `%s` WHERE `id` = '%u'",
-                $this->tableName,
-                $id
-            )
-        );
-
-        return $this->mysqli->affected_rows;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function listing($thread)
-    {
-        $list   = [];
-        $result = $this->mysqli->query(
-            sprintf(
-                "SELECT * FROM `%s` WHERE `thread` = '%u'",
-                $this->tableName,
-                $thread
-            )
-        );
-        while (($item = $result->fetch_assoc())) {
-            $list[] = $item;
-        }
-        $result->free();
-
-        return $list;
     }
 
 }

@@ -57,15 +57,7 @@ class Thread extends MySQLi implements ThreadInterface
      */
     public function remove($id)
     {
-        $this->mysqli->query(
-            sprintf(
-                "DELETE FROM `%s` WHERE `id` = '%u'",
-                $this->tableName,
-                $id
-            )
-        );
-
-        return $this->mysqli->affected_rows;
+        return parent::removeItem('id', $id);
     }
 
     /**
@@ -73,20 +65,13 @@ class Thread extends MySQLi implements ThreadInterface
      */
     public function listing($board)
     {
-        $result = $this->mysqli->query(
+        return parent::listingItems(
             sprintf(
                 "SELECT * FROM `%s` WHERE `board` = '%s'",
                 $this->tableName,
                 $this->mysqli->real_escape_string($board)
             )
         );
-        $list   = [];
-        while (($thread = $result->fetch_assoc())) {
-            $list[] = $thread;
-        }
-        $result->free();
-
-        return $list;
     }
 
     /**
@@ -94,16 +79,8 @@ class Thread extends MySQLi implements ThreadInterface
      */
     public function get($id)
     {
-        $result = $this->mysqli->query(
-            sprintf(
-                "SELECT * FROM `%s` WHERE `id` = '%u'",
-                $this->tableName,
-                $id
-            )
-        );
-        $thread = $result->fetch_assoc();
-        $result->free();
-        if (!is_array($thread)) {
+        $thread = parent::getItem('id', $id);
+        if ($thread === null) {
             throw new ThreadNotFoundException($id);
         }
 
@@ -115,17 +92,7 @@ class Thread extends MySQLi implements ThreadInterface
      */
     public function isExists($id)
     {
-        $result = $this->mysqli->query(
-            sprintf(
-                "SELECT COUNT(*) FROM `%s` WHERE `id` = '%u'",
-                $this->tableName,
-                $id
-            )
-        );
-        $total  = (int) $result->fetch_row()[0];
-        $result->free();
-
-        return $total > 0;
+        return parent::isItemExists('id', $id);
     }
 
     /**
@@ -133,15 +100,7 @@ class Thread extends MySQLi implements ThreadInterface
      */
     public function removeBoard($board)
     {
-        $this->mysqli->query(
-            sprintf(
-                "DELETE FROM `%s` WHERE `board` = '%s'",
-                $this->tableName,
-                $this->mysqli->real_escape_string($board)
-            )
-        );
-
-        return $this->mysqli->affected_rows;
+        return parent::removeItem('board', $board);
     }
 
     /**
