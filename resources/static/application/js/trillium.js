@@ -334,7 +334,16 @@ function Trillium(systemSettings, routes, basePath) {
                 onBlur: function () {
                     return false;
                 },
-                prompt: self.prompt
+                prompt: self.prompt,
+                completion: function (term, string, callback) {
+                    var commandsNames = [];
+                    for (var c in commands) {
+                        if (commands[c].isAvailable) {
+                            commandsNames.push(c);
+                        }
+                    }
+                    callback(commandsNames);
+                }
             }
         )
     };
