@@ -35,7 +35,10 @@ class Thread extends Controller
         $title   = $request->get('title', '');
         $board   = $request->get('board', '');
         $message = $request->get('message', '');
-        $error   = $this->validate($title, $board, $message);
+        $error   = $this->validator->thread($title, $message);
+        if (!$this->board->isExists($board)) {
+            $error[] = 'Board does not exists';
+        }
         if (!empty($error)) {
             $result = ['error' => $error, '_status' => 400];
         } else {
@@ -97,7 +100,7 @@ class Thread extends Controller
             $result = ['error' => 'Thread does not exists', '_status' => 404];
         } else {
             $title = $request->get('title', '');
-            $error = $this->validateTitle($title);
+            $error = $this->validator->threadTitle($title);
             if (!empty($error)) {
                 $result = ['error' => $error, '_status' => 400];
             } else {
@@ -126,47 +129,6 @@ class Thread extends Controller
         }
 
         return $result;
-    }
-
-    /**
-     * Validates thread data
-     *
-     * @param string $title   Thread title
-     * @param string $board   Parent board
-     * @param string $message Message
-     *
-     * @return array
-     */
-    private function validate($title, $board, $message)
-    {
-        $error      = [];
-        $messageLen = mb_strlen($message);
-        $errorTitle = $this->validateTitle($title);
-        if (!empty($errorTitle)) {
-            $error[] = $errorTitle;
-        }
-        if (!$this->board->isExists($board)) {
-            $error[] = 'Board does not exists';
-        }
-        if ($messageLen < 2 || $messageLen > 10000) {
-            $error[] = sprintf('Message must be between %d and %d characters', 2, 10000);
-        }
-
-        return $error;
-    }
-
-    /**
-     * Validates thread title
-     *
-     * @param string $title Title
-     *
-     * @return string
-     */
-    private function validateTitle($title)
-    {
-        $titleLen = strlen($title);
-
-        return $titleLen < 2 || $titleLen > 30 ? sprintf('Title must be between %d and %d characters', 2, 30) : '';
     }
 
 }

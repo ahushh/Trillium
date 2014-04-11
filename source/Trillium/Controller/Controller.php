@@ -23,6 +23,7 @@ namespace Trillium\Controller;
  * @property-read \Trillium\Service\Imageboard\PostInterface                  $post
  * @property-read \Vermillion\Environment                                     $environment
  * @property-read \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+ * @property-read \Trillium\Service\Imageboard\Validator                      $validator
  *
  * @package Trillium\Controller
  */

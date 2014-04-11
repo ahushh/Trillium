@@ -35,7 +35,7 @@ class Board extends Controller
     {
         $name    = $request->get('name', '');
         $summary = $request->get('summary', '');
-        $error   = $this->validate($name, $summary);
+        $error   = $this->validator->board($name, $summary);
         if ($this->board->isExists($name)) {
             $error[] = 'Board already exists';
         }
@@ -84,7 +84,7 @@ class Board extends Controller
         } else {
             $name    = $request->get('name', '');
             $summary = $request->get('summary', '');
-            $error   = $this->validate($name, $summary);
+            $error   = $this->validator->board($name, $summary);
             if ($name != $board && $this->board->isExists($name)) {
                 $error[] = 'Board already exists';
             }
@@ -131,32 +131,6 @@ class Board extends Controller
     public function listing()
     {
         return $this->board->listing();
-    }
-
-    /**
-     * Validate board data
-     *
-     * @param string $name    Name
-     * @param string $summary Summary
-     *
-     * @return array
-     */
-    private function validate($name, $summary)
-    {
-        $error = [];
-        if (empty($name)) {
-            $error[] = 'Name is required';
-        } elseif (preg_match('~[^a-z0-9]~', $name)) {
-            $error[] = 'Name must contain only letters a-z and/or numbers 0-9';
-        } elseif (strlen($name) > 10) {
-            $error[] = sprintf('Name must contain less than %d characters');
-        }
-        $summaryLen = strlen($summary);
-        if ($summaryLen < 2 || $summary > 100) {
-            $error[] = sprintf('Summary must be between %d and %d characters', 2, 100);
-        }
-
-        return $error;
     }
 
 }

@@ -14,6 +14,7 @@ use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
 use Trillium\Service\Imageboard\MySQLi\Board;
 use Trillium\Service\Imageboard\MySQLi\Post;
 use Trillium\Service\Imageboard\MySQLi\Thread;
+use Trillium\Service\Imageboard\Validator;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 use Vermillion\Provider\SubscriberProviderInterface;
@@ -45,6 +46,9 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
         };
         $container['thread.listener'] = function ($c) {
             return new ThreadListener($c['post']);
+        };
+        $container['validator']       = function () {
+            return new Validator();
         };
     }
 
