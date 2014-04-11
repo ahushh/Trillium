@@ -145,14 +145,15 @@ class Board extends Controller
     {
         $error = [];
         if (empty($name)) {
-            $error[] = 'Name could not be empty';
+            $error[] = 'Name is required';
         } elseif (preg_match('~[^a-z0-9]~', $name)) {
-            $error[] = 'Name contains disallowed characters';
+            $error[] = 'Name must contain only letters a-z and/or numbers 0-9';
         } elseif (strlen($name) > 10) {
-            $error[] = 'Name length exceeds 10 characters';
+            $error[] = sprintf('Name must contain less than %d characters');
         }
-        if (strlen($summary) > 100) {
-            $error[] = 'Summary length exceeds 100 characters';
+        $summaryLen = strlen($summary);
+        if ($summaryLen < 2 || $summary > 100) {
+            $error[] = sprintf('Summary must be between %d and %d characters', 2, 100);
         }
 
         return $error;

@@ -149,7 +149,7 @@ class Thread extends Controller
             $error[] = 'Board does not exists';
         }
         if ($messageLen < 2 || $messageLen > 10000) {
-            $error[] = 'Wrong message len';
+            $error[] = sprintf('Message must be between %d and %d characters', 2, 10000);
         }
 
         return $error;
@@ -166,7 +166,7 @@ class Thread extends Controller
     {
         $titleLen = strlen($title);
 
-        return $titleLen < 2 || $titleLen > 30 ? 'Wrong thread title len' : '';
+        return $titleLen < 2 || $titleLen > 30 ? sprintf('Title must be between %d and %d characters', 2, 30) : '';
     }
 
 }
