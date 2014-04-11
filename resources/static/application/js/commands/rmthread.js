@@ -14,6 +14,10 @@ app.addCommand(
                 {dataType: 'json'}
             ).done(
                 function (data) {
+                    if (app.thread.current == args[0]) {
+                        app.thread.current = '';
+                        app.prompt(term.set_prompt);
+                    }
                     app.responseHandler.success(term, data);
                 }
             ).fail(
