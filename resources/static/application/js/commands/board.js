@@ -64,6 +64,10 @@ app.addCommand(
                         ).done(
                             function (data) {
                                 app.responseHandler.success(term, data);
+                                if (app.board.current == boardName) {
+                                    app.board.current = '~';
+                                    app.prompt(term.set_prompt);
+                                }
                             }
                         ).fail(
                             function (jqXhr, textStatus, errorThrown) {
