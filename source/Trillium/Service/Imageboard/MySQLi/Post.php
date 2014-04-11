@@ -84,4 +84,20 @@ class Post extends MySQLi implements PostInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function remove($id)
+    {
+        $this->mysqli->query(
+            sprintf(
+                "DELETE FROM `%s` WHERE `id` = '%u'",
+                $this->tableName,
+                $id
+            )
+        );
+
+        return $this->mysqli->affected_rows;
+    }
+
 }

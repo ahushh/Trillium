@@ -59,4 +59,14 @@ interface PostInterface
      */
     public function move($old, $new);
 
+    /**
+     * Removes a post
+     * Returns number of affected rows
+     *
+     * @param int $id Post ID
+     *
+     * @return int
+     */
+    public function remove($id);
+
 }
