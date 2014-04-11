@@ -9,18 +9,23 @@
 
 namespace Trillium\Provider;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Trillium\Service\Imageboard\Event\Listener\Board as BoardListener;
+use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
 use Trillium\Service\Imageboard\MySQLi\Board;
 use Trillium\Service\Imageboard\MySQLi\Post;
 use Trillium\Service\Imageboard\MySQLi\Thread;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
+use Vermillion\Provider\SubscriberProviderInterface;
 
 /**
  * Imageboard Class
  *
  * @package Trillium\Provider
  */
-class Imageboard implements ServiceProviderInterface
+class Imageboard implements ServiceProviderInterface, SubscriberProviderInterface
 {
 
     /**
@@ -37,6 +42,23 @@ class Imageboard implements ServiceProviderInterface
         $container['post'] = function ($c) {
             return new Post($c['mysqli'], 'posts');
         };
+        $container['board.listener'] = function ($c) {
+            return new BoardListener($c['thread'], $c['post']);
+        };
+        $container['thread.listener'] = function ($c) {
+            return new ThreadListener($c['post']);
+        };
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubscribers(Container $container)
+    {
+        return [
+            $container['board.listener'],
+            $container['thread.listener'],
+        ];
     }
 
 }

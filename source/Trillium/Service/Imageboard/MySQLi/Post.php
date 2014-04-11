@@ -22,12 +22,13 @@ class Post extends MySQLi implements PostInterface
     /**
      * {@inheritdoc}
      */
-    public function create($thread, $message)
+    public function create($board, $thread, $message)
     {
         $this->mysqli->query(
             sprintf(
-                "INSERT INTO `%s` SET `thread` = '%s', `message` = '%s'",
+                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%s', `message` = '%s'",
                 $this->tableName,
+                $this->mysqli->real_escape_string($board),
                 (int) $thread,
                 $this->mysqli->real_escape_string($message)
             )

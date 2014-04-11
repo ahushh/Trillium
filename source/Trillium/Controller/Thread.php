@@ -10,6 +10,8 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\Service\Imageboard\Event\Event\ThreadRemove;
+use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
 
 /**
@@ -38,7 +40,7 @@ class Thread extends Controller
             $result = ['error' => $error, '_status' => 400];
         } else {
             $thread = $this->thread->create($title, $board);
-            $this->post->create($thread, $message);
+            $this->post->create($board, $thread, $message);
             $result = ['success' => $thread];
         }
 
@@ -116,9 +118,14 @@ class Thread extends Controller
      */
     public function remove($id)
     {
-        return $this->thread->remove($id) > 0
-            ? ['success' => 'Thread removed']
-            : ['error' => 'Thread does not exists', '_status' => 404];
+        if ($this->thread->remove($id) > 0) {
+            $this->dispatcher->dispatch(Events::THREAD_REMOVE, new ThreadRemove($id));
+            $result = ['success' => 'Thread removed'];
+        } else {
+            $result = ['error' => 'Thread does not exists', '_status' => 404];
+        }
+
+        return $result;
     }
 
     /**

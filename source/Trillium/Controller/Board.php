@@ -10,6 +10,8 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\Service\Imageboard\Event\Event\BoardRemove;
+use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\BoardNotFoundException;
 
 /**
@@ -107,6 +109,7 @@ class Board extends Controller
     {
         $affectedRows = $this->board->delete($name);
         if ($affectedRows > 0) {
+            $this->dispatcher->dispatch(Events::BOARD_REMOVE, new BoardRemove($name));
             $result = ['success' => 'Board deleted'];
         } else {
             $result = ['error' => 'Board does not exists', '_status' => 404];
