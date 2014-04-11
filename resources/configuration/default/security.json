@@ -29,7 +29,8 @@
         "^/board/update/.*$": {"roles": ["ROLE_ROOT"]},
         "^/board/delete/.*$": {"roles": ["ROLE_ROOT"]},
         "^/thread/rename/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/thread/remove/.*$": {"roles": ["ROLE_ROOT"]}
+        "^/thread/remove/.*$": {"roles": ["ROLE_ROOT"]},
+        "^/post/remove/.*$": {"roles": ["ROLE_ROOT"]}
     },
     "role_hierarchy": {
     },

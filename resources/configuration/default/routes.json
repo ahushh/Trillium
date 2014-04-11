@@ -218,5 +218,25 @@
         "requirements": {
             "_method": "GET"
         }
+    },
+    "post.create": {
+        "path": "/post/create/{thread}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Post",
+            "_action": "create"
+        },
+        "requirements": {
+            "_method": "POST"
+        }
+    },
+    "post.remove": {
+        "path": "/post/remove/{id}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Post",
+            "_action": "remove"
+        },
+        "requirements": {
+            "_method": "GET"
+        }
     }
 }
