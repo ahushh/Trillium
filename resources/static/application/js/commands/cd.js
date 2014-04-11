@@ -3,28 +3,44 @@ app.addCommand(
     'Go to board/thread<br />' +
     'Usage: cd &lt;boardName&gt;[/threadID]',
     'Go to board/thread',
-    function (term, args) {
-        if (args.length == 0) {
-            term.error('No board given');
+    function (term, args, rest) {
+        if (/[^/a-z0-9]+/.test(rest)) {
+            term.error('Wrong path given');
             return ;
         }
-        if (args[0] == '~') {
+        args[0] = args[0].toString();
+        if (args[0] == '/') {
             app.board.current = '~';
             app.thread.current = '';
         } else {
-            args[0] = args[0].split('/');
-            var boardName = args[0][0];
-            var threadID = args[0].length > 1 ? args[0][1] : false;
-            app.board.get(boardName, term, function (board) {
-                if (threadID) {
-                    app.thread.get(threadID, term, function (thread) {
+            var boardName = false;
+            var threadID = false;
+            if (/^\//.test(args[0])) {
+                boardName = args[0];
+                threadID = args.length > 1 && args[1] ? args[1] : threadID;
+            } else if (app.board.current == '~') {
+                boardName = args[0];
+            } else {
+                threadID = args[0];
+            }
+            if (boardName) {
+                boardName = boardName.replace(/^\/|\/$/g, '');
+                app.board.get(boardName, term, function (board) {
+                    app.board.current = board['name'];
+                });
+            }
+            if (threadID) {
+                app.thread.get(threadID, term, function (thread) {
+                    if (boardName && thread['board'] != boardName) {
+                        // Of course, thread is exists, but not in this board
+                        term.error('Thread does not exists');
+                    } else {
                         app.thread.current = thread['id'];
-                    });
-                } else {
-                    app.thread.current = '';
-                }
-                app.board.current = board['name'];
-            });
+                    }
+                });
+            } else {
+                app.thread.current = '';
+            }
         }
         app.prompt(term.set_prompt);
     },
