@@ -11,6 +11,7 @@ namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Trillium\Service\Imageboard\Event\Event\BoardRemove;
+use Trillium\Service\Imageboard\Event\Event\BoardUpdateSuccess;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\BoardNotFoundException;
 
@@ -89,6 +90,7 @@ class Board extends Controller
             }
             if (empty($error)) {
                 $this->board->update($name, $summary, $board);
+                $this->dispatcher->dispatch(Events::BOARD_UPDATE_SUCCESS, new BoardUpdateSuccess($name, $summary, $board));
                 $result = ['success' => 'Board updated'];
             } else {
                 $result = ['error' => $error, '_status' => 400];
