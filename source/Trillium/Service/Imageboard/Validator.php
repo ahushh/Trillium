@@ -70,11 +70,13 @@ class Validator
      */
     public function post($message)
     {
+        $error      = [];
         $messageLen = mb_strlen($message);
+        if ($messageLen < 2 || $messageLen > 10000) {
+            $error[] = sprintf('Message must be between %d and %d characters', 2, 10000);
+        }
 
-        return $messageLen < 2 || $messageLen > 10000
-            ? sprintf('Message must be between %d and %d characters', 2, 10000)
-            : '';
+        return $error;
     }
 
 }
