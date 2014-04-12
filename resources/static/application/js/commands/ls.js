@@ -14,7 +14,7 @@ app.addCommand(
                 function (posts) {
                     var output = '', i = 0;
                     for (var p in posts) {
-                        output += posts[p]['message'];
+                        output += 'At: ' + posts[p]['time'] + '\n' + posts[p]['message'];
                         if (i + 1 != posts.length) {
                             output += '\n\n';
                         }
@@ -41,7 +41,7 @@ app.addCommand(
                         var i = 0;
                         for (var t in data) {
                             t = data[t];
-                            output += '/' + t['board'] + '/' +  t['id'] + '/ - ' + t['title'];
+                            output += '/' + t['board'] + '/' + t['id'] + '/ - ' + t['title'];
                             if (i + 1 != data.length) {
                                 output += '\n'
                             }

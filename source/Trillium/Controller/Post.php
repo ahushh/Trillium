@@ -37,7 +37,7 @@ class Post extends Controller
             if (!empty($error)) {
                 $result = ['error' => $error, '_status' => 400];
             } else {
-                $this->post->create($thread['board'], $thread['id'], $message);
+                $this->post->create($thread['board'], $thread['id'], $message, time());
                 $result = ['success' => 'Post is created'];
             }
         } catch (ThreadNotFoundException $e) {
@@ -77,7 +77,14 @@ class Post extends Controller
         if (!$this->thread->isExists($thread)) {
             $result = ['error' => 'Thread does not exists', '_status' => 404];
         } else {
-            $result = $this->post->listing($thread);
+            $result = array_map(
+                function ($post) {
+                    $post['time'] = $this->date->format($post['time']);
+
+                    return $post;
+                },
+                $this->post->listing($thread)
+            );
         }
 
         return $result;

@@ -21,13 +21,14 @@ interface PostInterface
      * Creates a post
      * Returns ID of created post
      *
-     * @param string $board   Name of parent board
-     * @param int    $thread  ID of parent thread
-     * @param string $message A message
+     * @param string $board     Name of parent board
+     * @param int    $thread    ID of parent thread
+     * @param string $message   A message
+     * @param int    $timestamp Timestamp
      *
      * @return int
      */
-    public function create($board, $thread, $message);
+    public function create($board, $thread, $message, $timestamp);
 
     /**
      * Remove all posts of a board

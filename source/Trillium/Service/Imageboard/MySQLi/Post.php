@@ -22,15 +22,16 @@ class Post extends MySQLi implements PostInterface
     /**
      * {@inheritdoc}
      */
-    public function create($board, $thread, $message)
+    public function create($board, $thread, $message, $timestamp)
     {
         $this->mysqli->query(
             sprintf(
-                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%u', `message` = '%s'",
+                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%u', `message` = '%s', `time` = '%u'",
                 $this->tableName,
                 $this->mysqli->real_escape_string($board),
                 $thread,
-                $this->mysqli->real_escape_string($message)
+                $this->mysqli->real_escape_string($message),
+                $timestamp
             )
         );
 
@@ -52,7 +53,7 @@ class Post extends MySQLi implements PostInterface
     {
         return parent::listingItems(
             sprintf(
-                "SELECT * FROM `%s` WHERE `thread` = '%u'",
+                "SELECT * FROM `%s` WHERE `thread` = '%u' ORDER BY `time` ASC",
                 $this->tableName,
                 $thread
             )

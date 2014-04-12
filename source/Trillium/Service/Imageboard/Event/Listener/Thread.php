@@ -75,7 +75,7 @@ class Thread implements EventSubscriberInterface
      */
     public function onCreateSuccess(ThreadCreateSuccess $event)
     {
-        $this->post->create($event->getBoard(), $event->getThread(), $event->getRequest()->get('message'));
+        $this->post->create($event->getBoard(), $event->getThread(), $event->getRequest()->get('message'), time());
     }
 
     /**
