@@ -14,13 +14,13 @@ app.addCommand(
                 function (posts) {
                     var output = '', i = 0;
                     for (var p in posts) {
-                        output += 'At: ' + posts[p]['time'] + '\n' + posts[p]['message'];
+                        output += 'At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
                         if (i + 1 != posts.length) {
-                            output += '\n\n';
+                            output += '<hr />';
                         }
                         i++;
                     }
-                    term.echo(output);
+                    term.echo(output, {raw: true});
                 }
             ).fail(
                 function (xhr, textStatus, errorThrown) {

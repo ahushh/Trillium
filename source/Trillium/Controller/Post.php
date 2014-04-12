@@ -87,7 +87,9 @@ class Post extends Controller
         } else {
             $result = array_map(
                 function ($post) {
-                    $post['time'] = $this->date->format($post['time']);
+                    $post['time']    = $this->date->format($post['time']);
+                    $post['message'] = $this->markdown->render(htmlspecialchars($post['message']));
+                    $post['message'] = str_replace('<a href="javascript', '<a href="', $post['message']);
 
                     return $post;
                 },

@@ -24,6 +24,7 @@
         "kilte/security-provider": "2.0.*@dev",
         "kilte/view": "~1.0",
         "kriswallsmith/assetic": "~1.1",
+        "kzykhys/ciconia": "~1.0",
         "monolog/monolog": "~1.7",
         "pimple/pimple": "~2.0",
         "psr/log": "~1.0",
