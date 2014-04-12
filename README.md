@@ -21,10 +21,7 @@ Requires PHP &gt;= 5.4
 
 ## TODO:
 
-- Move child threads, when board is renamed.
-- REST URLs.
-- Update requirements for the routes.
-- And too many other things.
+- Too many things.
 
 ## Contributing
 
