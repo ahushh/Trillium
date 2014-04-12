@@ -7,12 +7,12 @@ app.addCommand(
         var boardName = args.length > 0 && args[0] ? args[0] : (app.board.current != '~' ? app.board.current : false);
         if (!boardName) {
             term.error('No board given');
-            return ;
+            return;
         }
-        var threadData = {title: '', message: '', board: boardName};
+        var threadData = {title: '', message: '', captcha: '', board: boardName};
         term.push(
-            function (message) {
-                threadData.message = message;
+            function (captcha) {
+                threadData.captcha = captcha;
                 $.ajax(
                     app.urlGenerator.generate('thread.create'),
                     {async: false, dataType: 'json', type: 'POST', data: threadData}
@@ -34,6 +34,13 @@ app.addCommand(
                         app.responseHandler.fail(term, xhr, textStatus, errorThrown);
                     }
                 );
+            },
+            {prompt: 'Are you human? '}
+        ).push(
+            function (message) {
+                threadData.message = message;
+                app.captcha(term);
+                term.pop();
             },
             {prompt: 'Message: '}
         ).push(

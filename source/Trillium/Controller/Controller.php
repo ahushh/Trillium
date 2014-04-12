@@ -24,6 +24,7 @@ namespace Trillium\Controller;
  * @property-read \Vermillion\Environment                                     $environment
  * @property-read \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
  * @property-read \Trillium\Service\Imageboard\Validator                      $validator
+ * @property-read \Gregwar\Captcha\CaptchaBuilder                             $captcha
  *
  * @package Trillium\Controller
  */

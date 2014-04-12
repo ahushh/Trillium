@@ -248,5 +248,15 @@
         "requirements": {
             "_method": "GET"
         }
+    },
+    "captcha": {
+        "path": "/captcha",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Captcha",
+            "_action": "show"
+        },
+        "requirements": {
+            "_method": "GET"
+        }
     }
 }

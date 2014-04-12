@@ -19,6 +19,7 @@
     "require": {
         "php": ">=5.4",
         "fabpot/php-cs-fixer": "~0.4",
+        "gregwar/captcha": "~1.0",
         "kilte/account-manager": "1.0.*@dev",
         "kilte/security-provider": "2.0.*@dev",
         "kilte/view": "~1.0",

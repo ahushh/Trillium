@@ -9,5 +9,6 @@
     "\\Trillium\\Provider\\Date",
     "\\Trillium\\Provider\\Security",
     "\\Trillium\\Provider\\Settings",
-    "\\Trillium\\Provider\\Imageboard"
+    "\\Trillium\\Provider\\Imageboard",
+    "\\Trillium\\Provider\\Captcha"
 ]

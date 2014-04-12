@@ -268,6 +268,16 @@ function Trillium(systemSettings, routes, basePath) {
             );
         }
     };
+    // Echoes captcha
+    this.captcha = function (term) {
+        term.echo(
+            '<img src="'
+            + app.urlGenerator.generate('captcha')
+            + '?' + Math.random()
+            + '" alt="Captcha" />',
+            {raw: true}
+        );
+    };
     // Creates a terminal
     this.run = function (selector) {
         // Load and validate settings
@@ -284,17 +294,17 @@ function Trillium(systemSettings, routes, basePath) {
         $(selector).terminal(
             function (command, term) {
                 if (!command) {
-                    return ;
+                    return;
                 }
                 command = $.terminal.parseCommand(command);
                 if (!commands.hasOwnProperty(command.name)) {
                     commandNotFound(term, command.name);
-                    return ;
+                    return;
                 }
                 var cmd = commands[command.name];
                 if (!cmd.isAvailable) {
                     commandNotFound(term, command.name);
-                    return ;
+                    return;
                 }
                 if (command.args.length > 0 && (command.args[0] == '--help' || command.args[0] == '-h')) {
                     // Try to get help for given command
@@ -303,7 +313,7 @@ function Trillium(systemSettings, routes, basePath) {
                     } else {
                         term.error('Help is not available');
                     }
-                    return ;
+                    return;
                 }
                 cmd.run(term, command.args, command.rest);
             },

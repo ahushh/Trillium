@@ -34,6 +34,9 @@ class Post extends Controller
             $thread  = $this->thread->get($thread);
             $message = $request->get('message', '');
             $error   = $this->validator->post($message);
+            if (!$this->container['captcha.test']($request->get('captcha', ''))) {
+                $error[] = 'Wrong captcha';
+            }
             if (!empty($error)) {
                 $result = ['error' => $error, '_status' => 400];
             } else {

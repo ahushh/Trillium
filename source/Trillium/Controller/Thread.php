@@ -40,6 +40,9 @@ class Thread extends Controller
         if (!$this->board->isExists($board)) {
             $error[] = 'Board does not exists';
         }
+        if (!$this->container['captcha.test']($request->get('captcha', ''))) {
+            $error[] = 'Wrong captcha';
+        }
         $eventBefore = new ThreadCreateBefore($request, $board);
         $this->dispatcher->dispatch(Events::THREAD_CREATE_BEFORE, $eventBefore);
         $error = array_merge($error, $eventBefore->getError());
