@@ -18,8 +18,25 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package Trillium\Controller
  */
-class ExceptionHandler extends Controller
+class ExceptionHandler
 {
+
+    /**
+     * @var boolean Is debug?
+     */
+    private $debug;
+
+    /**
+     * Constructor
+     *
+     * @param boolean $debug Is debug?
+     *
+     * @return self
+     */
+    public function __construct($debug = false)
+    {
+        $this->debug = $debug;
+    }
 
     /**
      * Handles an exception
@@ -35,7 +52,7 @@ class ExceptionHandler extends Controller
          * @var $exception FlattenException
          */
         $exception = $request->attributes->get('exception');
-        if ($this->environment->isDebug()) {
+        if ($this->debug) {
             $error = [
                 'error' => $exception->getMessage(),
                 'trace' => $exception->getTrace()

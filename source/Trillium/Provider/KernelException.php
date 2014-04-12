@@ -29,7 +29,10 @@ class KernelException implements ServiceProviderInterface, SubscriberProviderInt
     public function registerServices(Container $container)
     {
         $container['kernel.exception.handler']    = function ($container) {
-            return new ExceptionHandler($container);
+            /** @var $env \Vermillion\Environment */
+            $env = $container['environment'];
+
+            return new ExceptionHandler($env->isDebug());
         };
         $container['kernel.exception.subscriber'] = function ($container) {
             return new ExceptionListener($container['kernel.exception.handler'], $container['logger']);
