@@ -12,20 +12,20 @@ namespace Trillium\Controller;
 /**
  * Controller Class
  *
- * @property-read \Symfony\Component\HttpFoundation\Session\SessionInterface  $session
+ * @property-read \Ciconia\Ciconia                                            $markdown
+ * @property-read \Gregwar\Captcha\CaptchaBuilder                             $captcha
  * @property-read \Kilte\AccountManager\Controller\ControllerInterface        $userController
+ * @property-read \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+ * @property-read \Symfony\Component\HttpFoundation\Session\SessionInterface  $session
  * @property-read \Symfony\Component\Security\Core\SecurityContextInterface   $security
- * @property-read \Vermillion\Configuration\Configuration                     $configuration
- * @property-read \Trillium\Service\Settings\Settings                         $settings
  * @property-read \Trillium\Service\Date\Date                                 $date
  * @property-read \Trillium\Service\Imageboard\BoardInterface                 $board
- * @property-read \Trillium\Service\Imageboard\ThreadInterface                $thread
  * @property-read \Trillium\Service\Imageboard\PostInterface                  $post
- * @property-read \Vermillion\Environment                                     $environment
- * @property-read \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+ * @property-read \Trillium\Service\Imageboard\ThreadInterface                $thread
  * @property-read \Trillium\Service\Imageboard\Validator                      $validator
- * @property-read \Gregwar\Captcha\CaptchaBuilder                             $captcha
- * @property-read \Ciconia\Ciconia                                            $markdown
+ * @property-read \Trillium\Service\Settings\Settings                         $settings
+ * @property-read \Vermillion\Configuration\Configuration                     $configuration
+ * @property-read \Vermillion\Environment                                     $environment
  *
  * @package Trillium\Controller
  */

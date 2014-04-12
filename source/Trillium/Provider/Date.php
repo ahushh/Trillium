@@ -21,11 +21,7 @@ class Date implements ServiceProviderInterface
 {
 
     /**
-     * Registers services
-     *
-     * @param Container $container A container instance
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function registerServices(Container $container)
     {
