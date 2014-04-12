@@ -44,37 +44,21 @@ class Validator
     }
 
     /**
-     * Validates thread data
-     *
-     * @param string $title   Thread title
-     * @param string $message Message
-     *
-     * @return array
-     */
-    public function thread($title, $message)
-    {
-        $error = [$this->post($message), $this->threadTitle($title)];
-        foreach ($error as $k => $v) {
-            if (empty($v)) {
-                unset($error[$k]);
-            }
-        }
-
-        return $error;
-    }
-
-    /**
      * Validates thread title
      *
      * @param string $title Title
      *
-     * @return string
+     * @return array
      */
-    public function threadTitle($title)
+    public function thread($title)
     {
+        $error    = [];
         $titleLen = strlen($title);
+        if ($titleLen < 2 || $titleLen > 30) {
+            $error[] = sprintf('Title must be between %d and %d characters', 2, 30);
+        }
 
-        return $titleLen < 2 || $titleLen > 30 ? sprintf('Title must be between %d and %d characters', 2, 30) : '';
+        return $error;
     }
 
     /**

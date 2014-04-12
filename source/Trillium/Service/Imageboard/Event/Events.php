@@ -50,4 +50,27 @@ final class Events
      */
     const THREAD_REMOVE = 'trillium.thread.remove';
 
+    /**
+     * This event occurs before a thread will be created
+     *
+     * You can use it to check a request data and set errors.
+     * The event listener method
+     * receives a Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore
+     * instance.
+     *
+     * @see \Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore
+     */
+    const THREAD_CREATE_BEFORE = 'trillium.thread.create.before';
+
+    /**
+     * This event occurs after a thread will be created
+     *
+     * The event listener method
+     * receives a Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess
+     * instance.
+     *
+     * @see \Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess
+     */
+    const THREAD_CREATE_SUCCESS = 'trillium.thread.create.success';
+
 }

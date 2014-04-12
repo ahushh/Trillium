@@ -10,6 +10,8 @@
 namespace Trillium\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore;
+use Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess;
 use Trillium\Service\Imageboard\Event\Event\ThreadRemove;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
@@ -32,18 +34,23 @@ class Thread extends Controller
      */
     public function create(Request $request)
     {
-        $title   = $request->get('title', '');
-        $board   = $request->get('board', '');
-        $message = $request->get('message', '');
-        $error   = $this->validator->thread($title, $message);
+        $title = $request->get('title', '');
+        $board = $request->get('board', '');
+        $error = $this->validator->thread($title);
         if (!$this->board->isExists($board)) {
             $error[] = 'Board does not exists';
         }
+        $eventBefore = new ThreadCreateBefore($request, $board);
+        $this->dispatcher->dispatch(Events::THREAD_CREATE_BEFORE, $eventBefore);
+        $error = array_merge($error, $eventBefore->getError());
         if (!empty($error)) {
             $result = ['error' => $error, '_status' => 400];
         } else {
             $thread = $this->thread->create($title, $board);
-            $this->post->create($board, $thread, $message);
+            $this->dispatcher->dispatch(
+                Events::THREAD_CREATE_SUCCESS,
+                new ThreadCreateSuccess($thread, $board, $request)
+            );
             $result = ['success' => $thread];
         }
 
@@ -100,7 +107,7 @@ class Thread extends Controller
             $result = ['error' => 'Thread does not exists', '_status' => 404];
         } else {
             $title = $request->get('title', '');
-            $error = $this->validator->threadTitle($title);
+            $error = $this->validator->thread($title);
             if (!empty($error)) {
                 $result = ['error' => $error, '_status' => 400];
             } else {

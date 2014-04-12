@@ -45,7 +45,7 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             return new BoardListener($c['thread'], $c['post']);
         };
         $container['thread.listener'] = function ($c) {
-            return new ThreadListener($c['post']);
+            return new ThreadListener($c['post'], $c['validator']);
         };
         $container['validator']       = function () {
             return new Validator();
