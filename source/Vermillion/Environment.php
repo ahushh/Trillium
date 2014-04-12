@@ -11,7 +11,7 @@ namespace Vermillion;
 
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\Debug\ErrorHandler;
-use Symfony\Component\Debug\ExceptionHandler;
+use Trillium\Debug\ExceptionHandler;
 
 /**
  * Environment Class
@@ -93,7 +93,7 @@ class Environment
         if ($this->isDebug) {
             ErrorHandler::register(-1, 1);
             if ('cli' !== php_sapi_name()) {
-                ExceptionHandler::register();
+                ExceptionHandler::register($this->isDebug());
                 // CLI - display errors only if they're not already logged to STDERR
             } elseif ((!ini_get('log_errors') || ini_get('error_log'))) {
                 ini_set('display_errors', 1);
