@@ -19,7 +19,9 @@ namespace Trillium\Controller;
  * @property-read \Symfony\Component\HttpFoundation\Session\SessionInterface  $session
  * @property-read \Symfony\Component\Security\Core\SecurityContextInterface   $security
  * @property-read \Trillium\Service\Date\Date                                 $date
+ * @property-read \Trillium\Service\Image\Image                               $imageService
  * @property-read \Trillium\Service\Imageboard\BoardInterface                 $board
+ * @property-read \Trillium\Service\Imageboard\ImageInterface                 $image
  * @property-read \Trillium\Service\Imageboard\PostInterface                  $post
  * @property-read \Trillium\Service\Imageboard\ThreadInterface                $thread
  * @property-read \Trillium\Service\Imageboard\Validator                      $validator
