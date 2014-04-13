@@ -39,3 +39,12 @@ CREATE TABLE `posts` (
 )
   ENGINE =MyISAM
   DEFAULT CHARSET =utf8;
+CREATE TABLE `images` (
+  `post`   INT(10) UNSIGNED NOT NULL,
+  `thread` INT(10) UNSIGNED NOT NULL,
+  `board`  VARCHAR(10)      NOT NULL,
+  `ext`    VARCHAR(10)      NOT NULL,
+  PRIMARY KEY (`post`)
+)
+  ENGINE =MyISAM
+  DEFAULT CHARSET =utf8;
