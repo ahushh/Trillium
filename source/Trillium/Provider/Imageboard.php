@@ -12,6 +12,7 @@ namespace Trillium\Provider;
 use Trillium\Service\Imageboard\Event\Listener\Board as BoardListener;
 use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
 use Trillium\Service\Imageboard\MySQLi\Board;
+use Trillium\Service\Imageboard\MySQLi\Image;
 use Trillium\Service\Imageboard\MySQLi\Post;
 use Trillium\Service\Imageboard\MySQLi\Thread;
 use Trillium\Service\Imageboard\Validator;
@@ -40,6 +41,9 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
         };
         $container['post']            = function ($c) {
             return new Post($c['mysqli'], 'posts');
+        };
+        $container['image']           = function ($c) {
+            return new Image($c['mysqli'], 'images');
         };
         $container['board.listener']  = function ($c) {
             return new BoardListener($c['thread'], $c['post']);
