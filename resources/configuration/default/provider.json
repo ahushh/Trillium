@@ -11,5 +11,6 @@
     "\\Trillium\\Provider\\Settings",
     "\\Trillium\\Provider\\Imageboard",
     "\\Trillium\\Provider\\Captcha",
-    "\\Trillium\\Provider\\Markdown"
+    "\\Trillium\\Provider\\Markdown",
+    "\\Trillium\\Provider\\Image"
 ]
