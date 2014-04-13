@@ -34,6 +34,7 @@ class Environment
         'static.generated' => 'resources/static/generated',
         'static.cache'     => 'resources/cache/assets',
         'static.public'    => 'public/static',
+        'images'           => 'public/images',
         'db'               => 'resources/db',
     ];
 
@@ -103,6 +104,16 @@ class Environment
     }
 
     /**
+     * Is debug mode enabled?
+     *
+     * @return boolean
+     */
+    public function isDebug()
+    {
+        return $this->isDebug;
+    }
+
+    /**
      * Returns a path to a directory by key
      *
      * @param string $key Key
@@ -127,16 +138,6 @@ class Environment
     public function getEnvironment()
     {
         return $this->environment;
-    }
-
-    /**
-     * Is debug mode enabled?
-     *
-     * @return boolean
-     */
-    public function isDebug()
-    {
-        return $this->isDebug;
     }
 
 }
