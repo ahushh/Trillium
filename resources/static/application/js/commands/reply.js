@@ -1,19 +1,43 @@
 app.addCommand(
     'reply',
     'Reply to the thread<br />' +
-    'Usage: reply [thread]',
+    'Usage: reply [thread] [-option]...<br />' +
+    'Options:<br />' +
+    '<table>' +
+    '<tr><td>-f</td><td>Attach a file</td></tr>' +
+    '</table>',
     'Reply to the thread',
     function (term, args) {
-        var threadID = app.thread.current ? app.thread.current : (args.length > 0 && args[0] ? args[0] : false);
-        var data = {message: '', captcha: ''};
+        var threadID = app.thread.current ? app.thread.current : (args.length > 0 && args[0] != '-f' ? args[0] : false);
+        var attachFile = args.length == 1 && args[0] == '-f' ? true : (args.length == 2 && args[1] == '-f');
+        var data = new FormData();
+        if (attachFile) {
+            var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
+            fileupload.on('change', function () {
+                var files = $(this).prop('files');
+                if (files) {
+                    if (files.length) {
+                        data.append('file', files[0]);
+                    }
+                } else {
+                    term.error('Not supported');
+                }
+                if (app.username === false) {
+                    app.captcha(term);
+                    term.pop();
+                } else {
+                    sendMessage(threadID);
+                }
+            });
+        }
         if (!threadID) {
             term.error('No thread given');
             return;
         }
-        var sendMessage = function (thread) {
+        var sendMessage = function (threadID) {
             $.ajax(
-                app.urlGenerator.generate('post.create', {thread: thread['id']}),
-                {dataType: 'json', type: 'POST', data: data}
+                app.urlGenerator.generate('post.create', {thread: threadID}),
+                {dataType: 'json', type: 'POST', data: data, processData: false, contentType: false}
             ).done(
                 function (data) {
                     app.responseHandler.success(term, data);
@@ -33,20 +57,25 @@ app.addCommand(
             if (app.username === false) {
                 term.push(
                     function (captcha) {
-                        data.captcha = captcha;
-                        sendMessage(thread);
+                        data.append('captcha', captcha);
+                        sendMessage(threadID);
                     },
                     {prompt: 'Are you human? '}
                 );
             }
             term.push(
                 function (message) {
-                    data.message = message;
-                    if (app.username === false) {
-                        app.captcha(term);
-                        term.pop();
+                    data.append('message', message);
+                    if (attachFile) {
+                        fileupload.trigger('click');
+                        term.set_prompt('');
                     } else {
-                        sendMessage(thread);
+                        if (app.username === false) {
+                            app.captcha(term);
+                            term.pop();
+                        } else {
+                            sendMessage(threadID);
+                        }
                     }
                 },
                 {prompt: 'Message: '}
