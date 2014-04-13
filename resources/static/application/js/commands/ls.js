@@ -15,6 +15,15 @@ app.addCommand(
                     var output = '', i = 0;
                     for (var p in posts) {
                         output += 'At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
+                        if (posts[p]['image']) {
+                            output += '<div><a href="'
+                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '.' + posts[p]['image'])
+                                + '" target="_blank" title="Click, to get full image">'
+                                + '<img src="'
+                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '_preview.jpeg')
+                                + '" alt="thumb" />'
+                                + '<a/></div>';
+                        }
                         if (i + 1 != posts.length) {
                             output += '<hr />';
                         }
