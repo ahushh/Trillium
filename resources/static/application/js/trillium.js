@@ -36,8 +36,19 @@ function Trillium(systemSettings, routes, basePath) {
     this.greeting = function (term) {
         term.echo('<div id="trillium_greeting"></div>', {raw: true});
     };
-    this.addCommand = function (name, help, summary, func, secured, isAvailable) {
-        commands[name] = {run: func, help: help, summary: summary, secured: secured, isAvailable: isAvailable};
+    var requiredCommandProperties = ['run', 'help', 'summary', 'secured', 'isAvailable'];
+    this.addCommand = function (name, command) {
+        if (!$.isPlainObject(command)) {
+            console.log(command);
+            throw 'Command "' + name + '" is not object';
+        }
+        for (var property in requiredCommandProperties) {
+            property = requiredCommandProperties[property];
+            if (!command.hasOwnProperty(property)) {
+                throw 'Command must have "' + property + '" property';
+            }
+        }
+        commands[name] = command;
     };
     // Shows/hides a command
     this.showCommand = function (name, flag) {
@@ -346,6 +357,7 @@ function Trillium(systemSettings, routes, basePath) {
                 },
                 prompt: self.prompt,
                 completion: function (term, string, callback) {
+                    console.log(string);
                     var commandsNames = [];
                     for (var c in commands) {
                         if (commands[c].isAvailable) {

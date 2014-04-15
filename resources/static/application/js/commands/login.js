@@ -1,10 +1,13 @@
 app.addCommand(
     'login',
-    'Login into terminal',
-    'Login into terminal',
-    function (term) {
-        var credentials = {_username: null, _password: null};
-        term.push(
+    {
+        summary: 'Login into terminal',
+        help: 'Login into terminal',
+        secured: false,
+        isAvailable: false,
+        run: function (term) {
+            var credentials = {_username: null, _password: null};
+            term.push(
                 function (password) {
                     credentials._password = password;
                     $.ajax(app.urlGenerator.generate('user.sign.in.check'),
@@ -45,7 +48,6 @@ app.addCommand(
             ).set_mask(
                 false
             );
-    },
-    false,
-    false
+        }
+    }
 );
