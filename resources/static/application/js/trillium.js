@@ -357,14 +357,16 @@ function Trillium(systemSettings, routes, basePath) {
                 },
                 prompt: self.prompt,
                 completion: function (term, string, callback) {
-                    console.log(string);
                     var commandsNames = [];
-                    for (var c in commands) {
-                        if (commands[c].isAvailable) {
-                            commandsNames.push(c);
+                    var command = $.terminal.parseCommand(term.get_command());
+                    if (command.args.length == 0 && !commands.hasOwnProperty(command.name)) {
+                        for (var c in commands) {
+                            if (commands[c].isAvailable) {
+                                commandsNames.push(c);
+                            }
                         }
                     }
-                    callback(commandsNames);
+                    callback(commandsNames)
                 }
             }
         )
