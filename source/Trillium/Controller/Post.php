@@ -44,7 +44,8 @@ class Post extends Controller
                 }
             }
             $file = $request->files->get('file');
-            if ($file instanceof UploadedFile) {
+            $fileGiven = $file instanceof UploadedFile;
+            if ($fileGiven) {
                 $this->imageService->setFile($file)->validate();
                 $error = array_merge($error, $this->imageService->getError());
             }
@@ -52,8 +53,10 @@ class Post extends Controller
                 $result = ['error' => $error, '_status' => 400];
             } else {
                 $post = $this->post->create($thread['board'], $thread['id'], $message, time());
-                $this->imageService->upload($post, $post . '_preview');
-                $this->image->create($thread['board'], $thread['id'], $post, $file->getClientOriginalExtension());
+                if ($fileGiven) {
+                    $this->imageService->upload($post, $post . '_preview');
+                    $this->image->create($thread['board'], $thread['id'], $post, $file->getClientOriginalExtension());
+                }
                 $result = ['success' => 'Post is created'];
             }
         } catch (ThreadNotFoundException $e) {
