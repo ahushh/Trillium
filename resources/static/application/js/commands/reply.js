@@ -10,6 +10,14 @@ app.addCommand(
             var threadID = app.thread.current ? app.thread.current : (args.length > 0 && args[0] != '-f' ? args[0] : false);
             var attachFile = args.length == 1 && args[0] == '-f' ? true : (args.length == 2 && args[1] == '-f');
             var data = new FormData();
+            var showCaptcha = function () {
+                if (app.username === false) {
+                    app.captcha(term);
+                    term.pop();
+                } else {
+                    sendMessage(threadID);
+                }
+            };
             if (attachFile) {
                 var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
                 fileupload.on('change', function () {
@@ -21,12 +29,7 @@ app.addCommand(
                     } else {
                         term.error('Not supported');
                     }
-                    if (app.username === false) {
-                        app.captcha(term);
-                        term.pop();
-                    } else {
-                        sendMessage(threadID);
-                    }
+                    showCaptcha();
                 });
             }
             if (!threadID) {
@@ -69,12 +72,7 @@ app.addCommand(
                             fileupload.trigger('click');
                             term.set_prompt('');
                         } else {
-                            if (app.username === false) {
-                                app.captcha(term);
-                                term.pop();
-                            } else {
-                                sendMessage(threadID);
-                            }
+                            showCaptcha();
                         }
                     },
                     {prompt: 'Message: '}
