@@ -21,9 +21,8 @@ Requires PHP &gt;= 5.4
 
 ## TODO:
 
-- Remove images (board, thread, post, image without post)
-- Move images on rename board
-- And many other things.
+- Too many things.
+- See TODO.md to get the current tasks.
 
 ## Contributing
 
