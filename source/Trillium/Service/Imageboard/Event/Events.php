@@ -73,4 +73,27 @@ final class Events
      */
     const THREAD_CREATE_SUCCESS = 'trillium.thread.create.success';
 
+    /**
+     * This event occurs before a post will be created
+     *
+     * You can use it to check a request data and set errors.
+     * The event listener method
+     * receives a Trillium\Service\Imageboard\Event\Event\PostCreateBefore
+     * instance.
+     *
+     * @see Trillium\Service\Imageboard\Event\Event\PostCreateBefore
+     */
+    const POST_CREATE_BEFORE = 'trillium.post.create.before';
+
+    /**
+     * This event occurs after a post will be created
+     *
+     * The event listener method
+     * receives a Trillium\Service\Imageboard\Event\Event\PostCreateSuccess
+     * instance.
+     *
+     * @see \Trillium\Service\Imageboard\Event\Event\PostCreateSuccess
+     */
+    const POST_CREATE_SUCCESS = 'trillium.post.create.success';
+
 }

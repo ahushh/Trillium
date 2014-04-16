@@ -9,9 +9,10 @@
 
 namespace Trillium\Controller;
 
-use Kilte\AccountManager\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Trillium\Service\Imageboard\Event\Event\PostCreateBefore;
+use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
+use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
 
 /**
@@ -33,30 +34,20 @@ class Post extends Controller
     public function create(Request $request, $thread)
     {
         try {
-            $thread  = $this->thread->get($thread);
-            $message = $request->get('message', '');
-            $error   = $this->validator->post($message);
-            try {
-                $this->userController->getUser();
-            } catch (AccessDeniedException $e) {
-                if (!$this->container['captcha.test']($request->get('captcha', ''))) {
-                    $error[] = 'Wrong captcha';
-                }
-            }
-            $file = $request->files->get('file');
-            $fileGiven = $file instanceof UploadedFile;
-            if ($fileGiven) {
-                $this->imageService->setFile($file)->validate();
-                $error = array_merge($error, $this->imageService->getError());
-            }
+            $thread      = $this->thread->get($thread);
+            $message     = $request->get('message', '');
+            $error       = $this->validator->post($message);
+            $eventBefore = new PostCreateBefore($request, $thread['board'], $thread['id']);
+            $this->dispatcher->dispatch(Events::POST_CREATE_BEFORE, $eventBefore);
+            $error = array_merge($error, $eventBefore->getError());
             if (!empty($error)) {
                 $result = ['error' => $error, '_status' => 400];
             } else {
                 $post = $this->post->create($thread['board'], $thread['id'], $message, time());
-                if ($fileGiven) {
-                    $this->imageService->upload($post, $post . '_preview');
-                    $this->image->create($thread['board'], $thread['id'], $post, $file->getClientOriginalExtension());
-                }
+                $this->dispatcher->dispatch(
+                    Events::POST_CREATE_SUCCESS,
+                    new PostCreateSuccess($request, $thread['board'], $thread['id'], $post)
+                );
                 $result = ['success' => 'Post is created'];
             }
         } catch (ThreadNotFoundException $e) {

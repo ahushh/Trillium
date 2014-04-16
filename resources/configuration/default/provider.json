@@ -10,7 +10,7 @@
     "\\Trillium\\Provider\\Security",
     "\\Trillium\\Provider\\Settings",
     "\\Trillium\\Provider\\Captcha",
+    "\\Trillium\\Provider\\Image",
     "\\Trillium\\Provider\\Imageboard",
-    "\\Trillium\\Provider\\Markdown",
-    "\\Trillium\\Provider\\Image"
+    "\\Trillium\\Provider\\Markdown"
 ]

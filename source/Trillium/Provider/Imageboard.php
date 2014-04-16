@@ -11,11 +11,12 @@ namespace Trillium\Provider;
 
 use Kilte\AccountManager\Exception\AccessDeniedException;
 use Trillium\Service\Imageboard\Event\Listener\Board as BoardListener;
+use Trillium\Service\Imageboard\Event\Listener\Post as PostListener;
 use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
-use Trillium\Service\Imageboard\MySQLi\Board;
-use Trillium\Service\Imageboard\MySQLi\Image;
-use Trillium\Service\Imageboard\MySQLi\Post;
-use Trillium\Service\Imageboard\MySQLi\Thread;
+use Trillium\Service\Imageboard\MySQLi\Board as BoardService;
+use Trillium\Service\Imageboard\MySQLi\Image as ImageService;
+use Trillium\Service\Imageboard\MySQLi\Post as PostService;
+use Trillium\Service\Imageboard\MySQLi\Thread as ThreadService;
 use Trillium\Service\Imageboard\Validator;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
@@ -35,16 +36,16 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
     public function registerServices(Container $container)
     {
         $container['board']           = function ($c) {
-            return new Board($c['mysqli'], 'boards');
+            return new BoardService($c['mysqli'], 'boards');
         };
         $container['thread']          = function ($c) {
-            return new Thread($c['mysqli'], 'threads');
+            return new ThreadService($c['mysqli'], 'threads');
         };
         $container['post']            = function ($c) {
-            return new Post($c['mysqli'], 'posts');
+            return new PostService($c['mysqli'], 'posts');
         };
         $container['image']           = function ($c) {
-            return new Image($c['mysqli'], 'images');
+            return new ImageService($c['mysqli'], 'images');
         };
         $container['board.listener']  = function ($c) {
             return new BoardListener($c['thread'], $c['post']);
@@ -52,20 +53,12 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
         $container['thread.listener'] = function ($c) {
             return new ThreadListener($c['post'], $c['validator'], $this->getCaptcha($c));
         };
+        $container['post.listener']   = function ($c) {
+            return new PostListener($c['imageService'], $c['image'], $this->getCaptcha($c));
+        };
         $container['validator']       = function () {
             return new Validator();
         };
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSubscribers(Container $container)
-    {
-        return [
-            $container['board.listener'],
-            $container['thread.listener'],
-        ];
     }
 
     /**
@@ -87,6 +80,18 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
         }
 
         return $captcha;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubscribers(Container $container)
+    {
+        return [
+            $container['board.listener'],
+            $container['post.listener'],
+            $container['thread.listener'],
+        ];
     }
 
 }
