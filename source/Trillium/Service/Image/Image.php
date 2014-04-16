@@ -205,7 +205,6 @@ class Image
             $this->error[] = sprintf('File size exceeds %u Kb', $this->maxSize / 1024);
         }
 
-
         return $this;
     }
 

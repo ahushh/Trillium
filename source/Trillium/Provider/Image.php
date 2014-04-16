@@ -26,15 +26,9 @@ class Image implements ServiceProviderInterface
     public function registerServices(Container $container)
     {
         $container['imageService'] = function ($c) {
-            // TODO: from config file
-            $config = [
-                'max_size'      => 5,
-                'max_width'     => 5000,
-                'max_height'    => 5000,
-                'thumb_width'   => 240,
-                'thumb_height'  => 320,
-                'thumb_quality' => 90
-            ];
+            /** @var $configuration \Vermillion\Configuration\Configuration */
+            $configuration = $c['configuration'];
+            $config        = $configuration->load('image')->get();
             /** @var $env \Vermillion\Environment */
             $env = $c['environment'];
 

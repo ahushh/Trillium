@@ -1,0 +1,8 @@
+{
+    "max_size": 5,
+    "max_width": 5000,
+    "max_height": 5000,
+    "thumb_width": 240,
+    "thumb_height": 320,
+    "thumb_quality": 90
+}
