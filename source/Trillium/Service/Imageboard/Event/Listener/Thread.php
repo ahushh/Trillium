@@ -36,17 +36,25 @@ class Thread implements EventSubscriberInterface
     private $validator;
 
     /**
+     * @var callable|null
+     */
+    private $captcha;
+
+    /**
      * Constructor
      *
-     * @param PostInterface $post
-     * @param Validator     $validator
+     * @param PostInterface $post      A PostInterface instance
+     * @param Validator     $validator A validator instance
+     * @param callable|null $captcha   A callable that takes a single argument and returns a boolean value,
+     *                                 depending on whether captcha passed. If null, the check a captcha will not occur.
      *
      * @return self
      */
-    public function __construct(PostInterface $post, Validator $validator)
+    public function __construct(PostInterface $post, Validator $validator, $captcha = null)
     {
         $this->post      = $post;
         $this->validator = $validator;
+        $this->captcha   = $captcha;
     }
 
     /**
@@ -61,8 +69,11 @@ class Thread implements EventSubscriberInterface
         $request = $event->getRequest();
         $message = $request->get('message', '');
         $error   = $this->validator->post($message);
+        if (is_callable($this->captcha) && !call_user_func($this->captcha, $request->get('captcha', ''))) {
+            $error[] = 'Wrong captcha';
+        }
         if (!empty($error)) {
-            $event->setError([$error]);
+            $event->setError($error);
         }
     }
 

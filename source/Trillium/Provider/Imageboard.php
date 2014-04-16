@@ -9,6 +9,7 @@
 
 namespace Trillium\Provider;
 
+use Kilte\AccountManager\Exception\AccessDeniedException;
 use Trillium\Service\Imageboard\Event\Listener\Board as BoardListener;
 use Trillium\Service\Imageboard\Event\Listener\Thread as ThreadListener;
 use Trillium\Service\Imageboard\MySQLi\Board;
@@ -49,7 +50,7 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             return new BoardListener($c['thread'], $c['post']);
         };
         $container['thread.listener'] = function ($c) {
-            return new ThreadListener($c['post'], $c['validator']);
+            return new ThreadListener($c['post'], $c['validator'], $this->getCaptcha($c));
         };
         $container['validator']       = function () {
             return new Validator();
@@ -65,6 +66,27 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             $container['board.listener'],
             $container['thread.listener'],
         ];
+    }
+
+    /**
+     * Returns the `captcha.test function` from given container
+     *
+     * @param array|\ArrayAccess $c container
+     *
+     * @return callable|null
+     */
+    private function getCaptcha($c)
+    {
+        try {
+            /** @var $userController \Kilte\AccountManager\Controller\ControllerInterface */
+            $userController = $c['userController'];
+            $userController->getUser();
+            $captcha = null;
+        } catch (AccessDeniedException $e) {
+            $captcha = $c['captcha.test'];
+        }
+
+        return $captcha;
     }
 
 }

@@ -9,7 +9,6 @@
 
 namespace Trillium\Controller;
 
-use Kilte\AccountManager\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess;
@@ -40,13 +39,6 @@ class Thread extends Controller
         $error = $this->validator->thread($title);
         if (!$this->board->isExists($board)) {
             $error[] = 'Board does not exists';
-        }
-        try {
-            $this->userController->getUser();
-        } catch (AccessDeniedException $e) {
-            if (!$this->container['captcha.test']($request->get('captcha', ''))) {
-                $error[] = 'Wrong captcha';
-            }
         }
         $eventBefore = new ThreadCreateBefore($request, $board);
         $this->dispatcher->dispatch(Events::THREAD_CREATE_BEFORE, $eventBefore);
