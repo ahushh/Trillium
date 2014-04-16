@@ -66,7 +66,7 @@ class Validator
      *
      * @param string $message A message
      *
-     * @return string
+     * @return array
      */
     public function post($message)
     {
