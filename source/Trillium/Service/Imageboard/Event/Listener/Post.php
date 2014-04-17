@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Trillium\Service\Image\Image as ImageService;
 use Trillium\Service\Imageboard\Event\Event\PostCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
+use Trillium\Service\Imageboard\Event\Event\PostRemove;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\ImageInterface;
 
@@ -59,17 +60,6 @@ class Post implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Events::POST_CREATE_BEFORE  => 'onCreateBefore',
-            Events::POST_CREATE_SUCCESS => 'onCreateSuccess',
-        ];
-    }
-
-    /**
      * @param PostCreateBefore $event
      *
      * @return void
@@ -103,6 +93,33 @@ class Post implements EventSubscriberInterface
             $this->imageService->upload($post, $post . '_preview');
             $this->image->create($event->getBoard(), $event->getThread(), $post, $file->getClientOriginalExtension());
         }
+    }
+
+    /**
+     * @param PostRemove $event
+     *
+     * @return void
+     */
+    public function onRemove(PostRemove $event)
+    {
+        $post = $event->getPost();
+        $image = $this->image->get($post);
+        if (is_array($image)) {
+            $this->imageService->remove($post, $image['ext'], $post . '_preview');
+            $this->image->remove($post);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::POST_CREATE_BEFORE  => 'onCreateBefore',
+            Events::POST_CREATE_SUCCESS => 'onCreateSuccess',
+            Events::POST_REMOVE         => 'onRemove',
+        ];
     }
 
 }

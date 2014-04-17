@@ -301,4 +301,24 @@ class Image
         return $this->error;
     }
 
+    /**
+     * Removes an image and thumbnail
+     *
+     * @param int    $name  Filename
+     * @param string $ext   File extension
+     * @param string $thumb Thumbnail name
+     *
+     * @return void
+     */
+    public function remove($name, $ext, $thumb)
+    {
+        $file  = $this->directory . $name . '.' . $ext;
+        $thumb = $this->directory . $thumb . '.jpeg';
+        foreach ([$file, $thumb] as $image) {
+            if (is_file($image)) {
+                unlink($image);
+            }
+        }
+    }
+
 }
