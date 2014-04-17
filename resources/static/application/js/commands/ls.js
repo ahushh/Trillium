@@ -17,7 +17,7 @@ app.addCommand(
                     function (posts) {
                         var output = '', i = 0;
                         for (var p in posts) {
-                            output += 'At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
+                            output += '#' + posts[p]['id'] + ' >> At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
                             if (posts[p]['image']) {
                                 output += '<div><a href="'
                                 + app.urlGenerator.raw('images/' + posts[p]['id'] + '.' + posts[p]['image'])
