@@ -39,6 +39,15 @@ interface ImageInterface
     public function get($post);
 
     /**
+     * Returns images attached to board
+     *
+     * @param string $board Board name
+     *
+     * @return array
+     */
+    public function getBoard($board);
+
+    /**
      * Returns images attached to thread
      *
      * @param int $thread Thread ID

@@ -48,7 +48,12 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             return new ImageService($c['mysqli'], 'images');
         };
         $container['board.listener']  = function ($c) {
-            return new BoardListener($c['thread'], $c['post']);
+            return new BoardListener(
+                $c['thread'],
+                $c['post'],
+                $c['image'],
+                $c['imageService']
+            );
         };
         $container['thread.listener'] = function ($c) {
             return new ThreadListener(

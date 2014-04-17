@@ -47,6 +47,20 @@ class Image extends MySQLi implements ImageInterface
     /**
      * {@inheritdoc}
      */
+    public function getBoard($board)
+    {
+        return parent::listingItems(
+            sprintf(
+                "SELECT * FROM `%s` WHERE `board` = '%s'",
+                $this->tableName,
+                $board
+            )
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getThread($thread)
     {
         return parent::listingItems(
