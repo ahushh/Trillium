@@ -18,6 +18,9 @@ Requires PHP &gt;= 5.4
 - Generate assets: `$ bin/console assets`
 - Load SQL Dump: `$ bin/console db`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
+- To get access to the control panel, login with the following credentials:
+    - Username: root
+    - Password: 123456
 
 ## TODO:
 
