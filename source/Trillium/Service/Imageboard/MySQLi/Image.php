@@ -96,4 +96,19 @@ class Image extends MySQLi implements ImageInterface
         return parent::removeItem('board', $board);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function move($old, $new)
+    {
+        $this->mysqli->query(
+            sprintf(
+                "UPDATE `%s` SET `board` = '%s' WHERE `board` = '%s'",
+                $this->tableName,
+                $this->mysqli->real_escape_string($new),
+                $this->mysqli->real_escape_string($old)
+            )
+        );
+    }
+
 }

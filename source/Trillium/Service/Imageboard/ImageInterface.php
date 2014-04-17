@@ -89,4 +89,14 @@ interface ImageInterface
      */
     public function removeBoard($board);
 
+    /**
+     * Moves images between boards
+     *
+     * @param string $old Old board
+     * @param string $new New board
+     *
+     * @return void
+     */
+    public function move($old, $new);
+
 }

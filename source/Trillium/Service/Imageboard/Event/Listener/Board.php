@@ -82,6 +82,7 @@ class Board implements EventSubscriberInterface
         if ($newName != $oldName) {
             $this->thread->move($oldName, $newName);
             $this->post->move($oldName, $newName);
+            $this->image->move($oldName, $newName);
         }
     }
 

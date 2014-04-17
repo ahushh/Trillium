@@ -1,4 +1,4 @@
 - Remove image (Something like `rmimage <post_id>` command)
-- Move images on rename board
 - Allow attach images on create thread (`mkthread -f`)
 - Show additional information about images (file size, resolution (width/height), extension)
+- Fix: when run `cd` without args an error occurs
