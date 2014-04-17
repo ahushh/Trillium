@@ -96,4 +96,15 @@ final class Events
      */
     const POST_CREATE_SUCCESS = 'trillium.post.create.success';
 
+    /**
+     * This event occurs when a post was removed
+     *
+     * The event listener method
+     * receives a Trillium\Service\Imageboard\Event\Event\PostRemove
+     * instance.
+     *
+     * @see \Trillium\Service\Imageboard\Event\Event\PostRemove
+     */
+    const POST_REMOVE = 'trillium.post.remove';
+
 }

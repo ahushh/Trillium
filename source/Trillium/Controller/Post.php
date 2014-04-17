@@ -12,6 +12,7 @@ namespace Trillium\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Trillium\Service\Imageboard\Event\Event\PostCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
+use Trillium\Service\Imageboard\Event\Event\PostRemove;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ThreadNotFoundException;
 
@@ -67,6 +68,7 @@ class Post extends Controller
     public function remove($id)
     {
         if ($this->post->remove($id) > 0) {
+            $this->dispatcher->dispatch(Events::POST_REMOVE, new PostRemove($id));
             $result = ['success' => 'Post removed'];
         } else {
             $result = ['error' => 'Post does not exists', '_status' => 404];
