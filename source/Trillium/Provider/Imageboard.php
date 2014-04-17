@@ -51,7 +51,13 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             return new BoardListener($c['thread'], $c['post']);
         };
         $container['thread.listener'] = function ($c) {
-            return new ThreadListener($c['post'], $c['validator'], $this->getCaptcha($c));
+            return new ThreadListener(
+                $c['post'],
+                $c['validator'],
+                $c['imageService'],
+                $c['image'],
+                $this->getCaptcha($c)
+            );
         };
         $container['post.listener']   = function ($c) {
             return new PostListener($c['imageService'], $c['image'], $this->getCaptcha($c));

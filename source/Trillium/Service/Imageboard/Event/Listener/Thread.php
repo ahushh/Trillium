@@ -10,10 +10,12 @@
 namespace Trillium\Service\Imageboard\Event\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Trillium\Service\Image\Image as ImageService;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess;
 use Trillium\Service\Imageboard\Event\Event\ThreadRemove;
 use Trillium\Service\Imageboard\Event\Events;
+use Trillium\Service\Imageboard\ImageInterface;
 use Trillium\Service\Imageboard\PostInterface;
 use Trillium\Service\Imageboard\Validator;
 
@@ -41,20 +43,39 @@ class Thread implements EventSubscriberInterface
     private $captcha;
 
     /**
+     * @var ImageService
+     */
+    private $imageService;
+
+    /**
+     * @var ImageInterface
+     */
+    private $image;
+
+    /**
      * Constructor
      *
-     * @param PostInterface $post      A PostInterface instance
-     * @param Validator     $validator A validator instance
-     * @param callable|null $captcha   A callable that takes a single argument and returns a boolean value,
-     *                                 depending on whether captcha passed. If null, the check a captcha will not occur.
+     * @param PostInterface  $post         A PostInterface instance
+     * @param Validator      $validator    A validator instance
+     * @param ImageService   $imageService An ImageService instance
+     * @param ImageInterface $image        An ImageInterface instance
+     * @param callable|null  $captcha      A callable that takes a single argument and returns a boolean value,
+     *                                     depending on whether captcha passed. If null, the check a captcha will not occur.
      *
      * @return self
      */
-    public function __construct(PostInterface $post, Validator $validator, $captcha = null)
-    {
-        $this->post      = $post;
-        $this->validator = $validator;
-        $this->captcha   = $captcha;
+    public function __construct(
+        PostInterface $post,
+        Validator $validator,
+        ImageService $imageService,
+        ImageInterface $image,
+        $captcha = null
+    ) {
+        $this->post         = $post;
+        $this->validator    = $validator;
+        $this->captcha      = $captcha;
+        $this->imageService = $imageService;
+        $this->image        = $image;
     }
 
     /**
@@ -98,7 +119,15 @@ class Thread implements EventSubscriberInterface
      */
     public function onRemove(ThreadRemove $event)
     {
-        $this->post->removeThread($event->getThread());
+        $thread = $event->getThread();
+        $this->post->removeThread($thread);
+        $images = $this->image->getThread($thread);
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                $this->imageService->remove($image['post'], $image['ext'], $image['post'] . '_preview');
+            }
+            $this->image->removeThread($thread);
+        }
     }
 
     /**
