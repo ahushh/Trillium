@@ -6,6 +6,10 @@ app.addCommand(
         secured: false,
         isAvailable: true,
         run: function (term, args, rest) {
+            if (args.length == 0) {
+                term.error('No path given');
+                return;
+            }
             if (/[^/a-z0-9]+/.test(rest)) {
                 term.error('Wrong path given');
                 return;
