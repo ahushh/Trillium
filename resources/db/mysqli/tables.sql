@@ -44,6 +44,9 @@ CREATE TABLE `images` (
   `thread` INT(10) UNSIGNED NOT NULL,
   `board`  VARCHAR(10)      NOT NULL,
   `ext`    VARCHAR(10)      NOT NULL,
+  `width`  INT(5) UNSIGNED  NOT NULL,
+  `height` INT(5) UNSIGNED  NOT NULL,
+  `size`   INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`post`)
 )
   ENGINE =MyISAM

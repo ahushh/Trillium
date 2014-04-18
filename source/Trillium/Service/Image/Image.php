@@ -321,4 +321,24 @@ class Image
         }
     }
 
+    /**
+     * Returns the width of an image
+     *
+     * @return int
+     */
+    public function getImageWidth()
+    {
+        return $this->imageWidth;
+    }
+
+    /**
+     * Returns the height of an image
+     *
+     * @return int
+     */
+    public function getImageHeight()
+    {
+        return $this->imageHeight;
+    }
+
 }

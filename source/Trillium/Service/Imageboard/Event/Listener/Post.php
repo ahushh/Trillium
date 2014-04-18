@@ -91,7 +91,15 @@ class Post implements EventSubscriberInterface
         $file    = $request->files->get('file');
         if ($file instanceof UploadedFile) {
             $this->imageService->upload($post, $post . '_preview');
-            $this->image->create($event->getBoard(), $event->getThread(), $post, $file->getClientOriginalExtension());
+            $this->image->create(
+                $event->getBoard(),
+                $event->getThread(),
+                $post,
+                $file->getClientOriginalExtension(),
+                $this->imageService->getImageWidth(),
+                $this->imageService->getImageHeight(),
+                (int) round($file->getClientSize() / 1024, 0)
+            );
         }
     }
 

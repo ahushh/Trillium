@@ -15,17 +15,20 @@ app.addCommand(
                     {dataType: 'json'}
                 ).done(
                     function (posts) {
-                        var output = '', i = 0;
+                        var output = '', i = 0, image;
                         for (var p in posts) {
+                            image = posts[p]['image'];
                             output += '#' + posts[p]['id'] + ' >> At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
-                            if (posts[p]['image']) {
+                            if (image) {
                                 output += '<div><a href="'
-                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '.' + posts[p]['image'])
+                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '.' + image['ext'])
                                 + '" target="_blank" title="Click, to get full image">'
                                 + '<img src="'
                                 + app.urlGenerator.raw('images/' + posts[p]['id'] + '_preview.jpeg')
                                 + '" alt="thumb" />'
-                                + '<a/></div>';
+                                + '<a/><br />'
+                                + image['width'] + 'x' + image['height']
+                                + '/' + image['size'] + ' Kb,' + image['ext'] + '</div>';
                             }
                             if (i + 1 != posts.length) {
                                 output += '<hr />';

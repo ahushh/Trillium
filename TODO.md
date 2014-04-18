@@ -1,1 +1,0 @@
-- Show additional information about images (file size, resolution (width/height), extension

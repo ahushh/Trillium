@@ -91,7 +91,7 @@ class Post extends Controller
         } else {
             $images = [];
             foreach ($this->image->getThread($thread) as $image) {
-                $images[$image['post']] = $image['ext'];
+                $images[$image['post']] = $image;
             }
             $result = array_map(
                 function ($post) use ($images) {

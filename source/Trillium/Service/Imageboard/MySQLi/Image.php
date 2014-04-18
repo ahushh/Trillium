@@ -22,16 +22,21 @@ class Image extends MySQLi implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function create($board, $thread, $post, $ext)
+    public function create($board, $thread, $post, $ext, $width, $height, $size)
     {
+        $statement = "INSERT INTO `%s` SET `board` = '%s', `thread` = '%u', "
+            . "`post` = '%u', `ext` = '%s', width='%u', `height` = '%u', `size` = '%u'";
         $this->mysqli->query(
             sprintf(
-                "INSERT INTO `%s` SET `board` = '%s', `thread` = '%u', `post` = '%u', `ext` = '%s'",
+                $statement,
                 $this->tableName,
                 $this->mysqli->real_escape_string($board),
                 $thread,
                 $post,
-                $this->mysqli->real_escape_string($ext)
+                $this->mysqli->real_escape_string($ext),
+                $width,
+                $height,
+                $size
             )
         );
     }

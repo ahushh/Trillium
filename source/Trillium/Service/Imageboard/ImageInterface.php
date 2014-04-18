@@ -24,10 +24,13 @@ interface ImageInterface
      * @param int    $thread Thread ID
      * @param int    $post   Post ID
      * @param string $ext    Extension
+     * @param int    $width  Width of image (px)
+     * @param int    $height Height of image (px)
+     * @param int    $size   Size (Kb)
      *
      * @return void
      */
-    public function create($board, $thread, $post, $ext);
+    public function create($board, $thread, $post, $ext, $width, $height, $size);
 
     /**
      * Returns an image by post ID
