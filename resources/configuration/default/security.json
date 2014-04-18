@@ -20,17 +20,42 @@
         }
     },
     "access_rules": {
-        "^/user/edit/password/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/user/edit/roles/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/user/create": {"roles": ["ROLE_ROOT"]},
-        "^/user/remove/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/user/listing": {"roles": ["ROLE_ROOT"]},
-        "^/board/create": {"roles": ["ROLE_ROOT"]},
-        "^/board/update/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/board/delete/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/thread/rename/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/thread/remove/.*$": {"roles": ["ROLE_ROOT"]},
-        "^/post/remove/.*$": {"roles": ["ROLE_ROOT"]}
+        "^/user/edit/password/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/user/edit/roles/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/user/create": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/user/remove/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/user/listing": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/board/create": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/board/update/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/board/delete/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/thread/rename/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/thread/remove/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/post/remove/.*$": {
+            "roles": ["ROLE_ROOT"]
+        },
+        "^/image/remove/.*$": {
+            "roles": ["ROLE_ROOT"]
+        }
     },
     "role_hierarchy": {
     },

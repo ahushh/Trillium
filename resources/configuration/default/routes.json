@@ -249,6 +249,16 @@
             "_method": "GET"
         }
     },
+    "image.remove": {
+        "path": "/image/remove/{id}",
+        "defaults": {
+            "_controller": "\\Trillium\\Controller\\Image",
+            "_action": "remove"
+        },
+        "requirements": {
+            "_method": "GET"
+        }
+    },
     "captcha": {
         "path": "/captcha",
         "defaults": {
