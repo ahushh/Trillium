@@ -10,6 +10,7 @@
 namespace Trillium\Service\Imageboard\Event\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Trillium\Service\Image\Image as ImageService;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\ThreadCreateSuccess;
@@ -79,6 +80,18 @@ class Thread implements EventSubscriberInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::THREAD_CREATE_BEFORE  => 'onCreateBefore',
+            Events::THREAD_CREATE_SUCCESS => 'onCreateSuccess',
+            Events::THREAD_REMOVE         => 'onRemove',
+        ];
+    }
+
+    /**
      * Checks a request data, before a thread will be created
      *
      * @param ThreadCreateBefore $event
@@ -92,6 +105,11 @@ class Thread implements EventSubscriberInterface
         $error   = $this->validator->post($message);
         if (is_callable($this->captcha) && !call_user_func($this->captcha, $request->get('captcha', ''))) {
             $error[] = 'Wrong captcha';
+        }
+        $file = $request->files->get('file');
+        if ($file instanceof UploadedFile) {
+            $this->imageService->setFile($file)->validate();
+            $error = array_merge($error, $this->imageService->getError());
         }
         if (!empty($error)) {
             $event->setError($error);
@@ -107,7 +125,13 @@ class Thread implements EventSubscriberInterface
      */
     public function onCreateSuccess(ThreadCreateSuccess $event)
     {
-        $this->post->create($event->getBoard(), $event->getThread(), $event->getRequest()->get('message'), time());
+        $request = $event->getRequest();
+        $post    = $this->post->create($event->getBoard(), $event->getThread(), $request->get('message'), time());
+        $file    = $request->files->get('file');
+        if ($file instanceof UploadedFile) {
+            $this->imageService->upload($post, $post . '_preview');
+            $this->image->create($event->getBoard(), $event->getThread(), $post, $file->getClientOriginalExtension());
+        }
     }
 
     /**
@@ -128,18 +152,6 @@ class Thread implements EventSubscriberInterface
             }
             $this->image->removeThread($thread);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Events::THREAD_CREATE_BEFORE  => 'onCreateBefore',
-            Events::THREAD_CREATE_SUCCESS => 'onCreateSuccess',
-            Events::THREAD_REMOVE         => 'onRemove',
-        ];
     }
 
 }

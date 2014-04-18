@@ -1,2 +1,1 @@
-- Allow attach images on create thread (`mkthread -f`)
 - Show additional information about images (file size, resolution (width/height), extension

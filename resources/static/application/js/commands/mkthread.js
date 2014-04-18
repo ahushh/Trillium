@@ -2,7 +2,8 @@ app.addCommand(
     'mkthread',
     {
         summary: 'Creates a thread',
-        help: 'Creates a thread<br />Usage: mkthread [board]',
+        help: 'Creates a thread<br />Usage: mkthread [board] [-option]...' +
+        'Options:<br /><table><tr><td>-f</td><td>Attach a file</td></tr></table>',
         secured: false,
         isAvailable: true,
         run: function (term, args) {
@@ -11,11 +12,32 @@ app.addCommand(
                 term.error('No board given');
                 return;
             }
-            var threadData = {title: '', message: '', captcha: '', board: boardName};
+            var data = new FormData();
+            data.append('board', boardName);
+            var attachFile = args.length == 1 && args[0] == '-f' ? true : (args.length == 2 && args[1] == '-f');
+            if (attachFile) {
+                var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
+                fileupload.on('change', function () {
+                    var files = $(this).prop('files');
+                    if (files) {
+                        if (files.length) {
+                            data.append('file', files[0]);
+                        }
+                    } else {
+                        term.error('Not supported');
+                    }
+                    if (app.username === false) {
+                        app.captcha(term);
+                        term.pop();
+                    } else {
+                        mkThread();
+                    }
+                });
+            }
             var mkThread = function () {
                 $.ajax(
                     app.urlGenerator.generate('thread.create'),
-                    {async: false, dataType: 'json', type: 'POST', data: threadData}
+                    {async: false, dataType: 'json', type: 'POST', data: data, processData: false, contentType: false}
                 ).done(
                     function (data) {
                         term.pop();
@@ -38,7 +60,7 @@ app.addCommand(
             if (app.username === false) {
                 term.push(
                     function (captcha) {
-                        threadData.captcha = captcha;
+                        data.append('captcha', captcha);
                         mkThread();
                     },
                     {prompt: 'Are you human? '}
@@ -46,22 +68,27 @@ app.addCommand(
             }
             term.push(
                 function (message) {
-                    threadData.message = message;
-                    if (app.username === false) {
-                        app.captcha(term);
-                        term.pop();
+                    data.append('message', message);
+                    if (attachFile) {
+                        fileupload.trigger('click');
+                        term.set_prompt('');
                     } else {
-                        mkThread();
+                        if (app.username === false) {
+                            app.captcha(term);
+                            term.pop();
+                        } else {
+                            mkThread();
+                        }
                     }
                 },
                 {prompt: 'Message: '}
             ).push(
                 function (title) {
-                    threadData.title = title;
+                    data.append('title', title);
                     term.pop();
                 },
                 {prompt: 'Title: '}
-            )
+            );
         }
     }
 );
