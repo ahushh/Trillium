@@ -7,7 +7,7 @@ app.addCommand(
         secured: false,
         isAvailable: true,
         run: function (term, args) {
-            var boardName = args.length > 0 && args[0] ? args[0] : (app.board.current != '~' ? app.board.current : false);
+            var boardName = args.length > 0 && args[0] !='-f' ? args[0] : (app.board.current != '~' ? app.board.current : false);
             if (!boardName) {
                 term.error('No board given');
                 return;
