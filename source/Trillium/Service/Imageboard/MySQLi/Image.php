@@ -9,6 +9,7 @@
 
 namespace Trillium\Service\Imageboard\MySQLi;
 
+use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
 use Trillium\Service\Imageboard\ImageInterface;
 
 /**
@@ -46,7 +47,11 @@ class Image extends MySQLi implements ImageInterface
      */
     public function get($post)
     {
-        return parent::getItem('post', $post);
+        $image = parent::getItem('post', $post);
+        if (!is_array($image)) {
+            throw new ImageNotFoundException($post);
+        }
+        return $image;
     }
 
     /**

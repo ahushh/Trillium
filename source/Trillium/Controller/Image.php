@@ -9,6 +9,8 @@
 
 namespace Trillium\Controller;
 
+use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
+
 /**
  * Image Class
  *
@@ -26,13 +28,13 @@ class Image extends Controller
      */
     public function remove($id)
     {
-        $image = $this->image->get($id);
-        if (is_array($image)) {
+        try {
+            $image = $this->image->get($id);
             $this->image->remove($id);
             $this->imageService->remove($image['thread'] . '/' . $image['post'], $image['ext'], $image['thread'] . '/' . $image['post'] . '_preview');
             $result = ['success' => 'Image removed'];
-        } else {
-            $result = ['error' => 'Image does not exists', '_status' => 404];
+        } catch (ImageNotFoundException $e) {
+            $result = ['error' => $e->getMessage(), '_status' => 404];
         }
 
         return $result;

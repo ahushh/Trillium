@@ -16,6 +16,7 @@ use Trillium\Service\Imageboard\Event\Event\PostCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
 use Trillium\Service\Imageboard\Event\Event\PostRemove;
 use Trillium\Service\Imageboard\Event\Events;
+use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
 use Trillium\Service\Imageboard\ImageInterface;
 
 /**
@@ -111,10 +112,11 @@ class Post implements EventSubscriberInterface
     public function onRemove(PostRemove $event)
     {
         $post = $event->getPost();
-        $image = $this->image->get($post);
-        if (is_array($image)) {
+        try {
+            $image = $this->image->get($post);
             $this->imageService->remove($image['thread'] . '/' . $post, $image['ext'], $image['thread'] . '/' . $post . '_preview');
             $this->image->remove($post);
+        } catch (ImageNotFoundException $e) {
         }
     }
 

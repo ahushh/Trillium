@@ -9,6 +9,8 @@
 
 namespace Trillium\Service\Imageboard;
 
+use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
+
 /**
  * ImageInterface Interface
  *
@@ -37,6 +39,7 @@ interface ImageInterface
      *
      * @param int $post Post ID
      *
+     * @throws ImageNotFoundException
      * @return array
      */
     public function get($post);
