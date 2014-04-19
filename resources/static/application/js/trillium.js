@@ -8,14 +8,30 @@ function Trillium(systemSettings, routes, basePath) {
                     cmdName = cmd;
                     cmd = commands[cmd];
                     if (cmd.isAvailable && cmd.summary) {
-                        output += '\n' + cmdName + ' - ' + cmd.summary;
+                        output += '<tr><td>' + cmdName + '</td><td>-</td><td>' + cmd.summary + '</td></tr>';
                     }
                 }
-                if (output.length === 0) {
-                    term.error('Help is not available');
-                } else {
-                    term.echo('Available commands: ' + output);
+                if (output.length != 0) {
+                    output = 'Available commands: <table>' + output + '</table><br />';
                 }
+                output += 'Key bindings: ' +
+                '<ul>' +
+                '<li>TAB — tab completion</li>' +
+                '<li>Shift+Enter — insert new line</li>' +
+                '<li>Up Arrow/CTRL+P — show previous command from history</li>' +
+                '<li>Down Arrow/CTRL+N — show next command from history</li>' +
+                '<li>CTRL+R — Reverse Search through command line history</li>' +
+                '<li>CTRL+G — Cancel Reverse Search</li>' +
+                '<li>CTRL+L — Clear terminal</li>' +
+                '<li>CTRL+K — remove the text after the cursor and save it in kill area</li>' +
+                '<li>CTRL+U — remove the text before the cursor and save it in kill area</li>' +
+                '<li>CTRL+H — remove text to the end of the line</li>' +
+                '<li>ALT+D — remove one word after the cursor</li>' +
+                '<li>CTRL+D — run previous interpreter from the stack or call logout.<br />' +
+                'If terminal is using authentication and current interpreter is the first one.<br />' +
+                'It also cancel all ajax call, if terminal is paused, and resume it.</li>' +
+                '</ul>';
+                term.echo(output, {raw: true});
             },
             isAvailable: true
         }

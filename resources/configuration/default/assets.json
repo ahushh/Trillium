@@ -26,6 +26,7 @@
             "generated/settings.js",
             "generated/url-generator.js",
             "application/js/trillium.js",
+            "application/js/help.js",
             "application/js/commands/"
         ]
     }

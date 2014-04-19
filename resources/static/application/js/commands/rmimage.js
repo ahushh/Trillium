@@ -1,6 +1,6 @@
 app.addCommand('rmimage', {
-    summary: 'Remove an image',
-    help: 'Remove an image<br />Usage: rmimage &lt;post_id&gt;',
+    summary: TermHelp.rmimage.summary,
+    help: TermHelp.rmimage.help,
     isAvailable: false,
     secured: true,
     run: function (term, args) {
