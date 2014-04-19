@@ -12,7 +12,7 @@ app.addCommand('login', {
                     {async: false, data: credentials, dataType: 'json', type: 'POST'}
                 ).done(
                     function (data) {
-                        if (data.hasOwnProperty('username') && data.hasOwnProperty('error')) {
+                        if (data.hasOwnProperty('error')) {
                             term.error(data['error']);
                             term.pop();
                         } else if (data.hasOwnProperty('success')) {

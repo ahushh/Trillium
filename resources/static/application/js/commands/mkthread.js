@@ -4,7 +4,12 @@ app.addCommand('mkthread', {
     secured: false,
     isAvailable: true,
     run: function (term, args) {
-        var boardName = args.length > 0 && args[0] !='-f' ? args[0] : (app.board.current != '~' ? app.board.current : false);
+        var boardName = false;
+        if (args.length > 0 && args[0] != '-f') {
+            boardName = args[0];
+        } else if (app.board.current != '~') {
+            boardName = app.board.current;
+        }
         if (!boardName) {
             term.error('No board given');
             return;
@@ -12,25 +17,6 @@ app.addCommand('mkthread', {
         var data = new FormData();
         data.append('board', boardName);
         var attachFile = args.length == 1 && args[0] == '-f' ? true : (args.length == 2 && args[1] == '-f');
-        if (attachFile) {
-            var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
-            fileupload.on('change', function () {
-                var files = $(this).prop('files');
-                if (files) {
-                    if (files.length) {
-                        data.append('file', files[0]);
-                    }
-                } else {
-                    term.error('Not supported');
-                }
-                if (app.username === false) {
-                    app.captcha(term);
-                    term.pop();
-                } else {
-                    mkThread();
-                }
-            });
-        }
         var mkThread = function () {
             $.ajax(
                 app.urlGenerator.generate('thread.create'),
@@ -54,6 +40,17 @@ app.addCommand('mkthread', {
                 }
             );
         };
+        var showCaptcha = function () {
+            if (app.username === false) {
+                app.captcha(term);
+                term.pop();
+            } else {
+                mkThread();
+            }
+        };
+        if (attachFile) {
+            var fileupload = app.fileupload(data, term, showCaptcha);
+        }
         if (app.username === false) {
             term.push(
                 function (captcha) {
@@ -70,12 +67,7 @@ app.addCommand('mkthread', {
                     fileupload.trigger('click');
                     term.set_prompt('');
                 } else {
-                    if (app.username === false) {
-                        app.captcha(term);
-                        term.pop();
-                    } else {
-                        mkThread();
-                    }
+                    showCaptcha();
                 }
             },
             {prompt: 'Message: '}

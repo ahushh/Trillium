@@ -44,15 +44,15 @@ function Trillium(systemSettings, routes, basePath) {
             }
         }
     };
-    this.host = 'trillium'; // Terminal host
-    this.username = false;
     var commandNotFound = function (term, commandName) {
         term.error(self.host + ': ' + commandName + ': command not found');
     };
+    var requiredCommandProperties = ['run', 'help', 'summary', 'secured', 'isAvailable'];
+    this.host = 'trillium';
+    this.username = false;
     this.greeting = function (term) {
         term.echo('<div id="trillium_greeting"></div>', {raw: true});
     };
-    var requiredCommandProperties = ['run', 'help', 'summary', 'secured', 'isAvailable'];
     this.addCommand = function (name, command) {
         if (!$.isPlainObject(command)) {
             console.log(command);
@@ -74,9 +74,9 @@ function Trillium(systemSettings, routes, basePath) {
     };
     // Perform on logout
     this.logout = function (term) {
-        app.username = false;
-        app.prompt(term.set_prompt);
-        app.showCommand('login', true);
+        self.username = false;
+        self.prompt(term.set_prompt);
+        self.showCommand('login', true);
         toggleSecuredCommands(false);
     };
     // Perform on login
@@ -298,12 +298,26 @@ function Trillium(systemSettings, routes, basePath) {
     // Echoes captcha
     this.captcha = function (term) {
         term.echo(
-            '<img src="'
-            + app.urlGenerator.generate('captcha')
-            + '?' + Math.random()
-            + '" alt="Captcha" />',
+            '<img src="' + self.urlGenerator.generate('captcha') + '?' + Math.random() + '" alt="Captcha" />',
             {raw: true}
         );
+    };
+    // Fileupload
+    this.fileupload = function (data, term, after) {
+        // MKTHREAD
+        var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
+        fileupload.on('change', function () {
+            var files = $(this).prop('files');
+            if (files && files.length) {
+                data.append('file', files[0]);
+            } else {
+                term.error('No files given');
+            }
+            if ($.isFunction(after)) {
+                after();
+            }
+        });
+        return fileupload;
     };
     // Creates a terminal
     this.run = function (selector) {

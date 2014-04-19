@@ -5,6 +5,10 @@ app.addCommand('reply', {
     isAvailable: true,
     run: function (term, args) {
         var threadID = app.thread.current ? app.thread.current : (args.length > 0 && args[0] != '-f' ? args[0] : false);
+        if (!threadID) {
+            term.error('No thread given');
+            return;
+        }
         var attachFile = args.length == 1 && args[0] == '-f' ? true : (args.length == 2 && args[1] == '-f');
         var data = new FormData();
         var showCaptcha = function () {
@@ -15,24 +19,6 @@ app.addCommand('reply', {
                 sendMessage(threadID);
             }
         };
-        if (attachFile) {
-            var fileupload = $('<input style="display: none" id="fileupload" type="file" name="image" />');
-            fileupload.on('change', function () {
-                var files = $(this).prop('files');
-                if (files) {
-                    if (files.length) {
-                        data.append('file', files[0]);
-                    }
-                } else {
-                    term.error('Not supported');
-                }
-                showCaptcha();
-            });
-        }
-        if (!threadID) {
-            term.error('No thread given');
-            return;
-        }
         var sendMessage = function (threadID) {
             $.ajax(
                 app.urlGenerator.generate('post.create', {thread: threadID}),
@@ -51,6 +37,9 @@ app.addCommand('reply', {
                 }
             );
         };
+        if (attachFile) {
+            var fileupload = app.fileupload(data, term, showCaptcha);
+        }
         app.thread.get(threadID, term, function (thread) {
             term.echo('Reply to thread: /' + thread['board'] + '/' + thread['id'] + ' - ' + thread['title']);
             if (app.username === false) {
