@@ -118,4 +118,18 @@ class Thread extends MySQLi implements ThreadInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getBoard($board)
+    {
+        return parent::listingItems(
+            sprintf(
+                "SELECT * FROM `%s` WHERE `board` = '%s'",
+                $this->tableName,
+                $this->mysqli->real_escape_string($board)
+            )
+        );
+    }
+
 }

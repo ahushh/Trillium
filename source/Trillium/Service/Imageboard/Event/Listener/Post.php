@@ -90,7 +90,7 @@ class Post implements EventSubscriberInterface
         $post    = $event->getPost();
         $file    = $request->files->get('file');
         if ($file instanceof UploadedFile) {
-            $this->imageService->upload($post, $post . '_preview');
+            $this->imageService->upload($event->getThread(), $post, $post . '_preview');
             $this->image->create(
                 $event->getBoard(),
                 $event->getThread(),
@@ -113,7 +113,7 @@ class Post implements EventSubscriberInterface
         $post = $event->getPost();
         $image = $this->image->get($post);
         if (is_array($image)) {
-            $this->imageService->remove($post, $image['ext'], $post . '_preview');
+            $this->imageService->remove($image['thread'] . '/' . $post, $image['ext'], $image['thread'] . '/' . $post . '_preview');
             $this->image->remove($post);
         }
     }

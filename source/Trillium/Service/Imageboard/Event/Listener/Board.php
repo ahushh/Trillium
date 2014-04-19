@@ -96,14 +96,19 @@ class Board implements EventSubscriberInterface
     public function onRemove(BoardRemove $event)
     {
         $board = $event->getBoard();
+        $threads = $this->thread->getBoard($board);
         $this->thread->removeBoard($board);
         $this->post->removeBoard($board);
-        $images = $this->image->getBoard($board);
-        if (!empty($images)) {
-            foreach ($images as $image) {
-                $this->imageService->remove($image['post'], $image['ext'], $image['post'] . '_preview');
-            }
-            $this->image->removeBoard($board);
+        $this->image->removeBoard($board);
+        foreach ($threads as $thread) {
+            $dir = $this->imageService->getDirectory() . '/' . $thread['id'];
+            array_map(
+                function ($name) use ($dir) {
+                    unlink($dir . '/' . $name);
+                },
+                array_diff(scandir($dir), ['.', '..'])
+            );
+            rmdir($dir);
         }
     }
 

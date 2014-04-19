@@ -29,7 +29,7 @@ class Image extends Controller
         $image = $this->image->get($id);
         if (is_array($image)) {
             $this->image->remove($id);
-            $this->imageService->remove($image['post'], $image['ext'], $image['post'] . '_preview');
+            $this->imageService->remove($image['thread'] . '/' . $image['post'], $image['ext'], $image['thread'] . '/' . $image['post'] . '_preview');
             $result = ['success' => 'Image removed'];
         } else {
             $result = ['error' => 'Image does not exists', '_status' => 404];

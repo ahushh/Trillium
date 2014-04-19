@@ -212,15 +212,13 @@ class Image
      * Moves the file to a new location
      * Creates a jpeg thumbnail
      *
+     * @param string $dir   Sub dir
      * @param string $name  New filename
      * @param string $thumb Thumbnail filename
      *
-     * @throws \LogicException
-     * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
-     *
      * @return $this
      */
-    public function upload($name, $thumb)
+    public function upload($dir, $name, $thumb)
     {
         if (!empty($this->error)) {
             throw new \LogicException('File is invalid');
@@ -233,8 +231,8 @@ class Image
             // copy original
             $image = $this->image;
         }
-        imagejpeg($image, $this->thumbDir . $thumb . '.jpeg', $this->q);
-        $this->file->move($this->directory, $name . '.' . $this->file->getClientOriginalExtension());
+        imagejpeg($image, $this->thumbDir . '/' . trim($dir, '\/') . '/' . $thumb . '.jpeg', $this->q);
+        $this->file->move($this->directory . '/' . trim($dir, '\/'), $name . '.' . $this->file->getClientOriginalExtension());
 
         return $this;
     }
@@ -339,6 +337,16 @@ class Image
     public function getImageHeight()
     {
         return $this->imageHeight;
+    }
+
+    /**
+     * Returns the path to the images directory
+     *
+     * @return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
     }
 
 }

@@ -21,10 +21,10 @@ app.addCommand(
                             output += '#' + posts[p]['id'] + ' >> At: ' + posts[p]['time'] + '<br />' + posts[p]['message'];
                             if (image) {
                                 output += '<div><a href="'
-                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '.' + image['ext'])
+                                + app.urlGenerator.raw('images/' + posts[p]['thread'] + '/' + posts[p]['id'] + '.' + image['ext'])
                                 + '" target="_blank" title="Click, to get full image">'
                                 + '<img src="'
-                                + app.urlGenerator.raw('images/' + posts[p]['id'] + '_preview.jpeg')
+                                + app.urlGenerator.raw('images/' + posts[p]['thread'] + '/' + posts[p]['id'] + '_preview.jpeg')
                                 + '" alt="thumb" />'
                                 + '<a/><br />'
                                 + image['width'] + 'x' + image['height']

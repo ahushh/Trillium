@@ -99,4 +99,13 @@ interface ThreadInterface
      */
     public function move($old, $new);
 
+    /**
+     * Returns thread list by board
+     *
+     * @param string $board Board name
+     *
+     * @return array
+     */
+    public function getBoard($board);
+
 }

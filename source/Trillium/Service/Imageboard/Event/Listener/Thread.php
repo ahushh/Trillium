@@ -125,14 +125,17 @@ class Thread implements EventSubscriberInterface
      */
     public function onCreateSuccess(ThreadCreateSuccess $event)
     {
+        $thread  = $event->getThread();
         $request = $event->getRequest();
-        $post    = $this->post->create($event->getBoard(), $event->getThread(), $request->get('message'), time());
+        $board   = $event->getBoard();
+        $post    = $this->post->create($board, $thread, $request->get('message'), time());
         $file    = $request->files->get('file');
+        mkdir($this->imageService->getDirectory() . '/' . $thread);
         if ($file instanceof UploadedFile) {
-            $this->imageService->upload($post, $post . '_preview');
+            $this->imageService->upload($thread, $post, $post . '_preview');
             $this->image->create(
-                $event->getBoard(),
-                $event->getThread(),
+                $board,
+                $thread,
                 $post,
                 $file->getClientOriginalExtension(),
                 $this->imageService->getImageWidth(),
@@ -151,15 +154,17 @@ class Thread implements EventSubscriberInterface
      */
     public function onRemove(ThreadRemove $event)
     {
-        $thread = $event->getThread();
+        $thread    = $event->getThread();
+        $directory = $this->imageService->getDirectory() . '/' . $thread . '/';
         $this->post->removeThread($thread);
-        $images = $this->image->getThread($thread);
-        if (!empty($images)) {
-            foreach ($images as $image) {
-                $this->imageService->remove($image['post'], $image['ext'], $image['post'] . '_preview');
-            }
-            $this->image->removeThread($thread);
-        }
+        $this->image->removeThread($thread);
+        array_map(
+            function ($name) use ($directory) {
+                unlink($directory . $name);
+            },
+            array_diff(scandir($directory), ['.', '..'])
+        );
+        rmdir($directory);
     }
 
 }
