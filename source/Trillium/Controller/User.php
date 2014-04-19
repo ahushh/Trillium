@@ -25,7 +25,7 @@ class User extends Controller
     /**
      * Sign In
      *
-     * Returns a username and an error of last login
+     * Returns an error of last login
      *
      * @param Request $request A request instance
      *
@@ -33,10 +33,7 @@ class User extends Controller
      */
     public function signIn(Request $request)
     {
-        return [
-            'username' => $this->session->get('_security.last_username'),
-            'error'    => $this->container['security.provider']['last_error']($request)
-        ];
+        return ['error' => $this->container['security.provider']['last_error']($request)];
     }
 
     /**
