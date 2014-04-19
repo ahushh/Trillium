@@ -43,7 +43,17 @@ app.addCommand(
                     }
                 )
             } else {
-                var board = args[0] ? args[0] : app.board.current;
+                var board;
+                if (args[0]) {
+                    args[0] = args[0].toString();
+                    board = args[0].replace(/^[\/]+/, '');
+                    if (/[^a-z0-9]+/.test(board)) {
+                        term.error('Wrong path given');
+                        return;
+                    }
+                } else {
+                    board = app.board.current;
+                }
                 $.ajax(
                     app.urlGenerator.generate('thread.listing', {board: board}),
                     {dataType: 'json'}
