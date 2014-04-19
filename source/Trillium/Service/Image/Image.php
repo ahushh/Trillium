@@ -167,10 +167,10 @@ class Image
                 $this->file->getClientOriginalExtension(),
                 implode(', ', $this->allowedExtensions)
             );
-        } elseif (!in_array($this->file->getMimeType(), $this->allowedMimes)) {
+        } elseif (!in_array($this->file->getClientMimeType(), $this->allowedMimes)) {
             $this->error[] = sprintf(
                 'Illegal MIME type: %s. Allowed: ',
-                $this->file->getMimeType(),
+                $this->file->getClientMimeType(),
                 implode(', ', $this->allowedMimes)
             );
         } else {
@@ -201,7 +201,7 @@ class Image
                 }
             }
         }
-        if ($this->file->getSize() > $this->maxSize) {
+        if ($this->file->getClientSize() > $this->maxSize) {
             $this->error[] = sprintf('File size exceeds %u Kb', $this->maxSize / 1024);
         }
 
