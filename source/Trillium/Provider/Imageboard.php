@@ -52,20 +52,26 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
                 $c['thread'],
                 $c['post'],
                 $c['image'],
-                $c['imageService']
+                $c['imageManager']
             );
         };
         $container['thread.listener'] = function ($c) {
             return new ThreadListener(
                 $c['post'],
                 $c['validator'],
-                $c['imageService'],
+                $c['imageValidator'],
+                $c['imageManager'],
                 $c['image'],
                 $this->getCaptcha($c)
             );
         };
         $container['post.listener']   = function ($c) {
-            return new PostListener($c['imageService'], $c['image'], $this->getCaptcha($c));
+            return new PostListener(
+                $c['imageValidator'],
+                $c['image'],
+                $c['imageManager'],
+                $this->getCaptcha($c)
+            );
         };
         $container['validator']       = function () {
             return new Validator();

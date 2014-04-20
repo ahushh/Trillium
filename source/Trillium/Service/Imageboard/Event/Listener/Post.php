@@ -10,14 +10,15 @@
 namespace Trillium\Service\Imageboard\Event\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Trillium\Service\Image\Image as ImageService;
+use Trillium\Service\Image\Manager;
+use Trillium\Service\Image\Validator;
 use Trillium\Service\Imageboard\Event\Event\PostCreateBefore;
 use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
 use Trillium\Service\Imageboard\Event\Event\PostRemove;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
 use Trillium\Service\Imageboard\ImageInterface;
+use Trillium\Service\Imageboard\Traits\FileUpload;
 
 /**
  * Post Class
@@ -27,15 +28,12 @@ use Trillium\Service\Imageboard\ImageInterface;
 class Post implements EventSubscriberInterface
 {
 
+    use FileUpload;
+
     /**
      * @var callable|null
      */
     private $captcha;
-
-    /**
-     * @var ImageService
-     */
-    private $imageService;
 
     /**
      * @var ImageInterface
@@ -43,21 +41,37 @@ class Post implements EventSubscriberInterface
     private $image;
 
     /**
+     * @var Validator
+     */
+    private $imageValidator;
+
+    /**
+     * @var Manager
+     */
+    private $manager;
+
+    /**
      * Constructor
      *
-     * @param ImageService   $imageService ImageService instance
-     * @param ImageInterface $image        ImageInterface instance
-     * @param callable|null  $captcha      A callable that takes a single argument and returns a boolean value,
-     *                                     depending on whether captcha passed.
-     *                                     If null, the check a captcha will not occur.
+     * @param Validator      $validator Images validator
+     * @param ImageInterface $image     ImageInterface instance
+     * @param Manager        $manager   Manager instance
+     * @param callable|null  $captcha   A callable that takes a single argument and returns a boolean value,
+     *                                  depending on whether captcha passed.
+     *                                  If null, the check a captcha will not occur.
      *
      * @return self
      */
-    public function __construct(ImageService $imageService, ImageInterface $image, $captcha = null)
-    {
-        $this->imageService = $imageService;
-        $this->image        = $image;
-        $this->captcha      = $captcha;
+    public function __construct(
+        Validator $validator,
+        ImageInterface $image,
+        Manager $manager,
+        $captcha = null
+    ) {
+        $this->image          = $image;
+        $this->captcha        = $captcha;
+        $this->imageValidator = $validator;
+        $this->manager        = $manager;
     }
 
     /**
@@ -68,14 +82,9 @@ class Post implements EventSubscriberInterface
     public function onCreateBefore(PostCreateBefore $event)
     {
         $request = $event->getRequest();
-        $error   = [];
+        $error   = $this->validateFile($request);
         if (is_callable($this->captcha) && !call_user_func($this->captcha, $request->get('captcha', ''))) {
             $error[] = 'Wrong captcha';
-        }
-        $file = $request->files->get('file');
-        if ($file instanceof UploadedFile) {
-            $this->imageService->setFile($file)->validate();
-            $error = array_merge($error, $this->imageService->getError());
         }
         $event->setError($error);
     }
@@ -87,21 +96,7 @@ class Post implements EventSubscriberInterface
      */
     public function onCreateSuccess(PostCreateSuccess $event)
     {
-        $request = $event->getRequest();
-        $post    = $event->getPost();
-        $file    = $request->files->get('file');
-        if ($file instanceof UploadedFile) {
-            $this->imageService->upload($event->getThread(), $post, $post . '_preview');
-            $this->image->create(
-                $event->getBoard(),
-                $event->getThread(),
-                $post,
-                $file->getClientOriginalExtension(),
-                $this->imageService->getImageWidth(),
-                $this->imageService->getImageHeight(),
-                (int) round($file->getClientSize() / 1024, 0)
-            );
-        }
+        $this->uploadFile($event->getRequest(), $event->getBoard(), $event->getThread(), $event->getPost());
     }
 
     /**
@@ -114,7 +109,12 @@ class Post implements EventSubscriberInterface
         $post = $event->getPost();
         try {
             $image = $this->image->get($post);
-            $this->imageService->remove($image['thread'] . '/' . $post, $image['ext'], $image['thread'] . '/' . $post . '_preview');
+            $this->manager->remove(
+                [
+                    $image['thread'] . '/' . $post . '.' . $image['ext'],
+                    $image['thread'] . '/' . $post . Manager::THUMBNAIL_POSTFIX
+                ]
+            );
             $this->image->remove($post);
         } catch (ImageNotFoundException $e) {
         }

@@ -9,6 +9,10 @@
 
 namespace Trillium\Provider;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Trillium\Service\Image\Manager;
+use Trillium\Service\Image\Resize;
+use Trillium\Service\Image\Validator;
 use Vermillion\Container;
 use Vermillion\Provider\ServiceProviderInterface;
 
@@ -21,28 +25,47 @@ class Image implements ServiceProviderInterface
 {
 
     /**
+     * @var array Configuration for services
+     */
+    private $configuration = [];
+
+    /**
      * {@inheritdoc}
      */
     public function registerServices(Container $container)
     {
-        $container['imageService'] = function ($c) {
-            /** @var $configuration \Vermillion\Configuration\Configuration */
-            $configuration = $c['configuration'];
-            $config        = $configuration->load('image')->get();
-            /** @var $env \Vermillion\Environment */
-            $env = $c['environment'];
-
-            return new \Trillium\Service\Image\Image(
-                $env->getDirectory('images'),
-                $env->getDirectory('images'),
-                $config['max_size'],
-                $config['max_width'],
-                $config['max_height'],
-                $config['thumb_width'],
-                $config['thumb_height'],
-                $config['thumb_quality']
-            );
+        $container['imageValidator'] = function ($c) {
+            return new Validator($this->getConfiguration($c));
         };
+        $container['imageResize']    = function () {
+            return new Resize();
+        };
+        $container['imageManager']   = function ($c) {
+            return new Manager(new Filesystem(), $c['imageResize'], $this->getConfiguration($c));
+        };
+    }
+
+    /**
+     * Returns the configuration for services
+     *
+     * @param Container $c Container Container instance
+     *
+     * @return array
+     */
+    private function getConfiguration(Container $c)
+    {
+        if (empty($this->configuration)) {
+            /**
+             * @var $configuration \Vermillion\Configuration\Configuration
+             * @var $environment   \Vermillion\Environment
+             */
+            $configuration                    = $c['configuration'];
+            $environment                      = $c['environment'];
+            $this->configuration              = $configuration->load('image')->get();
+            $this->configuration['directory'] = $environment->getDirectory('images');
+        }
+
+        return $this->configuration;
     }
 
 }

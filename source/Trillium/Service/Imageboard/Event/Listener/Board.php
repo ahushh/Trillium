@@ -10,7 +10,7 @@
 namespace Trillium\Service\Imageboard\Event\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Trillium\Service\Image\Image as ImageService;
+use Trillium\Service\Image\Manager;
 use Trillium\Service\Imageboard\Event\Event\BoardRemove;
 use Trillium\Service\Imageboard\Event\Event\BoardUpdateSuccess;
 use Trillium\Service\Imageboard\Event\Events;
@@ -42,9 +42,9 @@ class Board implements EventSubscriberInterface
     private $image;
 
     /**
-     * @var ImageService
+     * @var Manager
      */
-    private $imageService;
+    private $manager;
 
     /**
      * Constructor
@@ -52,7 +52,8 @@ class Board implements EventSubscriberInterface
      * @param ThreadInterface $thread
      * @param PostInterface   $post
      * @param ImageInterface  $image
-     * @param ImageService    $imageService
+     *
+     * @param Manager         $manager
      *
      * @return self
      */
@@ -60,12 +61,12 @@ class Board implements EventSubscriberInterface
         ThreadInterface $thread,
         PostInterface $post,
         ImageInterface $image,
-        ImageService $imageService
+        Manager $manager
     ) {
-        $this->thread       = $thread;
-        $this->post         = $post;
-        $this->image        = $image;
-        $this->imageService = $imageService;
+        $this->thread  = $thread;
+        $this->post    = $post;
+        $this->image   = $image;
+        $this->manager = $manager;
     }
 
     /**
@@ -96,20 +97,17 @@ class Board implements EventSubscriberInterface
     public function onRemove(BoardRemove $event)
     {
         $board = $event->getBoard();
-        $threads = $this->thread->getBoard($board);
         $this->thread->removeBoard($board);
         $this->post->removeBoard($board);
         $this->image->removeBoard($board);
-        foreach ($threads as $thread) {
-            $dir = $this->imageService->getDirectory() . '/' . $thread['id'];
+        $this->manager->remove(
             array_map(
-                function ($name) use ($dir) {
-                    unlink($dir . '/' . $name);
+                function ($thread) {
+                    return $thread['id'];
                 },
-                array_diff(scandir($dir), ['.', '..'])
-            );
-            rmdir($dir);
-        }
+                $this->thread->getBoard($board)
+            )
+        );
     }
 
     /**

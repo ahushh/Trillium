@@ -1,7 +1,9 @@
 {
-    "max_size": 5,
+    "allowed_extensions": ["jpg", "jpeg", "png", "gif"],
+    "allowed_mimes": ["image/jpeg", "image/png", "image/gif", "image/x-png"],
     "max_width": 5000,
     "max_height": 5000,
+    "max_size": 5242880,
     "thumb_width": 240,
     "thumb_height": 320,
     "thumb_quality": 90
