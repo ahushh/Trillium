@@ -96,10 +96,15 @@ class Manager
      * @param int      $type   Image type (IMAGETYPE_XXX)
      * @param string   $target Filename
      *
+     * @throws \InvalidArgumentException
+     *
      * @return $this
      */
     public function thumbnail($origin, $type, $target)
     {
+        if (!is_resource($origin)) {
+            throw new \InvalidArgumentException('Illegal image');
+        }
         $target = $this->getTargetPath($target) . self::THUMBNAIL_POSTFIX;
         $image  = $this->resize
             ->setImage($origin, $type)
