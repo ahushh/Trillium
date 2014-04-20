@@ -40,6 +40,16 @@ class Subscriber implements EventSubscriberInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => ['onEarlyKernelRequest', 128]
+        ];
+    }
+
+    /**
      * Sets session to a request
      *
      * @param GetResponseEvent $event
@@ -49,16 +59,6 @@ class Subscriber implements EventSubscriberInterface
     public function onEarlyKernelRequest(GetResponseEvent $event)
     {
         $event->getRequest()->setSession($this->session);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::REQUEST => ['onEarlyKernelRequest', 128]
-        ];
     }
 
 }

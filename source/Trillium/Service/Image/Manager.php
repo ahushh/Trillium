@@ -58,10 +58,10 @@ class Manager
      */
     public function __construct(Filesystem $fs, Resize $resize, array $options = [])
     {
-        $this->fs                       = $fs;
-        $this->resize                   = $resize;
-        $this->options                  = array_replace($this->options, $options);
-        $this->options['directory']     = rtrim($this->options['directory'], '\/') . DIRECTORY_SEPARATOR;
+        $this->fs                   = $fs;
+        $this->resize               = $resize;
+        $this->options              = array_replace($this->options, $options);
+        $this->options['directory'] = rtrim($this->options['directory'], '\/') . DIRECTORY_SEPARATOR;
         if (!is_dir($this->options['directory'])) {
             throw new \InvalidArgumentException(sprintf('Directory "%s" does not exists', $this->options['directory']));
         }
@@ -84,6 +84,18 @@ class Manager
     }
 
     /**
+     * Returns a target path
+     *
+     * @param string $target Name
+     *
+     * @return string
+     */
+    private function getTargetPath($target)
+    {
+        return $this->options['directory'] . trim($target, '\/');
+    }
+
+    /**
      * Creates a thumbnail
      *
      * @param resource $origin An image
@@ -101,7 +113,7 @@ class Manager
         }
         $target = $this->getTargetPath($target) . self::THUMBNAIL_POSTFIX;
         if (imagesx($origin) > $this->options['thumb_width'] || imagesy($origin) > $this->options['thumb_height']) {
-            $image  = $this->resize
+            $image = $this->resize
                 ->setImage($origin, $type)
                 ->resize($this->options['thumb_width'], $this->options['thumb_height']);
         } else {
@@ -163,18 +175,6 @@ class Manager
     public function getDirectory($name)
     {
         return $this->getTargetPath($name) . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * Returns a target path
-     *
-     * @param string $target Name
-     *
-     * @return string
-     */
-    private function getTargetPath($target)
-    {
-        return $this->options['directory'] . trim($target, '\/');
     }
 
 }

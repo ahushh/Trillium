@@ -31,22 +31,26 @@ class Post implements EventSubscriberInterface
     use FileUpload;
 
     /**
+     * A callable that takes a single argument and returns a boolean value,
+     * depending on whether captcha passed.
+     * If null, the check a captcha will not occur.
+     *
      * @var callable|null
      */
     private $captcha;
 
     /**
-     * @var ImageInterface
+     * @var ImageInterface ImageInterface instance
      */
     private $image;
 
     /**
-     * @var Validator
+     * @var Validator Images validator
      */
     private $imageValidator;
 
     /**
-     * @var Manager
+     * @var Manager Manager instance
      */
     private $manager;
 
@@ -75,7 +79,21 @@ class Post implements EventSubscriberInterface
     }
 
     /**
-     * @param PostCreateBefore $event
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::POST_CREATE_BEFORE  => 'onCreateBefore',
+            Events::POST_CREATE_SUCCESS => 'onCreateSuccess',
+            Events::POST_REMOVE         => 'onRemove',
+        ];
+    }
+
+    /**
+     * Performs before post will be created
+     *
+     * @param PostCreateBefore $event An event
      *
      * @return void
      */
@@ -90,7 +108,9 @@ class Post implements EventSubscriberInterface
     }
 
     /**
-     * @param PostCreateSuccess $event
+     * Performs after a post was created
+     *
+     * @param PostCreateSuccess $event An event
      *
      * @return void
      */
@@ -100,7 +120,9 @@ class Post implements EventSubscriberInterface
     }
 
     /**
-     * @param PostRemove $event
+     * Performs after post was removed
+     *
+     * @param PostRemove $event An event
      *
      * @return void
      */
@@ -118,18 +140,6 @@ class Post implements EventSubscriberInterface
             $this->image->remove($post);
         } catch (ImageNotFoundException $e) {
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Events::POST_CREATE_BEFORE  => 'onCreateBefore',
-            Events::POST_CREATE_SUCCESS => 'onCreateSuccess',
-            Events::POST_REMOVE         => 'onRemove',
-        ];
     }
 
 }

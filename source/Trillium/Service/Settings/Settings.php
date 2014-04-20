@@ -90,6 +90,30 @@ class Settings
     }
 
     /**
+     * Creates a settings storage
+     *
+     * @param int $type A type (Settings::SYSTEM, Settings::USER, Settings::ALL)
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    private function createStorage($type)
+    {
+        $storage = [];
+        if ($type === self::USER || $type === self::ALL) {
+            $storage[self::USER] =& $this->userSettings;
+        }
+        if ($type === self::SYSTEM || $type === self::ALL) {
+            $storage[self::SYSTEM] =& $this->systemSettings;
+        }
+        if (empty($storage)) {
+            throw new \InvalidArgumentException('Unknown settings type');
+        }
+
+        return $storage;
+    }
+
+    /**
      * Returns a value by key
      *
      * If type is Settings::ALL and key is not exists in user settings, tries to get it from system settings.
@@ -157,30 +181,6 @@ class Settings
         }
 
         return $errors;
-    }
-
-    /**
-     * Creates a settings storage
-     *
-     * @param int $type A type (Settings::SYSTEM, Settings::USER, Settings::ALL)
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    private function createStorage($type)
-    {
-        $storage = [];
-        if ($type === self::USER || $type === self::ALL) {
-            $storage[self::USER] =& $this->userSettings;
-        }
-        if ($type === self::SYSTEM || $type === self::ALL) {
-            $storage[self::SYSTEM] =& $this->systemSettings;
-        }
-        if (empty($storage)) {
-            throw new \InvalidArgumentException('Unknown settings type');
-        }
-
-        return $storage;
     }
 
 }

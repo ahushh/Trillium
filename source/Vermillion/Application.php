@@ -45,6 +45,29 @@ class Application
     }
 
     /**
+     * Handles a request to convert it to response.
+     * Sends a response.
+     * Terminates a request/response cycle.
+     *
+     * @param Request $request
+     *
+     * @throws \RuntimeException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     * @return void
+     */
+    public function run(Request $request)
+    {
+        $this->register();
+        /** @var $kernel HttpKernel */
+        $kernel   = $this->container['http_kernel'];
+        $response = $kernel->handle($request);
+        $response->send();
+        $kernel->terminate($request, $response);
+    }
+
+    /**
      * Registers services and event listeners
      *
      * @throws \RuntimeException
@@ -76,29 +99,6 @@ class Application
         }
 
         return $this;
-    }
-
-    /**
-     * Handles a request to convert it to response.
-     * Sends a response.
-     * Terminates a request/response cycle.
-     *
-     * @param Request $request
-     *
-     * @throws \RuntimeException
-     * @throws \Exception
-     * @throws \InvalidArgumentException
-     * @throws \Exception
-     * @return void
-     */
-    public function run(Request $request)
-    {
-        $this->register();
-        /** @var $kernel HttpKernel */
-        $kernel   = $this->container['http_kernel'];
-        $response = $kernel->handle($request);
-        $response->send();
-        $kernel->terminate($request, $response);
     }
 
     /**

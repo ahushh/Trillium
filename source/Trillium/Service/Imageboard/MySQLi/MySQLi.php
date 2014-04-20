@@ -66,6 +66,24 @@ abstract class MySQLi
     }
 
     /**
+     * Returns an escaped value
+     *
+     * @param mixed $value A value
+     *
+     * @return int|string
+     */
+    protected function escape($value)
+    {
+        if (is_string($value)) {
+            $value = $this->mysqli->real_escape_string($value);
+        } else {
+            $value = (int) $value;
+        }
+
+        return $value;
+    }
+
+    /**
      * Returns a list
      *
      * @param string $statement SQL Statement
@@ -130,24 +148,6 @@ abstract class MySQLi
         $result->free();
 
         return is_array($item) ? $item : null;
-    }
-
-    /**
-     * Returns an escaped value
-     *
-     * @param mixed $value A value
-     *
-     * @return int|string
-     */
-    protected function escape($value)
-    {
-        if (is_string($value)) {
-            $value = $this->mysqli->real_escape_string($value);
-        } else {
-            $value = (int) $value;
-        }
-
-        return $value;
     }
 
 }

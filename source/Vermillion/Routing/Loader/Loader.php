@@ -78,27 +78,6 @@ abstract class Loader extends \Vermillion\Configuration\Loader\Loader
     }
 
     /**
-     * Creates a route and adds it to the RouteCollection.
-     *
-     * @param array $config Route definition
-     *
-     * @return Route
-     */
-    protected function createRoute(array $config)
-    {
-        return new Route(
-            $config['path'],
-            isset($config['defaults']) ? $config['defaults'] : [],
-            isset($config['requirements']) ? $config['requirements'] : [],
-            isset($config['options']) ? $config['options'] : [],
-            isset($config['host']) ? $config['host'] : '',
-            isset($config['schemes']) ? $config['schemes'] : [],
-            isset($config['methods']) ? $config['methods'] : [],
-            isset($config['condition']) ? $config['condition'] : null
-        );
-    }
-
-    /**
      * Validates the route configuration.
      *
      * @param array  $config A resource config
@@ -157,6 +136,27 @@ abstract class Loader extends \Vermillion\Configuration\Loader\Loader
                 )
             );
         }
+    }
+
+    /**
+     * Creates a route and adds it to the RouteCollection.
+     *
+     * @param array $config Route definition
+     *
+     * @return Route
+     */
+    protected function createRoute(array $config)
+    {
+        return new Route(
+            $config['path'],
+            isset($config['defaults']) ? $config['defaults'] : [],
+            isset($config['requirements']) ? $config['requirements'] : [],
+            isset($config['options']) ? $config['options'] : [],
+            isset($config['host']) ? $config['host'] : '',
+            isset($config['schemes']) ? $config['schemes'] : [],
+            isset($config['methods']) ? $config['methods'] : [],
+            isset($config['condition']) ? $config['condition'] : null
+        );
     }
 
 }

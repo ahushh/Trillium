@@ -50,6 +50,8 @@ trait FileUpload
      * @param int     $thread  Thread ID
      * @param int     $post    Post ID
      *
+     * @throws \RuntimeException
+     *
      * @return void
      */
     protected function uploadFile(Request $request, $board, $thread, $post)

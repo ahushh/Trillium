@@ -27,33 +27,32 @@ class Board implements EventSubscriberInterface
 {
 
     /**
-     * @var ThreadInterface
+     * @var ThreadInterface ThreadInterface instance
      */
     private $thread;
 
     /**
-     * @var PostInterface
+     * @var PostInterface PostInterface instance
      */
     private $post;
 
     /**
-     * @var ImageInterface
+     * @var ImageInterface ImageInterfaces instance
      */
     private $image;
 
     /**
-     * @var Manager
+     * @var Manager Manager instance
      */
     private $manager;
 
     /**
      * Constructor
      *
-     * @param ThreadInterface $thread
-     * @param PostInterface   $post
-     * @param ImageInterface  $image
-     *
-     * @param Manager         $manager
+     * @param ThreadInterface $thread  ThreadInterface instance
+     * @param PostInterface   $post    PostInterface instance
+     * @param ImageInterface  $image   ImageInterfaces instance
+     * @param Manager         $manager Manager instance
      *
      * @return self
      */
@@ -67,6 +66,17 @@ class Board implements EventSubscriberInterface
         $this->post    = $post;
         $this->image   = $image;
         $this->manager = $manager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::BOARD_REMOVE         => 'onRemove',
+            Events::BOARD_UPDATE_SUCCESS => 'onUpdateSuccess',
+        ];
     }
 
     /**
@@ -108,17 +118,6 @@ class Board implements EventSubscriberInterface
         $this->thread->removeBoard($board);
         $this->post->removeBoard($board);
         $this->image->removeBoard($board);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Events::BOARD_REMOVE         => 'onRemove',
-            Events::BOARD_UPDATE_SUCCESS => 'onUpdateSuccess',
-        ];
     }
 
 }

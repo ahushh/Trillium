@@ -41,6 +41,18 @@ class Factory
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function get($route, $controller)
+    {
+        if (!array_key_exists($route, $this->controllers)) {
+            $this->controllers[$route] = $this->create($controller);
+        }
+
+        return $this->controllers[$route];
+    }
+
+    /**
      * Creates a controller instance
      *
      * @param string $controller Full class name
@@ -64,18 +76,6 @@ class Factory
         }
 
         return $instance;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get($route, $controller)
-    {
-        if (!array_key_exists($route, $this->controllers)) {
-            $this->controllers[$route] = $this->create($controller);
-        }
-
-        return $this->controllers[$route];
     }
 
 }

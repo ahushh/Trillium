@@ -60,6 +60,19 @@ class Controller implements EventSubscriberInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::UPDATE_PASSWORD    => 'onUpdatePassword',
+            Events::CREATE_USER_BEFORE => 'onCreateUserBefore',
+            Events::REMOVE_USER        => 'onRemoveUser',
+            Events::UPDATE_ROLES       => 'onUpdateRoles',
+        ];
+    }
+
+    /**
      * On update user password event
      *
      * @param UpdatePassword $event Event
@@ -132,6 +145,36 @@ class Controller implements EventSubscriberInterface
     }
 
     /**
+     * Performs check roles
+     * Returns true, if roles are valid
+     * Otherwise returns error message
+     *
+     * @param mixed $roles Roles
+     *
+     * @return boolean|string
+     */
+    private function checkRoles($roles)
+    {
+        if (!is_array($roles)) {
+            $roles = [$roles];
+        }
+        if (empty($roles)) {
+            $error = 'Roles cannot to be empty';
+        } else {
+            unset($this->config['roles']['ROLE_ROOT']);
+            $notSupported = array_diff($roles, array_keys($this->config['roles']));
+            if (!empty($notSupported)) {
+                $error = sprintf(
+                    'The following roles are not supported: %s',
+                    implode(', ', $notSupported)
+                );
+            }
+        }
+
+        return isset($error) ? $error : true;
+    }
+
+    /**
      * On remove user
      *
      * @param RemoveUser $event An event instance
@@ -170,49 +213,6 @@ class Controller implements EventSubscriberInterface
                 $event->setErrors(['error' => $error]);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Events::UPDATE_PASSWORD    => 'onUpdatePassword',
-            Events::CREATE_USER_BEFORE => 'onCreateUserBefore',
-            Events::REMOVE_USER        => 'onRemoveUser',
-            Events::UPDATE_ROLES       => 'onUpdateRoles',
-        ];
-    }
-
-    /**
-     * Performs check roles
-     * Returns true, if roles are valid
-     * Otherwise returns error message
-     *
-     * @param mixed $roles Roles
-     *
-     * @return boolean|string
-     */
-    private function checkRoles($roles)
-    {
-        if (!is_array($roles)) {
-            $roles = [$roles];
-        }
-        if (empty($roles)) {
-            $error = 'Roles cannot to be empty';
-        } else {
-            unset($this->config['roles']['ROLE_ROOT']);
-            $notSupported = array_diff($roles, array_keys($this->config['roles']));
-            if (!empty($notSupported)) {
-                $error = sprintf(
-                    'The following roles are not supported: %s',
-                    implode(', ', $notSupported)
-                );
-            }
-        }
-
-        return isset($error) ? $error : true;
     }
 
 }

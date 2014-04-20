@@ -47,6 +47,16 @@ class RequestListener implements EventSubscriberInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
+    }
+
+    /**
      * Get user settings from a request
      *
      * @param GetResponseEvent $event An event instance
@@ -71,16 +81,6 @@ class RequestListener implements EventSubscriberInterface
             $userSettings = $this->settings->get(null, Settings::SYSTEM);
         }
         $this->settings->set($userSettings, null, Settings::USER);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::REQUEST => 'onKernelRequest',
-        ];
     }
 
 }

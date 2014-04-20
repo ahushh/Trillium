@@ -66,30 +66,6 @@ class JsUrlGenerator extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this
-            ->setName('jug')
-            ->setDescription('Generate the javascript url generator')
-            ->addOption(
-                'path',
-                'p',
-                InputOption::VALUE_OPTIONAL,
-                'Destination path to the file',
-                $this->directory . 'url-generator.js'
-            )
-            ->addOption(
-                'base-path',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Base path to the public directory',
-                ''
-            );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $path      = $input->getOption('path');
@@ -132,6 +108,30 @@ class JsUrlGenerator extends Command
         $output->writeln($this->messages[is_file($path) ? 'success' : 'failed']);
 
         return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('jug')
+            ->setDescription('Generate the javascript url generator')
+            ->addOption(
+                'path',
+                'p',
+                InputOption::VALUE_OPTIONAL,
+                'Destination path to the file',
+                $this->directory . 'url-generator.js'
+            )
+            ->addOption(
+                'base-path',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Base path to the public directory',
+                ''
+            );
     }
 
 }

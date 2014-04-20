@@ -61,7 +61,7 @@ class Board extends Controller
         try {
             $result = $this->board->get($name);
         } catch (BoardNotFoundException $e) {
-            $result = ['error' => 'Board does not exists', '_status' => 404];
+            $result = ['error' => $e->getMessage(), '_status' => 404];
         }
 
         return $result;

@@ -32,32 +32,36 @@ class Thread implements EventSubscriberInterface
     use FileUpload;
 
     /**
-     * @var PostInterface
+     * @var PostInterface PostInterface instance
      */
     private $post;
 
     /**
-     * @var Validator
+     * @var Validator Validator instance
      */
     private $validator;
 
     /**
+     * A callable that takes a single argument and returns a boolean value,
+     * depending on whether captcha passed.
+     * If null, the check a captcha will not occur.
+     *
      * @var callable|null
      */
     private $captcha;
 
     /**
-     * @var ImageInterface
+     * @var ImageInterface ImageInterface instance
      */
     private $image;
 
     /**
-     * @var ImageValidator
+     * @var ImageValidator ImageValidator instance
      */
     private $imageValidator;
 
     /**
-     * @var Manager
+     * @var Manager Manager instance
      */
     private $manager;
 

@@ -46,7 +46,6 @@ class JsSystemSettings extends Command
      * @param Settings   $settings  Settings
      * @param Filesystem $fs        Filesystem instance
      *
-     * @throws \LogicException
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -66,6 +65,19 @@ class JsSystemSettings extends Command
     /**
      * {@inheritdoc}
      */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $path = $input->getOption('path');
+        $this->fs->dumpFile(
+            $path,
+            sprintf('generated.settings=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
+        );
+        $output->writeln($this->fs->exists($path) ? '<fg=green>Success</fg=green>' : '<fg=red>Failed</fg=red>');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -77,19 +89,6 @@ class JsSystemSettings extends Command
                 'Destination path to the file',
                 $this->directory . 'settings.js'
             );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-        $path = $input->getOption('path');
-        $this->fs->dumpFile(
-            $path,
-            sprintf('generated.settings=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
-        );
-        $output->writeln($this->fs->exists($path) ? '<fg=green>Success</fg=green>' : '<fg=red>Failed</fg=red>');
     }
 
 }

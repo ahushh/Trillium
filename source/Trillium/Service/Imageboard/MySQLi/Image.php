@@ -51,6 +51,7 @@ class Image extends MySQLi implements ImageInterface
         if (!is_array($image)) {
             throw new ImageNotFoundException($post);
         }
+
         return $image;
     }
 

@@ -37,7 +37,6 @@ class Db extends Command
      * @param array   $dumps  Paths to sql files
      * @param \mysqli $mysqli MySQLi instance
      *
-     * @throws \LogicException
      * @throws \InvalidArgumentException
      *
      * @return self
@@ -68,14 +67,6 @@ class Db extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this->setDescription('Loads databases from dump files');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $errors = [];
@@ -96,6 +87,14 @@ class Db extends Command
         }
 
         return $status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setDescription('Loads databases from dump files');
     }
 
 }

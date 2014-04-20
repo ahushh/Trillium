@@ -45,12 +45,21 @@ class ResponseListener implements EventSubscriberInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::VIEW => ['onControllerResponse', 128],
+        ];
+    }
+
+    /**
      * Creates a response
      *
      * @param GetResponseForControllerResultEvent $event
      *
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function onControllerResponse(GetResponseForControllerResultEvent $event)
@@ -91,16 +100,6 @@ class ResponseListener implements EventSubscriberInterface
                 )
             );
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::VIEW => ['onControllerResponse', 128],
-        ];
     }
 
 }

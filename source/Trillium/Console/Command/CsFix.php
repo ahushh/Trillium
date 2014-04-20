@@ -45,14 +45,6 @@ class CsFix extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this->setDescription('Fix coding standards');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $process = new Process($this->directory . 'vendor/bin/php-cs-fixer fix ' . $this->directory);
@@ -66,6 +58,14 @@ class CsFix extends Command
         );
 
         return $status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setDescription('Fix coding standards');
     }
 
 }

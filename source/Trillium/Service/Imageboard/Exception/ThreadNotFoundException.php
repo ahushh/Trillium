@@ -14,16 +14,15 @@ namespace Trillium\Service\Imageboard\Exception;
  *
  * @package Trillium\Service\Imageboard\Exception
  */
-class ThreadNotFoundException extends Exception
+class ThreadNotFoundException extends NotFoundException
 {
 
     /**
      * {@inheritdoc}
      */
-    public function __construct($message, $code = 0, \Exception $previous = null)
+    protected function getType()
     {
-        $message = sprintf('Thread "%s" does not exists', $message);
-        parent::__construct($message, $code, $previous);
+        return 'Thread';
     }
 
 }

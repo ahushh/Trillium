@@ -113,26 +113,6 @@ class Resize
     }
 
     /**
-     * Save transparent for image
-     *
-     * @param resource $image An image
-     * @param int      $type  IMAGETYPE_XXX
-     *
-     * @return resource
-     */
-    public function saveTransparent($image, $type)
-    {
-        if ($type == IMAGETYPE_GIF) {
-            imagecolortransparent($image, imagecolorallocate($image, 0, 0, 0));
-        } elseif ($type == IMAGETYPE_PNG) {
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-        }
-
-        return $this;
-    }
-
-    /**
      * Calculates thumbnail resolution
      * Returns new width and height
      *
@@ -151,6 +131,26 @@ class Resize
         $newHeight = !$useXRatio ? $height : floor($this->originalHeight * $ratio);
 
         return [$newWidth, $newHeight];
+    }
+
+    /**
+     * Save transparent for image
+     *
+     * @param resource $image An image
+     * @param int      $type  IMAGETYPE_XXX
+     *
+     * @return resource
+     */
+    public function saveTransparent($image, $type)
+    {
+        if ($type == IMAGETYPE_GIF) {
+            imagecolortransparent($image, imagecolorallocate($image, 0, 0, 0));
+        } elseif ($type == IMAGETYPE_PNG) {
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+        }
+
+        return $this;
     }
 
 }
