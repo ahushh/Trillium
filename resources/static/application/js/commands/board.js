@@ -65,6 +65,7 @@ app.addCommand('board', {
                             app.responseHandler.success(term, data);
                             if (app.board.current == boardName) {
                                 app.board.current = '~';
+                                app.thread.current = '';
                                 app.prompt(term.set_prompt);
                             }
                         }
