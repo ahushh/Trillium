@@ -39,8 +39,9 @@ class Manager
         'thumb_width'   => 320,
         'thumb_height'  => 240
     ];
+
     /**
-     * @var Resize
+     * @var Resize Resize instance
      */
     private $resize;
 
@@ -50,6 +51,8 @@ class Manager
      * @param Filesystem $fs      Filesystem instance
      * @param Resize     $resize  Resize instance
      * @param array      $options Options
+     *
+     * @throws \InvalidArgumentException
      *
      * @return self
      */
@@ -80,7 +83,7 @@ class Manager
      */
     public function save(UploadedFile $origin, $target)
     {
-        $target = $this->options['directory'] . ltrim($target, '\/') . '.' . $origin->getClientOriginalExtension();
+        $target = $this->getTargetPath($target) . '.' . $origin->getClientOriginalExtension();
         $this->fs->copy($origin->getRealPath(), $target);
 
         return $this;
@@ -97,10 +100,10 @@ class Manager
      */
     public function thumbnail($origin, $type, $target)
     {
+        $target = $this->getTargetPath($target) . self::THUMBNAIL_POSTFIX;
         $image  = $this->resize
             ->setImage($origin, $type)
             ->resize($this->options['thumb_width'], $this->options['thumb_height']);
-        $target = $this->options['directory'] . ltrim($target, '\/') . self::THUMBNAIL_POSTFIX;
         imagejpeg($image, $target, $this->options['thumb_quality']);
 
         return $this;
@@ -109,7 +112,7 @@ class Manager
     /**
      * Removes a files
      *
-     * @param array|string|\Traversable $files Files
+     * @param array|string $files Files
      *
      * @return $this
      */
@@ -118,12 +121,12 @@ class Manager
         if (is_array($files)) {
             $files = array_map(
                 function ($file) {
-                    return $this->options['directory'] . ltrim($file, '\/');
+                    return $this->getTargetPath($file);
                 },
                 $files
             );
         } elseif (is_string($files)) {
-            $files = $this->options['directory'] . ltrim($files, '\/');
+            $files = $this->getTargetPath($files);
         }
         $this->fs->remove($files);
 
@@ -140,7 +143,7 @@ class Manager
      */
     public function makeDirectory($name, $mode = 0777)
     {
-        $this->fs->mkdir($this->options['directory'] . trim($name, '\/'), $mode);
+        $this->fs->mkdir($this->getTargetPath($name), $mode);
 
         return $this;
     }
@@ -154,7 +157,19 @@ class Manager
      */
     public function getDirectory($name)
     {
-        return $this->options['directory'] . trim($name, '\/') . DIRECTORY_SEPARATOR;
+        return $this->getTargetPath($name) . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * Returns a target path
+     *
+     * @param string $target Name
+     *
+     * @return string
+     */
+    private function getTargetPath($target)
+    {
+        return $this->options['directory'] . trim($target, '\/');
     }
 
 }
