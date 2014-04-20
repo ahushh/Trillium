@@ -70,7 +70,7 @@ class Board implements EventSubscriberInterface
     }
 
     /**
-     * Moves threads and posts when board was renamed
+     * Performs after a board was renamed
      *
      * @param BoardUpdateSuccess $event
      *
@@ -88,7 +88,7 @@ class Board implements EventSubscriberInterface
     }
 
     /**
-     * Removes threads, posts and images when a board was removed
+     * Performs after a board was removed
      *
      * @param BoardRemove $event An event instance
      *
@@ -97,9 +97,6 @@ class Board implements EventSubscriberInterface
     public function onRemove(BoardRemove $event)
     {
         $board = $event->getBoard();
-        $this->thread->removeBoard($board);
-        $this->post->removeBoard($board);
-        $this->image->removeBoard($board);
         $this->manager->remove(
             array_map(
                 function ($thread) {
@@ -108,6 +105,9 @@ class Board implements EventSubscriberInterface
                 $this->thread->getBoard($board)
             )
         );
+        $this->thread->removeBoard($board);
+        $this->post->removeBoard($board);
+        $this->image->removeBoard($board);
     }
 
     /**
