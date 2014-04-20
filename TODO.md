@@ -1,0 +1,5 @@
+- What about roles?
+- Bump-limit.
+- Remove old threads automatically.
+- SAGE
+- Allow disable captcha for anonymous users
