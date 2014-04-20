@@ -123,7 +123,7 @@ class Thread implements EventSubscriberInterface
     }
 
     /**
-     * Creates a post after thread will be created
+     * Performs after thread was created
      *
      * @param ThreadCreateSuccess $event
      *
@@ -140,7 +140,7 @@ class Thread implements EventSubscriberInterface
     }
 
     /**
-     * Removes posts when a thread was removed
+     * Performs after a thread was removed
      *
      * @param ThreadRemove $event
      *
@@ -150,6 +150,7 @@ class Thread implements EventSubscriberInterface
     {
         $thread = $event->getThread();
         $this->manager->remove(new \FilesystemIterator($this->manager->getDirectory($thread)));
+        $this->manager->remove((string) $thread);
         $this->post->removeThread($thread);
         $this->image->removeThread($thread);
     }
