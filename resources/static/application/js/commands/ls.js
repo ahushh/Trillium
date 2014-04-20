@@ -22,7 +22,7 @@ app.addCommand('ls', {
                             + app.urlGenerator.raw('images/' + posts[p]['thread'] + '/' + posts[p]['id'] + '.' + image['ext'])
                             + '" target="_blank" title="Click, to get full image">'
                             + '<img src="'
-                            + app.urlGenerator.raw('images/' + posts[p]['thread'] + '/' + posts[p]['id'] + '_preview.jpeg')
+                            + app.urlGenerator.raw('images/' + posts[p]['thread'] + '/' + posts[p]['id'] + '_preview.png')
                             + '" alt="thumb" />'
                             + '<a/><br />'
                             + image['width'] + 'x' + image['height']

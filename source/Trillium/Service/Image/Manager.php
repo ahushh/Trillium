@@ -23,7 +23,7 @@ class Manager
     /**
      * Postfix for thumbnail filename
      */
-    const THUMBNAIL_POSTFIX = '_preview.jpeg';
+    const THUMBNAIL_POSTFIX = '_preview.png';
 
     /**
      * @var Filesystem Filesystem instance
@@ -62,14 +62,8 @@ class Manager
         $this->resize                   = $resize;
         $this->options                  = array_replace($this->options, $options);
         $this->options['directory']     = rtrim($this->options['directory'], '\/') . DIRECTORY_SEPARATOR;
-        $this->options['thumb_quality'] = (int) $this->options['thumb_quality'];
         if (!is_dir($this->options['directory'])) {
             throw new \InvalidArgumentException(sprintf('Directory "%s" does not exists', $this->options['directory']));
-        }
-        if ($this->options['thumb_quality'] < 0 || $this->options['thumb_quality'] > 100) {
-            throw new \InvalidArgumentException(
-                sprintf('Quality must be between %u and %u, %u given', 0, 100, $this->options['thumb_quality'])
-            );
         }
     }
 
@@ -106,10 +100,16 @@ class Manager
             throw new \InvalidArgumentException('Illegal image');
         }
         $target = $this->getTargetPath($target) . self::THUMBNAIL_POSTFIX;
-        $image  = $this->resize
-            ->setImage($origin, $type)
-            ->resize($this->options['thumb_width'], $this->options['thumb_height']);
-        imagejpeg($image, $target, $this->options['thumb_quality']);
+        if (imagesx($origin) > $this->options['thumb_width'] || imagesy($origin) > $this->options['thumb_height']) {
+            $image  = $this->resize
+                ->setImage($origin, $type)
+                ->resize($this->options['thumb_width'], $this->options['thumb_height']);
+        } else {
+            $image = $origin;
+            $this->resize->saveTransparent($image, $type);
+        }
+
+        imagepng($image, $target);
 
         return $this;
     }

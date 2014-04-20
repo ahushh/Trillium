@@ -95,13 +95,7 @@ class Resize
         list($newWidth, $newHeight) = $this->calculateResolution($width, $height);
         $imageCreate = 'imagecreate' . ($this->type == IMAGETYPE_GIF ? '' : 'truecolor');
         $image       = $imageCreate($newWidth, $newHeight);
-        // Save transparent
-        if ($this->type == IMAGETYPE_GIF) {
-            imagecolortransparent($image, imagecolorallocate($image, 0, 0, 0));
-        } elseif ($this->type == IMAGETYPE_PNG) {
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-        }
+        $this->saveTransparent($image, $this->type);
         imagecopyresampled(
             $image,
             $this->image,
@@ -116,6 +110,26 @@ class Resize
         );
 
         return $image;
+    }
+
+    /**
+     * Save transparent for image
+     *
+     * @param resource $image An image
+     * @param int      $type  IMAGETYPE_XXX
+     *
+     * @return resource
+     */
+    public function saveTransparent($image, $type)
+    {
+        if ($type == IMAGETYPE_GIF) {
+            imagecolortransparent($image, imagecolorallocate($image, 0, 0, 0));
+        } elseif ($type == IMAGETYPE_PNG) {
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+        }
+
+        return $this;
     }
 
     /**
