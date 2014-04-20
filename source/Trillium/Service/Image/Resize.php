@@ -43,6 +43,9 @@ class Resize
      * @param resource $image An image
      * @param int      $type  Type of the given image (IMAGETYPE_XXX)
      *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     *
      * @return $this
      */
     public function setImage($image, $type)
