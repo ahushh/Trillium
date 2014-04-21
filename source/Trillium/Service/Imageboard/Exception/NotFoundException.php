@@ -31,6 +31,6 @@ abstract class NotFoundException extends Exception
      *
      * @return string
      */
-    protected abstract function getType();
+    abstract protected function getType();
 
-} 
+}
