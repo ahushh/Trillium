@@ -26,19 +26,28 @@ class Logger implements ServiceProviderInterface
      */
     public function registerServices(Container $container)
     {
-        $container['logger'] = function ($container) {
+        $container['logger']       = function ($container) {
             /** @var $env \Vermillion\Environment */
-            $env    = $container['environment'];
-            $logger = new Monolog('vermillion');
-            $logger->pushHandler(
-                new StreamHandler(
-                    $env->getDirectory('logs') . $env->getEnvironment() . '.log',
-                    $env->isDebug() ? Monolog::DEBUG : Monolog::ERROR
-                )
-            );
+            $env = $container['environment'];
 
-            return $logger;
+            return $container['logger.factory']('vermillion', $env->getEnvironment());
         };
+        $container['logger.factory'] = $container->protect(
+            function ($name, $filename) use ($container) {
+                /** @var $env \Vermillion\Environment */
+                $env    = $container['environment'];
+                $logger = new Monolog($name);
+                $logger->pushHandler(
+                    new StreamHandler(
+                        $env->getDirectory('logs') . $filename . '.log',
+                        $env->isDebug() ? Monolog::DEBUG : Monolog::ERROR
+                    )
+                );
+
+                return $logger;
+            }
+        );
+
     }
 
 }
