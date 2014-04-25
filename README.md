@@ -6,7 +6,9 @@ Requires PHP &gt;= 5.4
 
 ## Installation
 
-- `$ sudo apt-get install php-apc yui-compressor`
+- `$ sudo apt-get install php-apc yui-compressor libzmq-dev libevent-dev`
+- `$ sudo pecl install zmq`
+- `$ sudo pecl install libevent`
 - Download archive and unpack it
 - Create virtual host with `public/` document root directory
 - Make `resources/cache` writable
@@ -18,6 +20,7 @@ Requires PHP &gt;= 5.4
 - Generate assets: `$ bin/console assets`
 - Load SQL Dump: `$ bin/console db`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
+- Run WebSocket server: `bin/ws` (Logs are available in the resources/logs/ws-%your\_env%.log file)
 - To get access to the control panel, login with the following credentials:
     - Username: root
     - Password: 123456
