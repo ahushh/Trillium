@@ -18,6 +18,7 @@
     },
     "require": {
         "php": ">=5.4",
+        "cboden/Ratchet": "~0.3",
         "fabpot/php-cs-fixer": "~0.4",
         "gregwar/captcha": "~1.0",
         "kilte/account-manager": "1.0.*@dev",
@@ -28,6 +29,7 @@
         "monolog/monolog": "~1.7",
         "pimple/pimple": "~2.0",
         "psr/log": "~1.0",
+        "react/zmq": "~0.2",
         "symfony/class-loader": "~2.4",
         "symfony/config": "~2.4",
         "symfony/console": "~2.4",
@@ -41,6 +43,9 @@
         "symfony/routing": "~2.4",
         "symfony/security": "~2.4",
         "symfony/yaml": "~2.4"
+    },
+    "require-dev": {
+        "moriony/php-zmq-stubs": "dev-master"
     },
     "repositories": [
         {

@@ -1,0 +1,65 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Part of the Trillium
+ *
+ * @author  Kilte Leichnam <nwotnbm@gmail.com>
+ * @package Trillium
+ */
+
+set_time_limit(0);
+error_reporting(-1);
+ini_set('display_errors', 1);
+
+require __DIR__ . '/../autoload.php';
+
+use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
+use Ratchet\WebSocket\WsServer;
+use React\EventLoop\Factory as EventLoop;
+use React\Socket\Server as SocketServer;
+use React\ZMQ\Context as ZMQContext;
+use Trillium\Server\Ws;
+use Vermillion\Application;
+
+$tmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'trillium-ws';
+if (is_file($tmp)) {
+    $pid = file_get_contents($tmp);
+    if (file_exists('/proc/' . $pid)) {
+        exit(sprintf('Found already running daemon instance [pid = %s], aborting...', $pid));
+    } else {
+        unlink($tmp);
+    }
+}
+$handle = fopen($tmp, 'w');
+fwrite($handle, getmypid());
+fclose($handle);
+
+/**
+ * @var $config  \Vermillion\Configuration\Configuration
+ * @var $logger  \Psr\Log\LoggerInterface
+ * @var $env     \Vermillion\Environment
+ * @var $context ZMQContext|\ZMQContext
+ * @var $pull    \ZMQSocket|\React\ZMQ\SocketWrapper
+ */
+$app       = (new Application())->register();
+$container = $app->getContainer();
+$app       = null;
+$env       = $container['environment'];
+$config    = $container['configuration'];
+$logger    = $container['logger.factory']('ws', 'ws-' . $env->getEnvironment());
+$container = null;
+$env       = null;
+$config    = $config->load('ws')->get();
+$ws        = new Ws($logger);
+$loop      = EventLoop::create();
+$context   = new ZMQContext($loop);
+$pull      = $context->getSocket(\ZMQ::SOCKET_PULL);
+$pull->bind($config['zmq.socket.bind']);
+$pull->on('message', [$ws, 'onNewPost']);
+$socketServer = new SocketServer($loop);
+$socketServer->listen($config['react.socket.server']['port'], $config['react.socket.server']['host']);
+$webServer = new IoServer(new HttpServer(new WsServer($ws)), $socketServer);
+$logger->debug('Running server...', [$config]);
+$loop->run();

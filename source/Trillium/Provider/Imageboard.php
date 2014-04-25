@@ -66,10 +66,15 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             );
         };
         $container['post.listener']   = function ($c) {
+            /** @var $conf \Vermillion\Configuration\Configuration */
+            $conf   = $c['configuration'];
+            $zmqDsn = $conf->load('ws')->get('zmq.socket.bind');
+
             return new PostListener(
                 $c['imageValidator'],
                 $c['image'],
                 $c['imageManager'],
+                $zmqDsn,
                 $this->getCaptcha($c)
             );
         };

@@ -55,11 +55,17 @@ class Post implements EventSubscriberInterface
     private $manager;
 
     /**
+     * @var string The connect zmq dsn, for example transport://address.
+     */
+    private $zmqDsn;
+
+    /**
      * Constructor
      *
      * @param Validator      $validator Images validator
      * @param ImageInterface $image     ImageInterface instance
      * @param Manager        $manager   Manager instance
+     * @param string         $zmqDsn    The connect zmq dsn, for example transport://address.
      * @param callable|null  $captcha   A callable that takes a single argument and returns a boolean value,
      *                                  depending on whether captcha passed.
      *                                  If null, the check a captcha will not occur.
@@ -70,12 +76,14 @@ class Post implements EventSubscriberInterface
         Validator $validator,
         ImageInterface $image,
         Manager $manager,
+        $zmqDsn,
         $captcha = null
     ) {
         $this->image          = $image;
         $this->captcha        = $captcha;
         $this->imageValidator = $validator;
         $this->manager        = $manager;
+        $this->zmqDsn         = $zmqDsn;
     }
 
     /**
@@ -117,6 +125,21 @@ class Post implements EventSubscriberInterface
     public function onCreateSuccess(PostCreateSuccess $event)
     {
         $this->uploadFile($event->getRequest(), $event->getBoard(), $event->getThread(), $event->getPost());
+        $context = new \ZMQContext();
+        $socket  = $context->getSocket(\ZMQ::SOCKET_PUSH, 'post_pusher');
+        $socket->connect($this->zmqDsn);
+        $socket->send(
+            json_encode(
+                [
+                    'action' => 'new_post',
+                    'value'  => [
+                        'board'  => $event->getBoard(),
+                        'thread' => $event->getThread(),
+                        'post'   => $event->getPost()
+                    ],
+                ]
+            )
+        );
     }
 
     /**
