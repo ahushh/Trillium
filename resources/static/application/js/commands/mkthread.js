@@ -28,6 +28,8 @@ app.addCommand('mkthread', {
                         app.board.current = boardName;
                         app.thread.current = data.success.toString();
                         app.prompt(term.set_prompt);
+                        // Subscribe ...
+                        app.ws.connection.send(JSON.stringify({'action': 'subscribe', 'value': app.thread.current}));
                     } else {
                         console.log(data);
                         term.error('Unknown response type');

@@ -41,6 +41,8 @@ app.addCommand('cd', {
                         term.error('Thread does not exists');
                     } else {
                         app.thread.current = thread['id'];
+                        // Subscribe ...
+                        app.ws.connection.send(JSON.stringify({'action': 'subscribe', 'value': thread['id']}));
                     }
                 });
             } else {

@@ -1,4 +1,4 @@
-function Trillium(systemSettings, routes, basePath) {
+function Trillium(systemSettings, routes, basePath, wsURL) {
     var self = this;
     var commands = {
         help: {
@@ -48,6 +48,21 @@ function Trillium(systemSettings, routes, basePath) {
         term.error(self.host + ': ' + commandName + ': command not found');
     };
     var requiredCommandProperties = ['run', 'help', 'summary', 'secured', 'isAvailable'];
+    this.ws = {
+        connection: new WebSocket(wsURL),
+        isOpen: false
+    };
+    this.ws.connection.onopen = function () {
+        console.log('[ws] Open connection');
+        self.ws.isOpen = true;
+    };
+    this.ws.connection.onclose = function () {
+        console.log('[ws] Close connection');
+        self.ws.isOpen = false;
+    };
+    this.ws.connection.onmessage = function (data) {
+        console.log('[ws] New message: ', data);
+    };
     this.host = 'trillium';
     this.username = false;
     this.greeting = function (term) {
@@ -402,7 +417,8 @@ function Trillium(systemSettings, routes, basePath) {
         )
     };
 }
-var app = new Trillium(generated.settings, generated.routes, generated.basePath);
+// TODO: get WebSocket url from config
+var app = new Trillium(generated.settings, generated.routes, generated.basePath, 'ws://localhost:9000');
 $('document').ready(
     function () {
         app.run('body');
