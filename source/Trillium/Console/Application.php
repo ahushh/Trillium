@@ -92,15 +92,7 @@ class Application extends \Symfony\Component\Console\Application
                     $this->settings,
                     new Filesystem()
                 ),
-                new Db(
-                    [
-                        $this->env->getDirectory('db') . 'mysqli/development.sql',
-                        $this->env->getDirectory('db') . 'mysqli/tables.sql',
-                        $this->env->getDirectory('db') . 'mysqli/production.sql',
-                        $this->env->getDirectory('db') . 'mysqli/tables.sql',
-                    ],
-                    $this->mysqli
-                )
+                new Db([$this->env->getDirectory('db') . 'mysqli/tables.sql'], $this->mysqli)
             ]
         );
     }

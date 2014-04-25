@@ -1,3 +1,4 @@
+DROP TABLE  IF EXISTS `users`;
 CREATE TABLE `users` (
   `username`      VARCHAR(255)     NOT NULL,
   `password`      VARCHAR(255)     NOT NULL,
@@ -11,6 +12,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` VALUES
   ('root', 'zKgdNE7BHguhCKv+42U0WnRCbF8DgMJRQCi2aqzk3vMGfP0ZNIIes6SK+aE6cZtlVm4rEKfY4earvqcNGIMuSA==', 0,
    '[\"ROLE_ROOT\"]', '');
+DROP TABLE  IF EXISTS `boards`;
 CREATE TABLE `boards` (
   `name`    VARCHAR(10)  NOT NULL,
   `summary` VARCHAR(100) NOT NULL,
@@ -18,6 +20,7 @@ CREATE TABLE `boards` (
 )
   ENGINE =MyISAM
   DEFAULT CHARSET =utf8;
+DROP TABLE  IF EXISTS `threads`;
 CREATE TABLE `threads` (
   `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `board` VARCHAR(10)      NOT NULL,
@@ -27,6 +30,7 @@ CREATE TABLE `threads` (
 )
   ENGINE =MyISAM
   DEFAULT CHARSET =utf8;
+DROP TABLE  IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `thread`  INT(10) UNSIGNED NOT NULL,
@@ -39,6 +43,7 @@ CREATE TABLE `posts` (
 )
   ENGINE =MyISAM
   DEFAULT CHARSET =utf8;
+DROP TABLE  IF EXISTS `images`;
 CREATE TABLE `images` (
   `post`   INT(10) UNSIGNED NOT NULL,
   `thread` INT(10) UNSIGNED NOT NULL,

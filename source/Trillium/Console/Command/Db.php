@@ -70,8 +70,12 @@ class Db extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $errors = [];
+        $verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
         foreach ($this->statements as $statement) {
             try {
+                if ($verbose) {
+                    $output->writeln(sprintf("\n%s;\n", $statement));
+                }
                 $this->mysqli->query($statement);
             } catch (\Exception $e) {
                 $errors[] = sprintf('[%s] %s', $e->getCode(), $e->getMessage());

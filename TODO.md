@@ -3,3 +3,4 @@
 - Remove old threads automatically.
 - SAGE
 - Allow disable captcha for anonymous users
+- FIX: can not to run console without existing MySQL database.
