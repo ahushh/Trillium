@@ -43,7 +43,7 @@ fclose($handle);
  * @var $context ZMQContext|\ZMQContext
  * @var $pull    \ZMQSocket|\React\ZMQ\SocketWrapper
  */
-$app       = (new Application())->register();
+$app       = (new Application())->registerServices();
 $container = $app->getContainer();
 $app       = null;
 $env       = $container['environment'];

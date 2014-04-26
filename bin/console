@@ -10,4 +10,4 @@
 
 require __DIR__ . '/../autoload.php';
 set_time_limit(0);
-(new Trillium\Console\Application((new \Vermillion\Application())->register()->getContainer()))->run();
+(new Trillium\Console\Application((new \Vermillion\Application())->registerServices()->getContainer()))->run();
