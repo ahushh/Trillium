@@ -9,7 +9,6 @@
 
 namespace Trillium\Provider;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Trillium\Service\Image\Manager;
 use Trillium\Service\Image\Resize;
 use Trillium\Service\Image\Validator;
@@ -41,7 +40,7 @@ class Image implements ServiceProviderInterface
             return new Resize();
         };
         $container['imageManager']   = function ($c) {
-            return new Manager(new Filesystem(), $c['imageResize'], $this->getConfiguration($c));
+            return new Manager($c['filesystem'], $c['imageResize'], $this->getConfiguration($c));
         };
     }
 

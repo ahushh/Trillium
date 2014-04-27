@@ -4,6 +4,7 @@
     "\\Vermillion\\Provider\\Router",
     "\\Trillium\\Provider\\KernelException",
     "\\Trillium\\Provider\\MySQLi",
+    "\\Trillium\\Provider\\Filesystem",
     "\\Trillium\\Provider\\View",
     "\\Trillium\\Provider\\ResponseListener",
     "\\Trillium\\Provider\\Date",
