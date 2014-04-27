@@ -9,38 +9,24 @@
 
 namespace Trillium\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use Trillium\Console\CommandInterface;
+use Vermillion\Container;
 
 /**
  * CsFix Class
  *
  * @package Trillium\Console\Command
  */
-class CsFix extends Command
+class CsFix implements CommandInterface
 {
 
     /**
      * @var string Path to sources
      */
     private $directory;
-
-    /**
-     * Constructor
-     *
-     * @param string $directory Path to sources
-     *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function __construct($directory)
-    {
-        $this->directory = $directory;
-        parent::__construct('cs-fix');
-    }
 
     /**
      * {@inheritdoc}
@@ -63,9 +49,43 @@ class CsFix extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function getArguments()
     {
-        $this->setDescription('Fix coding standards');
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return 'Fix coding standards';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'cs-fix';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(Container $container)
+    {
+        /** @var $env \Vermillion\Environment */
+        $env             = $container['environment'];
+        $this->directory = $env->getDirectory('source') . '../';
     }
 
 }

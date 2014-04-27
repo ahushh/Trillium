@@ -9,20 +9,31 @@
 
 namespace Trillium\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Route;
+use Trillium\Console\CommandInterface;
+use Vermillion\Container;
 
 /**
  * JsUrlGenerator Class
  *
  * @package Trillium\Console\Command
  */
-class JsUrlGenerator extends Command
+class JsUrlGenerator implements CommandInterface
 {
+
+    /**
+     * Name of the generated file
+     */
+    const FILENAME = 'url-generator.js';
+
+    /**
+     * @var Filesystem Filesystem instance
+     */
+    private $fs;
 
     /**
      * @var array Output messages
@@ -47,28 +58,11 @@ class JsUrlGenerator extends Command
     private $routes;
 
     /**
-     * Constructor
-     *
-     * @param string  $directory A destination directory for a generated script
-     * @param Route[] $routes    Routes
-     *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function __construct($directory, array $routes)
-    {
-        $this->directory = $directory;
-        $this->routes    = $routes;
-        parent::__construct('jug');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $path      = $input->getOption('path');
+        $path      = $this->directory . self::FILENAME;
         $basePath  = $input->getOption('base-path');
         $directory = dirname($path);
         $errors    = [];
@@ -98,13 +92,12 @@ class JsUrlGenerator extends Command
             $result[$name]['requirements']['_method']
             );
         }
-        $filesystem = new Filesystem();
         $content    = sprintf(
             'generated.basePath = \'%s\';generated.routes = %s;',
             $basePath,
             json_encode($result)
         );
-        $filesystem->dumpFile($path, $content);
+        $this->fs->dumpFile($path, $content);
         $output->writeln($this->messages[is_file($path) ? 'success' : 'failed']);
 
         return 0;
@@ -113,25 +106,55 @@ class JsUrlGenerator extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function getArguments()
     {
-        $this
-            ->setName('jug')
-            ->setDescription('Generate the javascript url generator')
-            ->addOption(
-                'path',
-                'p',
-                InputOption::VALUE_OPTIONAL,
-                'Destination path to the file',
-                $this->directory . 'url-generator.js'
-            )
-            ->addOption(
-                'base-path',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Base path to the public directory',
-                ''
-            );
+        return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return [
+            'base-path' => [
+                'shortcut'    => null,
+                'mode'        => InputOption::VALUE_OPTIONAL,
+                'description' => '',
+                'default'     => 'Base path to the public directory',
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return 'Generate the javascript url generator';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'jug';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(Container $container)
+    {
+        /**
+         * @var $env    \Vermillion\Environment
+         * @var $router \Symfony\Component\Routing\Router
+         */
+        $env             = $container['environment'];
+        $router          = $container['router'];
+        $this->directory = $env->getDirectory('static.generated');
+        $this->routes    = $router->getRouteCollection()->all();
+        $this->fs        = $container['filesystem'];
+    }
 }

@@ -9,20 +9,25 @@
 
 namespace Trillium\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Trillium\Console\CommandInterface;
 use Trillium\Service\Settings\Settings;
+use Vermillion\Container;
 
 /**
  * JsSystemSettings Class
  *
  * @package Trillium\Console\Command
  */
-class JsSystemSettings extends Command
+class JsSystemSettings implements CommandInterface
 {
+
+    /**
+     * Name of the generated file
+     */
+    const FILENAME = 'settings.js';
 
     /**
      * @var string A destination directory for a generated script
@@ -40,34 +45,11 @@ class JsSystemSettings extends Command
     private $fs;
 
     /**
-     * Constructor
-     *
-     * @param string     $directory A destination directory for a generated script
-     * @param Settings   $settings  Settings
-     * @param Filesystem $fs        Filesystem instance
-     *
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function __construct($directory, Settings $settings, Filesystem $fs)
-    {
-        if (!is_dir($directory)) {
-            throw new \InvalidArgumentException(sprintf('Directory %s does not exists', $directory));
-        } elseif (!is_writable($directory)) {
-            throw new \InvalidArgumentException(sprintf('Directory %s is not writable', $directory));
-        }
-        $this->directory = $directory;
-        $this->settings  = $settings;
-        $this->fs        = $fs;
-        parent::__construct('jss');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = $input->getOption('path');
+        $path = $this->directory . self::FILENAME;
         $this->fs->dumpFile(
             $path,
             sprintf('generated.settings=%s;', json_encode($this->settings->get(null, Settings::SYSTEM)))
@@ -78,17 +60,45 @@ class JsSystemSettings extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function getArguments()
     {
-        $this
-            ->setDescription('Dump system settings into javascript file')
-            ->addOption(
-                'path',
-                'p',
-                InputOption::VALUE_OPTIONAL,
-                'Destination path to the file',
-                $this->directory . 'settings.js'
-            );
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return 'Dump system settings into javascript file';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'jss';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(Container $container)
+    {
+        /** @var $env \Vermillion\Environment */
+        $env             = $container['environment'];
+        $this->directory = $env->getDirectory('static.generated');
+        $this->settings  = $container['settings'];
+        $this->fs        = $container['filesystem'];
     }
 
 }

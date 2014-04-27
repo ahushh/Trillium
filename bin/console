@@ -8,6 +8,19 @@
  * @package Trillium
  */
 
+use Symfony\Component\Console\Application as Console;
+use Trillium\Console\Command;
+use Vermillion\Application;
+
 require __DIR__ . '/../autoload.php';
 set_time_limit(0);
-(new Trillium\Console\Application((new \Vermillion\Application())->registerServices()->getContainer()))->run();
+$app      = new Console('Trillium', Application::VERSION);
+$c        = (new Application())->registerServices()->getContainer();
+$commands = [];
+$classes  = ['Db', 'CsFix', 'Environment', 'JsSystemSettings', 'Assets', 'JsUrlGenerator'];
+foreach ($classes as $class) {
+    $class      = '\\Trillium\\Console\\Command\\' . $class;
+    $commands[] = new Command(new $class(), $c);
+}
+$app->addCommands($commands);
+$app->run();

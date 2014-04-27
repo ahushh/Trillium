@@ -14,20 +14,21 @@ use Assetic\Asset\FileAsset;
 use Assetic\Filter\FilterInterface;
 use Assetic\Filter\Yui\CssCompressorFilter;
 use Assetic\Filter\Yui\JsCompressorFilter;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Trillium\Console\CommandInterface;
+use Vermillion\Container;
 
 /**
  * Assets Class
  *
  * @package Trillium\Console\Command
  */
-class Assets extends Command
+class Assets implements CommandInterface
 {
 
     /**
@@ -84,176 +85,6 @@ class Assets extends Command
         'failed'          => '<fg=red>[FAIL]</fg=red>',
         'elapsed_time'    => 'Elapsed time (seconds): %s',
     ];
-
-    /**
-     * Constructor
-     *
-     * @param string $source Source directory
-     * @param string $public Public directory
-     * @param string $cache  Cache directory
-     * @param array  $conf   Configuration
-     *
-     * @throws \LogicException
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function __construct($source, $public, $cache, array $conf)
-    {
-        if (isset($conf['filters'])) {
-            $filtersConfig = $conf['filters'];
-            unset($conf['filters']);
-        } else {
-            $filtersConfig = [];
-        }
-        $this->configFilters        = $this->getFiltersConfig($filtersConfig);
-        $this->configAssets         = $this->getAssetsConfig($conf);
-        $this->directories          = $this->checkDirectories($source, $public, $cache);
-        $this->fs                   = new Filesystem();
-        $this->checksums['current'] = $this->loadChecksums();
-        parent::__construct('assets');
-    }
-
-    /**
-     * Checks filters configuration
-     *
-     * @param array $config Configuration
-     *
-     * @throws \LogicException
-     * @return array
-     */
-    private function getFiltersConfig(array $config)
-    {
-        $defaults = [
-            'global'             => [
-                'yui-path'  => '/usr/share/yui-compressor',
-                'java-path' => '/usr/bin/java',
-            ],
-            'yui-js-compressor'  => [
-                'charset'              => null,
-                'linebreak'            => null,
-                'stack-size'           => null,
-                'nomunge'              => null,
-                'disable-optimization' => null,
-                'preserve-semi'        => null,
-            ],
-            'yui-css-compressor' => [
-                'charset'    => null,
-                'linebreak'  => null,
-                'stack-size' => null,
-            ],
-        ];
-        if (empty($config)) {
-            return $defaults;
-        }
-        foreach ($defaults as $key => $item) {
-            // Configuration for a filter is missing
-            if (!array_key_exists($key, $config)) {
-                $config[$key] = $item;
-            } elseif (is_array($config[$key])) {
-                foreach ($defaults[$key] as $name => $value) {
-                    // Option for a filter configuration is missing
-                    if (!array_key_exists($name, $config[$key])) {
-                        $config[$key][$name] = $value;
-                    }
-                }
-            } else {
-                throw new \LogicException('Wrong filters configuration given');
-            }
-        }
-
-        return $config;
-    }
-
-    /**
-     * Returns valid assets config
-     *
-     * @param array $config Configuration
-     *
-     * @return array
-     * @throws \LogicException
-     */
-    private function getAssetsConfig(array $config)
-    {
-        foreach ($config as $collectionName => &$values) {
-            $values['type']            = explode('.', $collectionName);
-            $values['type']            = '*.' . end($values['type']);
-            $values['default_filters'] = isset($values['default_filters']) ? $values['default_filters'] : [];
-            if (!array_key_exists('set', $values)) {
-                throw new \LogicException(sprintf('Set is not exists in "%s" section', $collectionName));
-            }
-            if (!is_array($values['set'])) {
-                throw new \LogicException(
-                    sprintf(
-                        'Set in "%s" section has wrong type. Expects array %s given',
-                        $collectionName,
-                        gettype($values['set'])
-                    )
-                );
-            }
-        }
-
-        return $config;
-    }
-
-    /**
-     * Check directories
-     *
-     * @param string $source
-     * @param string $public
-     * @param string $cache
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    private function checkDirectories($source, $public, $cache)
-    {
-        $directories = [
-            'source' => $source,
-            'cache'  => $cache,
-            'public' => $public,
-        ];
-        foreach ($directories as $type => $dir) {
-            if (!is_dir($dir)) {
-                throw new \InvalidArgumentException(sprintf('%s directory "%s" does not exists', ucwords($type), $dir));
-            }
-            if (!is_writable($dir)) {
-                throw new \InvalidArgumentException(sprintf('%s directory "%s" is not writable', ucwords($type), $dir));
-            }
-        }
-        $directories = array_map(
-            function ($dir) {
-                return rtrim($dir, '\/') . DIRECTORY_SEPARATOR;
-            },
-            $directories
-        );
-
-        return $directories;
-    }
-
-    /**
-     * Returns checksums
-     *
-     * @throws \RuntimeException
-     * @return array
-     */
-    private function loadChecksums()
-    {
-        $checksums = [];
-        $filename  = $this->directories['cache'] . self::CHECKSUMS;
-        if (is_file($filename)) {
-            $checksumsRaw = @file_get_contents($filename);
-            if ($checksumsRaw !== false) {
-                $checksums = json_decode($checksumsRaw, true);
-            } else {
-                throw new \RuntimeException(
-                    sprintf('Unable to load checksums. An error has occurred: %s', error_get_last()['message'])
-                );
-            }
-        }
-
-        return $checksums;
-    }
 
     /**
      * {@inheritdoc}
@@ -447,11 +278,208 @@ class Assets extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function getArguments()
     {
-        $this
-            ->setDescription('Build assets via assetic')
-            ->addOption('update-cache', 'u', InputOption::VALUE_NONE, 'Update cache');
+        return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return [
+            'update-cache' => [
+                'shortcut'    => 'u',
+                'mode'        => InputOption::VALUE_NONE,
+                'description' => 'Update cache'
+            ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return 'Builds assets via assetic';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'assets';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(Container $container)
+    {
+        /**
+         * @var $configuration \Vermillion\Configuration\Configuration
+         * @var $env           \Vermillion\Environment
+         */
+        $configuration = $container['configuration'];
+        $env           = $container['environment'];
+        $conf          = $configuration->load('assets')->get();
+        if (isset($conf['filters'])) {
+            $filtersConfig = $conf['filters'];
+            unset($conf['filters']);
+        } else {
+            $filtersConfig = [];
+        }
+        $this->configFilters        = $this->getFiltersConfig($filtersConfig);
+        $this->configAssets         = $this->getAssetsConfig($conf);
+        $this->directories          = $this->checkDirectories(
+            $env->getDirectory('static.source'),
+            $env->getDirectory('static.public'),
+            $env->getDirectory('static.cache')
+        );
+        $this->fs                   = $container['filesystem'];
+        $this->checksums['current'] = $this->loadChecksums();
+    }
+
+    /**
+     * Checks filters configuration
+     *
+     * @param array $config Configuration
+     *
+     * @throws \LogicException
+     * @return array
+     */
+    private function getFiltersConfig(array $config)
+    {
+        $defaults = [
+            'global'             => [
+                'yui-path'  => '/usr/share/yui-compressor',
+                'java-path' => '/usr/bin/java',
+            ],
+            'yui-js-compressor'  => [
+                'charset'              => null,
+                'linebreak'            => null,
+                'stack-size'           => null,
+                'nomunge'              => null,
+                'disable-optimization' => null,
+                'preserve-semi'        => null,
+            ],
+            'yui-css-compressor' => [
+                'charset'    => null,
+                'linebreak'  => null,
+                'stack-size' => null,
+            ],
+        ];
+        if (empty($config)) {
+            return $defaults;
+        }
+        foreach ($defaults as $key => $item) {
+            // Configuration for a filter is missing
+            if (!array_key_exists($key, $config)) {
+                $config[$key] = $item;
+            } elseif (is_array($config[$key])) {
+                foreach ($defaults[$key] as $name => $value) {
+                    // Option for a filter configuration is missing
+                    if (!array_key_exists($name, $config[$key])) {
+                        $config[$key][$name] = $value;
+                    }
+                }
+            } else {
+                throw new \LogicException('Wrong filters configuration given');
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Returns valid assets config
+     *
+     * @param array $config Configuration
+     *
+     * @return array
+     * @throws \LogicException
+     */
+    private function getAssetsConfig(array $config)
+    {
+        foreach ($config as $collectionName => &$values) {
+            $values['type']            = explode('.', $collectionName);
+            $values['type']            = '*.' . end($values['type']);
+            $values['default_filters'] = isset($values['default_filters']) ? $values['default_filters'] : [];
+            if (!array_key_exists('set', $values)) {
+                throw new \LogicException(sprintf('Set is not exists in "%s" section', $collectionName));
+            }
+            if (!is_array($values['set'])) {
+                throw new \LogicException(
+                    sprintf(
+                        'Set in "%s" section has wrong type. Expects array %s given',
+                        $collectionName,
+                        gettype($values['set'])
+                    )
+                );
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Check directories
+     *
+     * @param string $source
+     * @param string $public
+     * @param string $cache
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    private function checkDirectories($source, $public, $cache)
+    {
+        $directories = [
+            'source' => $source,
+            'cache'  => $cache,
+            'public' => $public,
+        ];
+        foreach ($directories as $type => $dir) {
+            if (!is_dir($dir)) {
+                throw new \InvalidArgumentException(sprintf('%s directory "%s" does not exists', ucwords($type), $dir));
+            }
+            if (!is_writable($dir)) {
+                throw new \InvalidArgumentException(sprintf('%s directory "%s" is not writable', ucwords($type), $dir));
+            }
+        }
+        $directories = array_map(
+            function ($dir) {
+                return rtrim($dir, '\/') . DIRECTORY_SEPARATOR;
+            },
+            $directories
+        );
+
+        return $directories;
+    }
+
+    /**
+     * Returns checksums
+     *
+     * @throws \RuntimeException
+     * @return array
+     */
+    private function loadChecksums()
+    {
+        $checksums = [];
+        $filename  = $this->directories['cache'] . self::CHECKSUMS;
+        if (is_file($filename)) {
+            $checksumsRaw = @file_get_contents($filename);
+            if ($checksumsRaw !== false) {
+                $checksums = json_decode($checksumsRaw, true);
+            } else {
+                throw new \RuntimeException(
+                    sprintf('Unable to load checksums. An error has occurred: %s', error_get_last()['message'])
+                );
+            }
+        }
+
+        return $checksums;
+    }
 }

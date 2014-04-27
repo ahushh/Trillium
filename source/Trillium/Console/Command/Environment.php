@@ -9,19 +9,25 @@
 
 namespace Trillium\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Trillium\Console\CommandInterface;
+use Vermillion\Container;
 
 /**
  * Environment Class
  *
  * @package Trillium\Console\Command
  */
-class Environment extends Command
+class Environment implements CommandInterface
 {
+
+    /**
+     * @var Filesystem Filesystem instance
+     */
+    private $fs;
 
     /**
      * @var array Output messages
@@ -50,42 +56,9 @@ class Environment extends Command
     private $availableEnvironments = ['development', 'production'];
 
     /**
-     * Constructor
-     *
-     * @param string $environmentPath    Path to the environment config
-     * @param string $currentEnvironment Current application environment
-     *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function __construct($environmentPath, $currentEnvironment)
-    {
-        $this->environmentPath    = $environmentPath;
-        $this->currentEnvironment = $currentEnvironment;
-        parent::__construct('env');
-    }
-
-    /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this
-            ->setDescription('Change or display environment')
-            ->addArgument(
-                'environment',
-                InputArgument::OPTIONAL,
-                'Change or display environment. ' . "\n"
-                . 'Available environments: ' . implode(', ', $this->availableEnvironments) . '. ' . "\n"
-                . 'Leave empty to see the current environment.'
-            );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $env    = $input->getArgument('environment');
         $status = 0;
@@ -107,14 +80,64 @@ class Environment extends Command
                     $output->writeln($this->messages['wrong_file']);
                     $status = 1;
                 } else {
-                    $filesystem = new Filesystem();
-                    $filesystem->dumpFile($path, $env);
+                    $this->fs->dumpFile($path, $env);
                     $output->writeln(sprintf($this->messages[is_file($path) ? 'success' : 'failed'], $env));
                 }
             }
         }
 
         return $status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArguments()
+    {
+        return [
+            'environment' => [
+                'mode'        => InputArgument::OPTIONAL,
+                'description' => 'Change or display environment. ' . "\n"
+                    . 'Available environments: ' . implode(', ', $this->availableEnvironments) . '. ' . "\n"
+                    . 'Leave empty to see the current environment.'
+            ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return 'Change/display environment';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'env';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(Container $container)
+    {
+        /** @var $env \Vermillion\Environment */
+        $env                      = $container['environment'];
+        $this->environmentPath    = $env->getDirectory('configuration') . 'environment';
+        $this->currentEnvironment = $env->getEnvironment();
+        $this->fs                 = $container['filesystem'];
     }
 
 }
