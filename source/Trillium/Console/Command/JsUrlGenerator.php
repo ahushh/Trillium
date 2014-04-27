@@ -120,8 +120,8 @@ class JsUrlGenerator implements CommandInterface
             'base-path' => [
                 'shortcut'    => null,
                 'mode'        => InputOption::VALUE_OPTIONAL,
-                'description' => '',
-                'default'     => 'Base path to the public directory',
+                'description' => 'Base path to the public directory',
+                'default'     => '',
             ],
         ];
     }
