@@ -15,9 +15,7 @@ Requires PHP &gt;= 5.4
 - `$ chmod +x bin/console`
 - Edit the configuration files in resources directory
 - Don't forget to change remember\_me key in the security configuration file
-- Create the MySQL database
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
-- Note: check out, that database is exists for current environment, otherwise you cannot to run console command.
 - Load SQL Dump: `$ bin/console db`
 - Dump system settings: `$ bin/console jss`
 - Generate `javascript url generator`: `$ bin/console jug`
