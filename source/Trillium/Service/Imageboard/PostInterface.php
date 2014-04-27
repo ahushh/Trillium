@@ -9,6 +9,8 @@
 
 namespace Trillium\Service\Imageboard;
 
+use Trillium\Service\Imageboard\Exception\PostNotFoundException;
+
 /**
  * PostInterface Interface
  *
@@ -16,6 +18,17 @@ namespace Trillium\Service\Imageboard;
  */
 interface PostInterface
 {
+
+    /**
+     * Returns a post data
+     *
+     * @param int $post Post ID
+     *
+     * @throws PostNotFoundException
+     *
+     * @return array
+     */
+    public function get($post);
 
     /**
      * Creates a post

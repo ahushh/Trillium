@@ -73,6 +73,7 @@ class Imageboard implements ServiceProviderInterface, SubscriberProviderInterfac
             return new PostListener(
                 $c['imageValidator'],
                 $c['image'],
+                $c['post'],
                 $c['imageManager'],
                 $zmqDsn,
                 $this->getCaptcha($c)

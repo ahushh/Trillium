@@ -9,6 +9,7 @@
 
 namespace Trillium\Service\Imageboard\MySQLi;
 
+use Trillium\Service\Imageboard\Exception\PostNotFoundException;
 use Trillium\Service\Imageboard\PostInterface;
 
 /**
@@ -18,6 +19,19 @@ use Trillium\Service\Imageboard\PostInterface;
  */
 class Post extends MySQLi implements PostInterface
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($post)
+    {
+        $data = parent::getItem('id', $post);
+        if (!is_array($data)) {
+            throw new PostNotFoundException($post);
+        }
+
+        return $data;
+    }
 
     /**
      * {@inheritdoc}
