@@ -166,7 +166,6 @@ class Ws implements MessageComponentInterface
      * @param string $message A message
      *
      * @throws InvalidMessageException
-     * @throws \RuntimeException
      *
      * @return void
      */
@@ -174,21 +173,23 @@ class Ws implements MessageComponentInterface
     {
         $message = $this->validateMessage($message);
         if ($message['action'] !== 'new_post') {
-            throw new \RuntimeException(sprintf('Unknown action: %s', $message['action']));
+            throw new InvalidMessageException(sprintf('Unknown action: %s', $message['action']));
         }
-        $thread = isset($message['value']['thread']) ? (int) $message['value']['thread'] : false;
-        $post   = isset($message['value']['post']) ? (int) $message['value']['post'] : false;
-        if ($thread === false || $post === false) {
-            throw new \RuntimeException('No thread or post given');
+        if (!is_array($message['value'])) {
+            throw new InvalidMessageException('Value is not array');
         }
+        if (sizeof(array_diff(array_keys($message['value']), ['thread', 'post', 'image'])) > 0) {
+            throw new InvalidMessageException('Wrong items given');
+        }
+        $thread = $message['value']['thread'];
         if (!empty($this->threads[$thread])) {
-            $this->log('debug', 'Send a new post to all subscribers...', ['thread' => $thread, 'post' => $post]);
+            $this->log('debug', 'Send a new post to all subscribers...', ['thread' => $thread]);
             /** @var $conn ConnectionInterface */
             foreach ($this->threads[$thread] as $conn) {
-                $conn->send(json_encode(['action' => 'receive', 'value' => ['thread' => $thread, 'post' => $post]]));
+                $conn->send(json_encode(['action' => 'receive', 'value' => $message['value']]));
             }
         } else {
-            $this->log('debug', 'Subscribers for this thread are not exists', ['thread' => $thread, 'post' => $post]);
+            $this->log('debug', 'Subscribers for this thread are not exists', ['thread' => $thread]);
         }
     }
 

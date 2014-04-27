@@ -17,7 +17,9 @@ use Trillium\Service\Imageboard\Event\Event\PostCreateSuccess;
 use Trillium\Service\Imageboard\Event\Event\PostRemove;
 use Trillium\Service\Imageboard\Event\Events;
 use Trillium\Service\Imageboard\Exception\ImageNotFoundException;
+use Trillium\Service\Imageboard\Exception\PostNotFoundException;
 use Trillium\Service\Imageboard\ImageInterface;
+use Trillium\Service\Imageboard\PostInterface;
 use Trillium\Service\Imageboard\Traits\FileUpload;
 
 /**
@@ -60,10 +62,16 @@ class Post implements EventSubscriberInterface
     private $zmqDsn;
 
     /**
+     * @var PostInterface PostInterface instance
+     */
+    private $post;
+
+    /**
      * Constructor
      *
      * @param Validator      $validator Images validator
      * @param ImageInterface $image     ImageInterface instance
+     * @param PostInterface  $post      PostInterface instance
      * @param Manager        $manager   Manager instance
      * @param string         $zmqDsn    The connect zmq dsn, for example transport://address.
      * @param callable|null  $captcha   A callable that takes a single argument and returns a boolean value,
@@ -75,11 +83,13 @@ class Post implements EventSubscriberInterface
     public function __construct(
         Validator $validator,
         ImageInterface $image,
+        PostInterface $post,
         Manager $manager,
         $zmqDsn,
         $captcha = null
     ) {
         $this->image          = $image;
+        $this->post           = $post;
         $this->captcha        = $captcha;
         $this->imageValidator = $validator;
         $this->manager        = $manager;
@@ -124,22 +134,33 @@ class Post implements EventSubscriberInterface
      */
     public function onCreateSuccess(PostCreateSuccess $event)
     {
-        $this->uploadFile($event->getRequest(), $event->getBoard(), $event->getThread(), $event->getPost());
-        $context = new \ZMQContext();
-        $socket  = $context->getSocket(\ZMQ::SOCKET_PUSH, 'post_pusher');
-        $socket->connect($this->zmqDsn);
-        $socket->send(
-            json_encode(
-                [
-                    'action' => 'new_post',
-                    'value'  => [
-                        'board'  => $event->getBoard(),
-                        'thread' => $event->getThread(),
-                        'post'   => $event->getPost()
-                    ],
-                ]
-            )
-        );
+        $thread = $event->getThread();
+        $post   = $event->getPost();
+        $this->uploadFile($event->getRequest(), $event->getBoard(), $thread, $post);
+        try {
+            $postData = $this->post->get($post);
+            try {
+                $image = $this->image->get($post);
+            } catch (ImageNotFoundException $e) {
+                $image = [];
+            }
+            $context = new \ZMQContext();
+            $socket  = $context->getSocket(\ZMQ::SOCKET_PUSH, 'post_pusher');
+            $socket->connect($this->zmqDsn);
+            $socket->send(
+                json_encode(
+                    [
+                        'action' => 'new_post',
+                        'value'  => [
+                            'thread' => $thread,
+                            'post'   => $postData,
+                            'image'  => $image,
+                        ],
+                    ]
+                )
+            );
+        } catch (PostNotFoundException $e) {
+        }
     }
 
     /**
