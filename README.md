@@ -2,7 +2,7 @@
 
 Imageboard engine based on the Symfony Components.
 
-Requires PHP &gt;= 5.4, MySQL and GD.
+Requires PHP &gt;= 5.4 and MySQL.
 
 ## Installation
 
@@ -11,8 +11,8 @@ Assuming you are using Ubuntu 14.04 amd64.
 - `sudo apt-get install nginx mysql-server php5-json php5-fpm php5-dev php-apc yui-compressor libzmq-dev libevent-dev php-pear curl php5-gd php5-mysql -y`
 - `sudo pecl install zmq-beta`
 - `sudo pecl install libevent`
-- Run as root: `echo "extension=zmq.so\nextension=libevent.so" >> /etc/php5/cli/php.ini`
-- Run as root: `echo "extension=zmq.so\nextension=libevent.so" >> /etc/php5/fpm/php.ini`
+- Run as root: `echo "extension=zmq.so" >> /etc/php5/mods-available/zmq.ini`
+- Run as root: `echo "extension=libevent.so" >> /etc/php5/mods-available/libevent.ini`
 - Edit `/etc/nginx/site-enabled/default` as following:
 ```
 server {
@@ -51,7 +51,7 @@ server {
 - Edit the configuration files in resources directory. Changing user and password in %your-env%/mysqli.json should usually be enough.
 - Don't forget to change remember\_me key in the security configuration file
 - Get composer: `curl -sS https://getcomposer.org/installer | php`
-- Install PHP dependencies: `php composer.phar install`
+- Install dependencies: `php composer.phar install`
 - Switch environment: `bin/console env your_environment` (Available environments: `development`, `production`)
 - Load SQL Dump: `bin/console db`
 - Dump system settings: `bin/console jss`
